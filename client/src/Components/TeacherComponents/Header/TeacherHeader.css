@@ -1,0 +1,63 @@
+/* TeacherHeader.css */
+
+/* Navbar background color */
+.teacherHeadernav {
+  background-color: #2196F3; /* Your chosen background color */
+}
+
+/* Brand text styling */
+.teacherHeadernav .navbar-brand {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Toggler button styling */
+.teacherHeadernav .navbar-toggler-icon {
+  background-color: white; /* Color of the toggle icon */
+}
+
+/* Profile picture styling */
+.teacherProfilePicture {
+  width: 40px; /* Profile picture width */
+  height: 40px; /* Profile picture height */
+  border-radius: 50%; /* Makes the image round (for circular profile pictures) */
+  margin-right: 10px; /* Spacing between profile picture and brand text */
+  object-fit: cover; /* Maintain aspect ratio and cover the container */
+  border: 2px solid white; /* Optional border for profile picture */
+}
+
+/* Navigation menu items styling */
+.teacherHeadernav .navbar-nav .nav-item .nav-link {
+  color: white; /* Text color for menu items */
+  font-size: 16px; /* Font size for menu items */
+  margin-right: 20px; /* Spacing between menu items */
+  text-decoration: none !important; /* Remove underlines on links */
+  transition: color 0.3s; /* Smooth color transition on hover */
+}
+
+/* Hover effect for navigation menu items */
+.teacherHeadernav .navbar-nav .nav-item .nav-link:hover {
+  color: #f0f0f0; /* Lighter text color on hover */
+}
+
+/* Active link styling */
+.teacherHeadernav .navbar-nav .nav-item .nav-link.active {
+  background-color: #1565c0; /* Background color for the active link */
+}
+
+/* Logout button styling */
+.teacherLogoutBtn {
+  background-color: #dc3545; /* Logout button background color */
+  color: white; /* Text color for the logout button */
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Hover effect for the logout button */
+.teacherLogoutBtn:hover {
+  background-color: #c82333; /* Slightly darker background color on hover */
+}

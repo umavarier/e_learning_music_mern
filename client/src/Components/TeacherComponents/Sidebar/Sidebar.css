@@ -1,0 +1,30 @@
+/* Sidebar.css */
+
+/* Sidebar background color */
+.sidebar {
+  background-color: #ffffff; /* White background */
+  border-right: 1px solid #ccc; /* Right border */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+/* Sidebar links styling */
+.sidebar ul.nav.flex-column li.nav-item a.nav-link {
+  color: #333333; /* Dark gray text color */
+  background-color: #f2f2f2; /* Light gray background color */
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-top: 10px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+/* Hover effect for sidebar links */
+.sidebar ul.nav.flex-column li.nav-item a.nav-link:hover {
+  background-color: #e0e0e0; /* Slightly darker gray on hover */
+}
+
+/* Active link styling */
+.sidebar ul.nav.flex-column li.nav-item a.nav-link.active {
+  background-color: #2196F3; /* Your accent color for active link */
+  color: white; /* Text color for active link */
+}

@@ -1,0 +1,19 @@
+.body{
+  background-color: #0b0c2a;
+}
+.searchadmin{
+    margin-left: 1000px;
+    width: 250px;
+}
+
+.addButtonAdmin{
+    position: absolute;
+    left: 10%;
+    top: 17%;
+    width: 85px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px#0b0c2a solid;
+    background-color: #fff;
+    color: rgb(6, 6, 6);
+}

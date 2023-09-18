@@ -1,0 +1,83 @@
+/* CourseManagement.css */
+
+/* Overall container styling */
+.CourseManagement {
+    display: flex;
+    align-items: flex-start;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f5f5f5;
+  }
+  
+  /* Button container styling */
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 20px;
+  }
+  
+  /* Button styling */
+  button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  /* Active button styling */
+  button.active {
+    background-color: #333;
+  }
+  
+  /* Table styling */
+  .courseTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .courseTable th,
+  .courseTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .courseTable th {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  /* Form styling */
+  .courseForm {
+    margin-top: 20px;
+  }
+  
+  .courseForm div {
+    margin-bottom: 10px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+  }
+  
+  /* Submit button styling */
+  button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
