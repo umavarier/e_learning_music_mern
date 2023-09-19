@@ -2,7 +2,7 @@
 
 /* Navbar background color */
 .teacherHeadernav {
-  background-color: #2196F3; /* Your chosen background color */
+  background-color: #020c15; /* Your chosen background color */
 }
 
 /* Brand text styling */
@@ -38,9 +38,9 @@
 }
 
 /* Hover effect for navigation menu items */
-.teacherHeadernav .navbar-nav .nav-item .nav-link:hover {
-  color: #f0f0f0; /* Lighter text color on hover */
-}
+/* .teacherHeadernav .navbar-nav .nav-item .nav-link:hover {
+  color: #f0f0f0;
+} */
 
 /* Active link styling */
 .teacherHeadernav .navbar-nav .nav-item .nav-link.active {

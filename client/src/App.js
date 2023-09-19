@@ -9,6 +9,7 @@ import AdminPage1 from './Pages/AdminPages/AdminPage1'
 import TeacherUserManagement from './Components/TeacherComponents/TeacherStudentManagement/teacherUserManagement'
 import AddCourse from './Components/TeacherComponents/TeacherCourse/AddCourse'
 import ViewCourses from './Components/TeacherComponents/TeacherCourse/ViewCourse'
+import CourseDetails from './Components/UserComponets/CourseDetails/CourseDetails';
 
 import Home from './Pages/UserPages/HomePage'
 import Login from './Pages/UserPages/LoginPage'
@@ -27,6 +28,7 @@ function App() {
      <Route  path="/"  element={<Home/>}/>
      <Route  path="/Profile" element={<ProfilePage/>} />
     <Route  path="/signup"  element={<Signup/>}/>
+    <Route path="/CourseDetails" element={<CourseDetails/>} /> 
 
     <Route path='/admin' element={<AdminPage1/>} />
 

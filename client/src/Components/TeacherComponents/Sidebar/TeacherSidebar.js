@@ -80,7 +80,7 @@ function TeacherSidebar() {
               Profile
             </Link>
           </li>
-          {/* Add more sidebar options for teachers as needed */}
+          {/*  more sidebar options for teachers  */}
         </ul>
       </div>
     </nav>

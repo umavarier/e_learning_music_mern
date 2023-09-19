@@ -47,7 +47,7 @@
   }
   
   .courseTable th {
-    background-color: #007bff;
+    background-color: #dcd497;
     color: #fff;
   }
   
@@ -74,7 +74,7 @@
   
   /* Submit button styling */
   button[type="submit"] {
-    background-color: #007bff;
+    background-color: #101c29;
     color: #fff;
     border: none;
     padding: 10px 20px;

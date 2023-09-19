@@ -38,63 +38,63 @@ function AddCourse() {
   };
 
   return (
-    <Fragment>
-      <TeacherHeader />
-      <div className="container-fluid">
-        <div className="row">
-          <TeacherSidebar />
-          <div className="col">
-            <h2>Add New Course</h2>
-            <form onSubmit={handleSubmit} className="add-course-form">
-              <div className="form-group">
-                <label>Course Name:</label>
-                <input type="text" name="name" className="form-control" value={course.name} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Instructor:</label>
-                <input type="text" name="instructor" className="form-control" value={course.instructor} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Duration:</label>
-                <input type="text" name="duration" className="form-control" value={course.duration} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Level:</label>
-                <input type="text" name="level" className="form-control" value={course.level} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Description:</label>
-                <textarea name="description" className="form-control" value={course.description} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Image:</label>
-                <input type="text" name="image" className="form-control" value={course.image} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Price:</label>
-                <input type="number" name="price" className="form-control" value={course.price} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Start Date:</label>
-                <input type="date" name="startDate" className="form-control" value={course.startDate} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>End Date:</label>
-                <input type="date" name="endDate" className="form-control" value={course.endDate} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Enrollments:</label>
-                <input type="number" name="enrollments" className="form-control" value={course.enrollments} onChange={handleInputChange} />
-              </div>
-              {/* Add input fields for ratings and syllabus here */}
-              <button type="submit" className="btn btn-primary">Add Course</button>
-            </form>
-          </div>
+  <Fragment>
+    <TeacherHeader />
+    <div className="container-fluid">
+      <div className="row">
+        <TeacherSidebar />
+        <div className="col">
+          <h2>Add New Course</h2>
+          <form onSubmit={handleSubmit} className="add-course-form">
+            <div className="form-group">
+              <label>Course Name:</label>
+              <input type="text" name="name" className="form-control" value={course.name} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label>Instructor:</label>
+              <input type="text" name="instructor" className="form-control" value={course.instructor} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label>Duration:</label>
+              <input type="text" name="duration" className="form-control" value={course.duration} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label>Level:</label>
+              <input type="text" name="level" className="form-control" value={course.level} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label>Description:</label>
+              <textarea name="description" className="form-control" value={course.description} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label>Image:</label>
+              <input type="text" name="image" className="form-control" value={course.image} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label>Price:</label>
+              <input type="number" name="price" className="form-control" value={course.price} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label>Start Date:</label>
+              <input type="date" name="startDate" className="form-control" value={course.startDate} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label>End Date:</label>
+              <input type="date" name="endDate" className="form-control" value={course.endDate} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label>Enrollments:</label>
+              <input type="number" name="enrollments" className="form-control" value={course.enrollments} onChange={handleInputChange} />
+            </div>
+            {/* Add input fields for ratings and syllabus here */}
+            <button type="submit" className="btn btn-primary">Add Course</button>
+          </form>
         </div>
       </div>
-    </Fragment>
-  );
-  
+    </div>
+  </Fragment>
+);
+
 }
 
 export default AddCourse;

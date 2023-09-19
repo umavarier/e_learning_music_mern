@@ -1,9 +1,11 @@
 const express = require('express');
 const User = require('../model/userMode');
+const Course = require('../model/courseModel')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const fs = require('fs')
+const storage = require('../util/multer')
 const directoryPath = 'public/'
 
 //   const userSignup= async (req, res) => {
@@ -68,7 +70,7 @@ const userSignup = async (req, res) => {
   }
 };
 
-module.exports = { userSignup };
+// module.exports = { userSignup };
 
 
     const userLogin= async (req, res) => {
@@ -121,35 +123,76 @@ module.exports = { userSignup };
             res.json({ status: 'error', error: "invalid token", token: false })
         }
     }
-
+    const upload = multer ({ storage : multer })
     const userImageUpdate = async (req, res) => {
         try {
-            let Token = req.params.id;
-            let token2 = JSON.parse(Token)
-            console.log(token2)
-            const decodedToken = jwt.verify(token2, 'secret123');
-            console.log(decodedToken)
-            const user = await User.findOne({ _id: decodedToken.id });
-            if (user) {                
-                const update = await User.updateOne({ _id: decodedToken.id }, {
-                    $set: {
-                        image: req.files.image[0].filename
-                    }
-                })
-                const image = `http://localhost:4000/${req.files.image[0].filename}`              
-                return res.status(200).json({ message: "user found", image });
+          let Token = req.params.id;
+          let token2 = JSON.parse(Token);
+          console.log(token2);
+          const decodedToken = jwt.verify(token2, 'secret123');
+          console.log(decodedToken);
+          const user = await User.findOne({ _id: decodedToken.id });
+          if (user) {
+            // Check if there are uploaded files
+            if (!req.files || !req.files.image) {
+              return res.status(400).json({ status: 'error', message: 'No image uploaded' });
             }
-            else {
-                return res.json({ status: "error", message: "photo couldnt update" })
-            }
-        } catch (err) {            
-            res.json({ status: "error", message: "photo error" })
+      
+            // Update the user's image field in the database
+            const update = await User.updateOne(
+              { _id: decodedToken.id },
+              {
+                $set: {
+                  image: req.files.image[0].filename,
+                },
+              }
+            );
+      
+            const image = `http://localhost:4000/uploads/${req.files.image[0].filename}`;
+            return res.status(200).json({ message: 'Image updated successfully', image });
+          } else {
+            return res.json({ status: 'error', message: 'User not found' });
+          }
+        } catch (err) {
+          res.status(500).json({ status: 'error', message: 'Internal server error' });
         }
-    }
+      };
+      
+      module.exports = { userImageUpdate, upload };
 
+    const viewTeachers = async (req, res) => {
+        try {
+          // Query your database to fetch the list of users who are teachers
+          const teachers = await User.find({ isTeacher: true });
+      console.log(teachers+"teachers")
+          // Send the list of teachers as a JSON response
+          res.json(teachers);
+        } catch (error) {
+          console.error('Error fetching teachers:', error);
+          res.status(500).json({ status: 'error', message: 'Internal server error' });
+        }
+      };
+     const getCourseDetails=  async (req, res) => {
+        try {
+          const courseId = req.params.id;
+          const course = await Course.findById(courseId);
+      
+          if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+          }
+      
+          res.status(200).json(course);
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Internal server error' });
+        }
+      };
+      
 module.exports = {
     userSignup,
     userLogin,
     verifyToken,
     userImageUpdate,
+    viewTeachers,
+    getCourseDetails
 }

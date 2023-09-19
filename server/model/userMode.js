@@ -21,7 +21,7 @@ const User= new mongoose.Schema({
         type: Number,
         default: 0 // 0 = user, 1 = admin
     },
-    Teacher:{
+    isTeacher:{
         type : Boolean,
         required : true,
         default : false
