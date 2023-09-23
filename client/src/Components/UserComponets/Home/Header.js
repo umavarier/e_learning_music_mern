@@ -107,7 +107,7 @@ function Header() {
           ) : (
             <>
             <button
-      className="teachWithUsButton text-light"
+      className="teachWithUsButton "
       type="button"
       style={{
         background: 'transparent',

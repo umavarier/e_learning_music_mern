@@ -19,8 +19,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'images')));
 
 const userRouter = require('./routes/users');
+const teacherRouter = require('./routes/teacherRoutes')
 
 app.use('/', userRouter);
+// app.use('/teachers', teacherRouter);
 async function startApp() {
     try {  
       db.connect()
@@ -35,16 +37,5 @@ async function startApp() {
   }
   
   startApp()
-
-
-
-
-
-
-
-
-
-
-
 
 module.exports = app;

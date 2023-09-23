@@ -6,12 +6,12 @@ const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSear
 const {TeacherGetAllUsers} = require('../controllers/TeacherController')
 const {addCourse, viewCourses} = require('../controllers/courseController')
 const { uploadSingleFile } = require('../util/multer');
-
+const {authenticateTeacher} = require('../midleware/authTeacher'); 
 /* GET home page. */
 router.post('/signup',userSignup);
 router.post('/login',userLogin);
 router.post('/verifyUserToken',verifyToken)
-router.post('/adminLogin',adminLoginn)
+router.post('/adminLogin',adminLoginn)  
 router.get('/getallusers',getAllUsers)
 router.delete('/deleteUser/:id',deleteUsers)        
 router.get('/admineditUser/:id',getUserDetails)

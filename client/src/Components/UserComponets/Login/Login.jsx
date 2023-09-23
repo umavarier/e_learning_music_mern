@@ -16,6 +16,7 @@ function Login() {
     const body = JSON.stringify({
       email,
       password,
+      isTeacher: teacherLogin,
     });
     e.preventDefault();
 
@@ -30,8 +31,8 @@ function Login() {
         if (user.data.user) {
           localStorage.setItem('token', user.data.user);
           console.log(user.data, 'login details');
-          if (teacherLogin) {
-            navigate('/teacher'); // Navigate to the teacher's dashboard page
+          if (user.data.role === 1) {
+            navigate('/teacherhome'); // Navigate to the teacher's dashboard page
           } else {
             navigate('/');
           }

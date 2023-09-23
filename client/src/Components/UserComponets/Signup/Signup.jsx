@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
 import Swal from 'sweetalert2';
-import {Link} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
-import {useNavigate} from 'react-router-dom'
 
 function Signup() {
   const [userName, setUserName] = useState('');
@@ -33,16 +32,16 @@ function Signup() {
         teacherCertificate: isTeacher ? teacherCertificate : '',
         teacherCredentials: isTeacher ? teacherCredentials : '',
       };
-
+console.log(body+"body")
       try {
-        const response = await axios.post("http://localhost:4000/signup", body, {
+        const response = await axios.post('http://localhost:4000/signup', body, {
           headers: { 'Content-Type': 'application/json' },
         });
 
         if (response.data.status === 'ok') {
           Swal.fire('Good job!', 'Signup Success!', 'success');
           console.log(response.data);
-          navigate('/login')
+          navigate('/login');
         } else {
           Swal.fire({
             icon: 'error',
@@ -106,7 +105,6 @@ function Signup() {
     }
   };
 
-
   return (
     <div style={{ backgroundColor: '#0b0c2a', minHeight: '100vh' }}>
       <div className="signInpage">
@@ -114,7 +112,7 @@ function Signup() {
           <div className="shape"></div>
           <div className="shape"></div>
         </div>
-        <form className="signupForm" onSubmit={(e) => handleSubmit(e)}>
+        <form className="signupForm" onSubmit={handleSubmit}>
           <h3 className="tag1">Signup</h3>
           <label className="label1" htmlFor="username">
             User Name

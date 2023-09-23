@@ -10,6 +10,7 @@ import TeacherUserManagement from './Components/TeacherComponents/TeacherStudent
 import AddCourse from './Components/TeacherComponents/TeacherCourse/AddCourse'
 import ViewCourses from './Components/TeacherComponents/TeacherCourse/ViewCourse'
 import CourseDetails from './Components/UserComponets/CourseDetails/CourseDetails';
+import TeacherDash from './Components/TeacherComponents/TeacherDash/TeacherDash'
 
 import Home from './Pages/UserPages/HomePage'
 import Login from './Pages/UserPages/LoginPage'
@@ -38,7 +39,8 @@ function App() {
     <Route path='/adminAddUser' element={<AdminaddUsers/>}/>
     <Route path='/updateUser/:id' element={<UpdateUser/>} />
 
-    <Route path = '/teacher'element={<TeacherHome/>}/>
+    <Route path = '/teacher'element={<Login/>}/>
+    <Route path = '/teacherhome' element = {<TeacherDash/>}/>
     <Route path = '/TeacherGetAllUsers' element={<TeacherUserManagement/>} />
 
     <Route path="/addCourse" element={<AddCourse/>} />

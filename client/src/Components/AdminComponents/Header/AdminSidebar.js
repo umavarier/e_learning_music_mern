@@ -5,20 +5,21 @@ import { Link } from 'react-router-dom';
 function AdminSidebar() {
   return (
     <nav id="sidebar" className="col-md-3 col-lg-2 d-md-block bg sidebar" style={{ borderRight: '1px solid #ccc', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-      <div className="position-sticky">
+      <div className="box">
+      <div className="rectangle">
         
         <ul className="nav flex-column">
                 <li className="nav-item">
                   <Link
-                    to={'/option5'}
+                    to={'/adminHome'}
                     className="nav-link black-text"
-                    style={{
-                      marginTop: '50px',
-                      border: '1px solid #ccc',
-                      borderRadius: '5px',
-                      backgroundColor: 'white',
-                      color: 'black', // Set text color to black
-                    }}
+                    // style={{
+                    //   marginTop: '50px',
+                    //   border: '1px solid #ccc',
+                    //   borderRadius: '5px',
+                    //   backgroundColor: 'white',
+                    //   color: 'black', // Set text color to black
+                    // }}
                   >
                     Dashboard
                   </Link>
@@ -27,13 +28,13 @@ function AdminSidebar() {
                   <Link
                     to={'/users'}
                     className="nav-link black-text"
-                    style={{
-                      marginTop: '50px',
-                      border: '1px solid #ccc',
-                      borderRadius: '5px',
-                      backgroundColor: 'white',
-                      color: 'black', // Set text color to black
-                    }}
+                    // style={{
+                    //   marginTop: '50px',
+                    //   border: '1px solid #ccc',
+                    //   borderRadius: '5px',
+                    //   backgroundColor: 'white',
+                    //   color: 'black', // Set text color to black
+                    // }}
                   >
                     Students
                   </Link>
@@ -42,13 +43,13 @@ function AdminSidebar() {
                   <Link
                     to={'/teachers'}
                     className="nav-link black-text"
-                    style={{
-                      marginTop: '50px',
-                      border: '1px solid #ccc',
-                      borderRadius: '5px',
-                      backgroundColor: 'white',
-                      color: 'black', // Set text color to black
-                    }}
+                    // style={{
+                    //   marginTop: '50px',
+                    //   border: '1px solid #ccc',
+                    //   borderRadius: '5px',
+                    //   backgroundColor: 'white',
+                    //   color: 'black', // Set text color to black
+                    // }}
                   >
                     Teachers
                   </Link>
@@ -57,13 +58,13 @@ function AdminSidebar() {
                   <Link
                     to={'/notes'}
                     className="nav-link black-text"
-                    style={{
-                      marginTop: '50px',
-                      border: '1px solid #ccc',
-                      borderRadius: '5px',
-                      backgroundColor: 'white',
-                      color: 'black', // Set text color to black
-                    }}
+                    // style={{
+                    //   marginTop: '50px',
+                    //   border: '1px solid #ccc',
+                    //   borderRadius: '5px',
+                    //   backgroundColor: 'white',
+                    //   color: 'black', // Set text color to black
+                    // }}
                   >
                     Leaves
                   </Link>
@@ -73,13 +74,13 @@ function AdminSidebar() {
                   <Link
                     to={'/option4'}
                     className="nav-link black-text"
-                    style={{
-                      marginTop: '50px',
-                      border: '1px solid #ccc',
-                      borderRadius: '5px',
-                      backgroundColor: 'white',
-                      color: 'black', // Set text color to black
-                    }}
+                    // style={{
+                    //   marginTop: '50px',
+                    //   border: '1px solid #ccc',
+                    //   borderRadius: '5px',
+                    //   backgroundColor: 'white',
+                    //   color: 'black', // Set text color to black
+                    // }}
                   >
                     Notifications
                   </Link>
@@ -88,6 +89,7 @@ function AdminSidebar() {
 
           {/* Add more sidebar options as needed */}
         </ul>
+      </div>
       </div>
     </nav>
   );

@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import Footer from '../Footer/Footer';
+// import Footer from '../Footer/Footer';
 import { Link } from 'react-router-dom';
 import TeacherHeader from '../Header/TeacherHeader'; // Assuming you have a TeacherHeader component
 // import './TeacherDash.css'; // Create a separate CSS file for styling
@@ -34,7 +34,7 @@ function TeacherDash() {
           </main>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </Fragment>
   );
 }

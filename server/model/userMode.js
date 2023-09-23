@@ -19,8 +19,8 @@ const User= new mongoose.Schema({
     },
     role: {
         type: Number,
-        default: 0 // 0 = user, 1 = admin
-    },
+        default: 0 // 0 = user, 1 = teacher
+        },
     isTeacher:{
         type : Boolean,
         required : true,
@@ -36,7 +36,8 @@ const User= new mongoose.Schema({
     {
         type:String
     },
-    certificate: {
+    certificate:
+     {
         type: String
     },
     credentials:

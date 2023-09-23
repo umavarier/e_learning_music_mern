@@ -1,4 +1,4 @@
-.adminHeadernav{
+/* .adminHeadernav{
   background-color: #030712;
 }
 
@@ -10,4 +10,182 @@
   height: 35px;
  background-color: transparent;
   color: white;
+} */
+
+.nav-bar {
+  background: linear-gradient(180deg, rgb(248, 250, 252) 0%, rgba(255, 255, 255, 0) 100%);
+  background-color: rgba(255, 255, 255, 1);
+  height: 137px;
+  position: relative;
+  width: 1440px;
+}
+
+.nav-bar .melody {
+  height: 80px;
+  left: 80px;
+  object-fit: cover;
+  position: absolute;
+  top: 30px;
+  width: 127px;
+}
+
+.nav-bar .overlap {
+  height: 101px;
+  left: 1024px;
+  position: absolute;
+  top: 14px;
+  width: 323px;
+}
+
+.nav-bar .nav-icons {
+  height: 93px;
+  left: 0;
+  position: absolute;
+  top: 8px;
+  width: 323px;
+}
+
+.nav-bar .profile {
+  height: 93px;
+  left: 107px;
+  position: absolute;
+  top: 0;
+  width: 216px;
+}
+
+.nav-bar .text-wrapper {
+  color: #ffffff;
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 20px;
+  font-weight: 700;
+  left: 95px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 32px;
+  white-space: nowrap;
+}
+
+.nav-bar .div {
+  color: #000000;
+  font-family: "Inter-SemiBold", Helvetica;
+  font-size: 24px;
+  font-weight: 600;
+  left: 6px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 31px;
+}
+
+.nav-bar .notification {
+  background-image: url();
+  background-position: 50% 50%;
+  background-size: cover;
+  height: 34px;
+  left: 57px;
+  position: absolute;
+  top: 30px;
+  width: 35px;
+}
+
+.nav-bar .ellipse {
+  background-color: #fc0303;
+  border-radius: 8.48px/8.24px;
+  height: 16px;
+  left: 18px;
+  position: relative;
+  top: 1px;
+  width: 17px;
+}
+
+.nav-bar .message {
+  height: 34px;
+  left: 0;
+  position: absolute;
+  top: 30px;
+  width: 42px;
+}
+
+.nav-bar .overlap-group {
+  height: 34px;
+  position: relative;
+}
+
+.nav-bar .chat {
+  height: 34px;
+  left: 0;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  width: 34px;
+}
+
+.nav-bar .ellipse-2 {
+  background-color: #fc0303;
+  border-radius: 8px;
+  height: 16px;
+  left: 26px;
+  position: absolute;
+  top: 1px;
+  width: 16px;
+}
+
+.nav-bar .parvathi-kumar {
+  height: 94px;
+  left: 241px;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  width: 70px;
+}
+
+.nav-bar .menu {
+  height: 34px;
+  left: 350px;
+  object-fit: cover;
+  position: absolute;
+  top: 52px;
+  width: 34px;
+}
+
+.nav-bar .search {
+  height: 50px;
+  left: 545px;
+  position: absolute;
+  top: 44px;
+  width: 361px;
+}
+
+.nav-bar .overlap-2 {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 1px 2px 6px #c6c6c640;
+  height: 50px;
+  position: relative;
+  width: 359px;
+}
+
+.nav-bar .img {
+  height: 22px;
+  left: 314px;
+  position: absolute;
+  top: 14px;
+  width: 22px;
+}
+
+.nav-bar .search-here {
+  background: transparent;
+  border: none;
+  color: #8a8a8a;
+  font-family: "Inter-Regular", Helvetica;
+  font-size: 15px;
+  font-weight: 400;
+  left: 28px;
+  letter-spacing: 0;
+  line-height: normal;
+  padding: 0;
+  position: absolute;
+  top: 15px;
+  width: 88px;
 }

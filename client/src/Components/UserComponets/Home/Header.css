@@ -2,14 +2,12 @@
         margin-top: 18px;
         margin-right: 20px;
         font-weight: bold;
-        color: rgb(255, 255, 255);
+        color: rgb(10, 9, 9);
 }
-
-
 
 .nav-link {
     text-decoration: none; /* Remove the underline */
-    color: white; /* Change the text color to white */
+    color: rgb(8, 0, 0); /* Change the text color to white */
   }
  
   .nav-link:hover,
