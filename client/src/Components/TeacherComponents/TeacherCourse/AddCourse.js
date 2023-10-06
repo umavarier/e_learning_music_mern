@@ -1,24 +1,34 @@
-import React, { useState , Fragment } from 'react';
+import React, { useState ,useEffect, Fragment } from 'react';
+import { useSelector } from 'react-redux';
+import {selectTeacherId,  selectTeacherName } from '../../../Redux/teacherSlice';
 import axios from '../../../utils/axios';
 import TeacherHeader from '../Header/TeacherHeader';
 import TeacherSidebar from '../Sidebar/TeacherSidebar';
 import './AddCourse.css';
 
 function AddCourse() {
+  const teacherId = useSelector(selectTeacherId);
+  const teacherName = useSelector(selectTeacherName);
+
   const [course, setCourse] = useState({
     name: '',
-    instructor: '',
+    instructor: teacherName,
+    instructorId: teacherId,
     duration: '',
     level: '',
     description: '',
-    image: '',
-    price: 0,
+    image: '',    
     startDate: '',
     endDate: '',
     enrollments: 0,
-    ratings: [],
     syllabus: [],
   });
+
+
+  useEffect(() => {
+    // Log the teacherName to check if it's available
+    // console.log('Teacher Name:', teacherName);
+  }, [teacherName]); 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -37,6 +47,8 @@ function AddCourse() {
       });
   };
 
+
+  
   return (
   <Fragment>
     <TeacherHeader />
@@ -51,9 +63,16 @@ function AddCourse() {
               <input type="text" name="name" className="form-control" value={course.name} onChange={handleInputChange} />
             </div>
             <div className="form-group">
-              <label>Instructor:</label>
-              <input type="text" name="instructor" className="form-control" value={course.instructor} onChange={handleInputChange} />
-            </div>
+                <label>Instructor:</label>
+                <input
+                  type="text-dar"
+                  name="instructor"
+                  className="form-control"
+                  value={course.instructor}
+                  readOnly // Make the input read-only to prevent user changes
+                />
+              </div>
+
             <div className="form-group">
               <label>Duration:</label>
               <input type="text" name="duration" className="form-control" value={course.duration} onChange={handleInputChange} />
@@ -70,10 +89,10 @@ function AddCourse() {
               <label>Image:</label>
               <input type="text" name="image" className="form-control" value={course.image} onChange={handleInputChange} />
             </div>
-            <div className="form-group">
+            {/* <div className="form-group">
               <label>Price:</label>
               <input type="number" name="price" className="form-control" value={course.price} onChange={handleInputChange} />
-            </div>
+            </div> */}
             <div className="form-group">
               <label>Start Date:</label>
               <input type="date" name="startDate" className="form-control" value={course.startDate} onChange={handleInputChange} />

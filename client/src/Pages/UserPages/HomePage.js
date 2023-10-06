@@ -1,40 +1,26 @@
-import React, { useEffect } from 'react'
-import Header from '../../Components/UserComponets/Home/Header'
-import Home from '../../Components/UserComponets/Home/Home'
-import axios from '../../utils/axios'
-import { useNavigate } from 'react-router-dom'
-import { verifyUserToken } from '../../utils/Constants'
-
+import React, { useEffect } from 'react';
+import Header from '../../Components/UserComponets/Home/Header';
+import Home from '../../Components/UserComponets/Home/Home';
+import axios from '../../utils/axios';
+import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
-  const navigate=useNavigate()
-  useEffect(()=>{
-    const Token=localStorage.getItem('token');
-    console.log(Token)
-    if(!Token){
-        navigate('/')
-        console.log("token exists")
-    }else{
+  const navigate = useNavigate();
 
-      const body=JSON.stringify({Token});
-    
-      axios.post(verifyUserToken,body,{headers: {"Content-Type":"application/json"}}).then((response)=>{
-        console.log(response,":-response")
-        if(response.data.token){
-          console.log("success");
-        }else{
-          navigate('/')
-        }
-      })
+  useEffect(() => {
+    const token = localStorage.getItem('secret123'); // Use the correct token key
+
+    if (!token) {
+      navigate('/'); // Redirect to the login page if token doesn't exist
     }
-  },[])
+  }, []);
+
   return (
     <div>
-      <Header/>
-     <Home/>
-
+      <Header />
+      <Home />
     </div>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;

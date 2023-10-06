@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from '../../../utils/axios';
-import { FaSignInAlt } from 'react-icons/fa';
-import { LoginPost } from '../../../utils/Constants';
-import './Login.css';
-import Swal from 'sweetalert2';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "../../../utils/axios";
+import { FaSignInAlt } from "react-icons/fa";
+import { LoginPost } from "../../../utils/Constants";
+import { useDispatch } from "react-redux";
+import "./Login.css";
+import Swal from "sweetalert2";
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [teacherLogin, setTeacherLogin] = useState(false); // State for teacher login
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   const handleSubmit = async (e) => {
+
     const body = JSON.stringify({
       email,
       password,
@@ -20,27 +24,29 @@ function Login() {
     });
     e.preventDefault();
 
-    if (email === '' || password === '') {
-      Swal.fire('Please Fill all the fields');
+    if (email === "" || password === "") {
+      Swal.fire("Please Fill all the fields");
+
     } else {
+  
       try {
         let user = await axios.post(LoginPost, body, {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         });
-
+         
+        console.log({"userData":user})
         if (user.data.user) {
-          localStorage.setItem('token', user.data.user);
-          console.log(user.data, 'login details');
+          localStorage.setItem("token", user.data.user);
           if (user.data.role === 1) {
-            navigate('/teacherhome'); // Navigate to the teacher's dashboard page
+            navigate("/teacherhome"); // Navigate to the teacher's dashboard page
           } else {
-            navigate('/');
+            navigate("/");
           }
         } else {
           Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Invalid Credentials!',
+            icon: "error",
+            title: "Oops...",
+            text: "Invalid Credentials!",
           });
         }
       } catch (err) {
@@ -55,6 +61,7 @@ function Login() {
   };
 
   return (
+
     <div className="loginpage">
       <div className="background">
         <div className="shape"></div>
@@ -91,7 +98,7 @@ function Login() {
 
         <div>
           <label>
-            <input 
+            <input
               type="checkbox"
               checked={teacherLogin}
               onChange={handleTeacherLogin}
@@ -100,12 +107,13 @@ function Login() {
           </label>
         </div>
 
-        <button className="loginButton" type="submit">
+        <button className="loginButton1" type="submit">
           Log In
         </button>
         <div className="social">
           <div className="go">
-            <i className="fab fa-google"></i> <Link to={'/signup'}>Sign Up</Link>
+            <i className="fab fa-google"></i>{" "}
+            <Link to={"/signup"}>Sign Up</Link>
           </div>
         </div>
       </form>

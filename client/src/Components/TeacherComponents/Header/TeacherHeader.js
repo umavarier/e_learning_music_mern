@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import './TeacherHeader.css'; // Create a separate CSS file for styling
 import Swal from 'sweetalert2';
+import axios from '../../../utils/axios'
+import { clearTeacher } from '../../../Redux/teacherSlice'; 
 
 function TeacherHeader() {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
-  const [teacherName, setTeacherName] = useState(''); // Store teacher's name
-
+  // const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+  // const [teacherName, setTeacherName] = useState(''); // Store teacher's name
+  // const teacherName = useSelector((state) => state.teacher.userName);
+  const dispatch = useDispatch(); // Initialize useDispatch
+  const isLoggedIn = useSelector((state) => !!state.teacher.id); // Check if teacher is logged in
+  const teacherName = useSelector((state) => state.teacher.name); //get teachers name
+  
   // Function to handle teacher logout
   const teacherLogout = (e) => {
     e.preventDefault();
@@ -22,8 +29,8 @@ function TeacherHeader() {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.clear(); // Clear local storage
-        setIsLoggedIn(false); // Update login state
-        navigate('/teacher'); // Navigate to the teacher's login page
+        dispatch(clearTeacher());// Dispatch clearTeacher action to clear teacher data in Redux
+        navigate('/teacherLogin'); // Navigate to the teacher's login page
       }
     });
   };
@@ -31,18 +38,46 @@ function TeacherHeader() {
   // Check if the user is logged in by looking for a valid token in local storage
   useEffect(() => {
     const token = localStorage.getItem('token');
+    console.log("token :::"+token)
+    const config = {
+      headers: {
+        // Authorization: `Bearer ${token}`,
+        'Authorization': token
+      },
+    };
 
-    if (token) {
-      // If a token is found, the user is logged in
-      setIsLoggedIn(true);
+    const fetchTeacherData = async () => {
+      try {
+        console.log("heyyyyyyyy")
+        // const response = await axios.get('/teachers/teacher-data',config);
+        const response = await axios.get('/teachers/teacher-data',config);
 
-      // Here, you can make an API request to fetch the teacher's name based on the token
-      // Replace this with your actual API request to fetch the teacher's name
-      // For this example, I'm using a static name
-      // Replace 'John Doe' with the actual teacher's name you receive from your API
-      // setTeacherName('John Doe');
-    }
-  }, []);
+          
+        console.log("res:  "+response.status)
+        console.log("data  "+response.data);
+
+        if (response.status === 200) {
+          const teacherData = await response.data;
+          console.log("teacherData  "+teacherData)
+          // Assuming teacherData contains a 'name' property
+          const fetchedTeacherName = teacherData.userName;
+          
+          // Set the fetched teacher name in the component's state
+         
+        } else {
+          console.error('Error fetching teacher data::::', response.statusText);
+          
+        }
+      } catch (error) {
+        console.error('Error fetching teacher data:', error);
+        
+      }
+    };
+    if(isLoggedIn){
+      fetchTeacherData();
+    }  
+  
+},[isLoggedIn]);
 
   return (
     <nav className="navbar navbar-expand-lg teacherHeadernav">
@@ -79,13 +114,13 @@ function TeacherHeader() {
           {/* Logout button */}
           {isLoggedIn ? (
             <form className="d-flex">
-              <span className="teacherName">{teacherName}</span>
+              <span className="teacherName text-dark">{teacherName}</span>
               <button className="teacherLogoutBtn" onClick={teacherLogout}>
                 Logout
               </button>
             </form>
           ) : (
-            <Link to="/login">Teacher Login</Link>
+            <Link to="/teacherLogin">Teacher Login</Link>
           )}
         </div>
       </div>

@@ -1,0 +1,61 @@
+/* TimeSelectionModal.css */
+/* Style the modal overlay */
+.ReactModal__Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Style the modal content */
+  .ReactModal__Content {
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    max-width: 400px; /* Adjust the width as needed */
+    width: 100%;
+    height: 400px;
+    text-align: center;
+  }
+  
+  /* Style the modal title */
+  h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  /* Style the select input */
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Style the schedule button */
+  button {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    background-color: #ff006a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    justify-content: center;
+  }
+  
+  /* Style the schedule button on hover */
+  button:hover {
+    background-color: #af0554;
+  }
+  

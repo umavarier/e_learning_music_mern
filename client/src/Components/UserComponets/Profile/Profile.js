@@ -16,27 +16,36 @@ function Profile() {
     const [name, setName] = useState('')
     const [email, setemail] = useState('')
     const [image, setImage] = useState('')
+    const [courses, setCourses] = useState([])
+    const [searchTerm, setSearchTerm] = useState('');
 
     const userImage = useSelector((state) => {
         return state.userImage;
     })
 
-    useEffect(() => {
-        const Token = localStorage.getItem('token');
+    // useEffect(() => {
+    //     const Token = localStorage.getItem('token');
 
-        if (!Token) {
-            navigate('/');
-        } else {
-            const body = JSON.stringify({ Token });
-            axios.post(verifyUserToken, body, { headers: { "Content-Type": "application/json" } }).then((res) => {
-                    setName(res.data.user.userName)
-                    setemail(res.data.user.email)
-                    setImage(res.data.user.image)
-                    dispatch(change(res.data.user.userName))
-                    dispatch(changeImage(res.data.user.image))               
-            })
-        }
-    }, [navigate, dispatch]);
+    //     if (!Token) {
+    //         navigate('/');
+    //     } else {
+    //         const body = JSON.stringify({ Token });
+    //         axios.post(verifyUserToken, body, { headers: { "Content-Type": "application/json" } }).then((res) => {
+    //                 setName(res.data.user.userName)
+    //                 setemail(res.data.user.email)
+    //                 setImage(res.data.user.image)
+    //                 dispatch(change(res.data.user.userName))
+    //                 dispatch(changeImage(res.data.user.image))               
+    //         })
+    //         axios.get('/viewCourses')
+    //         .then((res) => {
+    //           setCourses(res.data); // Assuming courses are stored in state
+    //         })
+    //         .catch((err) => {
+    //           console.error("Error fetching courses:", err);
+    //         })
+    //     }
+    // }, [navigate, dispatch]);
 
     const addImage = async () => {
         const { value: file } = await Swal.fire({
@@ -84,6 +93,21 @@ function Profile() {
             })
         }
     }
+    const enrollInCourse = (courseId) => {
+
+    }
+    const handleSearch = (e) => {
+      if (e.target && e.target.value) {
+        setSearchTerm(e.target.value);
+      }
+    };
+    const filteredCourses = courses.filter((course) => {
+      const courseTitle = course.title || ''; // Ensure course.title is defined
+      const searchTermLowerCase = searchTerm.toLowerCase();
+      return courseTitle.toLowerCase().includes(searchTermLowerCase);
+    });
+    
+
     return (
         <div>
           <Header />
@@ -127,6 +151,36 @@ function Profile() {
                   </div>
                 </div>
               </div>
+
+              <div className="col-md-4">
+  <div className="card border-2 rounded shadow-sm">
+    <div className="card-body">
+      <h4 className="mb-4">Available Courses</h4>
+      <div className="form-group">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search courses"
+          onChange={(e) => handleSearch(e.target.value)}
+        />
+      </div>
+      <ul className="list-group">
+        {courses.map((course) => (
+          <li className="list-group-item" key={course.id}>
+            <h5>{course.title}</h5>
+            <p>Category: {course.name}</p>
+            <p>Instructor: {course.instructor}</p>
+            <p>Price: ${course.price}</p>
+            <button onClick={() => enrollInCourse(course.id)} className="btn btn-primary">
+              Enroll
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</div>
+
             </div>
           </div>
         </div>

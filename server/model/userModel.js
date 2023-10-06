@@ -1,4 +1,9 @@
 const mongoose=require('mongoose');
+const validator = require("validator");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const SECRECT_KEY = "abcdefghijklmnop"
+
 
 const User= new mongoose.Schema({
     userName:
@@ -43,11 +48,34 @@ const User= new mongoose.Schema({
     credentials:
     {
         type: String
-    }
+    },
+    tokens : [
+        {
+            token : {
+                type: String,
+                required :true,
+            }
+        }
+    ]
 },
 { 
     collection:'users'
 })
+
+User.methods.generateAuthtoken = async function(){
+    try {
+        let newtoken = jwt.sign({_id:this._id},"secret123",{
+            expiresIn:"1d"
+        });
+
+        this.tokens = this.tokens.concat({token:newtoken});
+        await this.save();
+        return newtoken;
+    } catch (error) {
+        res.status(400).json(error)
+    }
+}
+
 const model=mongoose.model('UserData',User);
 
 module.exports=model

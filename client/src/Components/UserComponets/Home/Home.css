@@ -44,6 +44,25 @@
   margin: 10px;
 }
 
+p {
+  font-size: 18px; /* Set the font size */
+  line-height: 1.5; /* Set the line height for better readability */
+  color: #333; /* Set the text color */
+}
+
+/* Style for the statistics paragraphs */
+div.statistics p {
+  font-size: 14px; /* Adjust font size for statistics */
+  color: #0b0237; /* Adjust text color for statistics */
+  margin-bottom: 10px; /* Add some spacing between statistics paragraphs */
+}
+
+/* Style for the span elements within statistics paragraphs */
+div.statistics p span {
+  font-weight: bold; /* Make the numbers bold */
+  color: #555; /* Adjust the color of numbers */
+}
+
 /* Round Course Cards */
 .rounded-card {
   border-radius: 50%; /* Make the card round */
@@ -69,3 +88,55 @@
   max-width: 100%;
   height: auto;
 }
+/* Style the subscription section container */
+.subscription-section {
+  background-color: #007bff; /* Blue background color */
+  color: #fff; /* White text color */
+  padding: 50px 0;
+  text-align: center;
+}
+
+/* Style the container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Style the subscription cards */
+.subscription-cards {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.subscription-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: calc(20% - 20px); /* Adjust the width as needed */
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Style the discounted price */
+.discounted-price {
+  color: #f00; /* Red color for the discounted price */
+}
+
+/* Style the Enroll Now button */
+.enroll-button {
+  background-color: #007bff; /* Blue background color */  
+  color: #fff; /* White text color */
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.enroll-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+

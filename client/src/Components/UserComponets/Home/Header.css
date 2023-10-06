@@ -1,32 +1,31 @@
-.navUserName{
-        margin-top: 18px;
-        margin-right: 20px;
-        font-weight: bold;
-        color: rgb(10, 9, 9);
+.navUserName {
+  margin-top: 18px;
+  margin-right: 20px;
+  font-weight: bold;
+  color: rgb(10, 9, 9);
 }
 
 .nav-link {
-    text-decoration: none; /* Remove the underline */
-    color: rgb(8, 0, 0); /* Change the text color to white */
-  }
- 
-  .nav-link:hover,
-.nav-link:active {
-  text-decoration: none !important; 
-    color: whitesmoke; 
-  }
-  
-
-.userLogoutButton{
-    border-radius: 5px;
-    border: 1px #000103 solid;
-    margin-top: 15px;
-    width: 70px;
-    height: 35px;
-   background-color: red;
-    color: white;
+  text-decoration: none; /* Remove the underline */
+  color: rgb(8, 0, 0);
 }
 
-.userLogo{
-    border-radius: 25px;
+.nav-link:hover,
+.nav-link:active {
+  text-decoration: none !important;
+  color: whitesmoke;
+}
+
+.userLogoutButton {
+  border-radius: 5px;
+  border: 1px #000103 solid;
+  margin-top: 15px;
+  width: 70px;
+  height: 35px;
+  background-color: red;
+  color: white;
+}
+
+.userLogo {
+  border-radius: 25px;
 }

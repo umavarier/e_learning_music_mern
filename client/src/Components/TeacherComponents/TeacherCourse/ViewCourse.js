@@ -1,53 +1,40 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import axios from '../../../utils/axios';
 import TeacherSidebar from '../Sidebar/TeacherSidebar';
 import TeacherHeader from '../Header/TeacherHeader';
 import './ViewCourse.css'
+import Header from '../../UserComponets/Home/Header';
 
 function CourseManagement() {
+  const teacherId = useSelector((state) => state.teacher.id);
   const [courses, setCourses] = useState([]);
-  const [course, setCourse] = useState({
-    name: '',
-    instructor: '',
-    // Add other course properties here
-  });
-
+  // const [course, setCourse] = useState({
+  //   name: '',
+  //   instructor: '',
+  //   // Add other course properties here
+  // });
   useEffect(() => {
-    axios.get('/viewCourses') // Replace with your API endpoint
-      .then((response) => {
-        setCourses(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching courses:', error);
-      });
-  }, []);
+    axios.get(`/teacherViewCourse?teacherId=${teacherId}`)  
+    .then((response) => {
+      setCourses(response.data);
+      console.log("ti   "+response.data)
+    })
+    .catch((error) => {
+      console.error('Error fetching courses:', error);
+    });
+  }, [teacherId]);
 
-  const handleInputChange = (e) => {
-    // Handle input changes for adding a course here
-    const { name, value } = e.target;
-    setCourse({ ...course, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    axios.post('/addCourse', course) // Replace with your API endpoint
-      .then((response) => {
-        console.log('Course added successfully:', response.data);
-        // Optionally, you can update the course list or perform other actions here
-      })
-      .catch((error) => {
-        console.error('Error adding course:', error);
-      });
-  };
-
-  return (
-    
-    <div className="CourseManagement">
-      
-      <TeacherSidebar />
-      <div className="courseTableContainer">
-        <h2>View Courses</h2>
-        <table className="courseTable">
+  
+    return (
+      <div className="CourseManagement">
+        <TeacherHeader />
+        <div className="teacher-content">
+          <TeacherSidebar />
+          <div className="courseTableContainer">
+            <h2>View Courses</h2>
+            <table className="courseTable">
+  
           <thead>
             <tr>
               <th>Course Name</th>
@@ -66,29 +53,8 @@ function CourseManagement() {
           </tbody>
         </table>
       </div>
-      {/* <form className="courseForm" onSubmit={handleSubmit}>
-        <h2>Add New Course</h2>
-        <div>
-          <label>Course Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={course.name}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label>Instructor:</label>
-          <input
-            type="text"
-            name="instructor"
-            value={course.instructor}
-            onChange={handleInputChange}
-          />
-        </div>
-        {/* Add other course input fields here 
-        <button type="submit">Add Course</button>
-      </form> */}
+      
+      </div>
     </div>
   );
 }

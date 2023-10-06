@@ -1,0 +1,108 @@
+/* Login.css */
+section {
+    /* background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url('') center/cover no-repeat fixed; */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .form_data {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form_heading h1 {
+    font-size: 24px;
+    color: transparent;
+    margin-bottom: 10px;
+  }
+  
+  .form_heading p {
+    font-size: 14px;
+    color: #111111;
+   
+  }
+  
+  form {
+    margin-top: 20px;
+  }
+  
+  .form_input {
+    text-align: left;
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    font-size: 14px;
+    color: #fff;
+    opacity: 0.8;
+    margin-bottom: 5px;
+  }
+  
+  input[type='email'] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  button.btn {
+    width: 100%;
+    padding: 10px;
+    background: #2196F3;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    position: relative;
+  }
+  
+  button.btn:hover {
+    background: #0d8bf0;
+  }
+  
+  button.btn span {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+  }
+  
+  p {
+    font-size: 14px;
+    color: #fff;
+    opacity: 0.7;
+    margin-top: 15px;
+  }
+  
+  p a {
+    color: #2196F3;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+  
+  p a:hover {
+    color: #0d8bf0;
+  }
+  
+  /* ToastContainer styling (you can adjust as needed) */
+  .Toastify__toast {
+    font-size: 14px;
+    border-radius: 5px;
+  }
+  

@@ -1,15 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 import './Sidebar.css'
 
 function TeacherSidebar() {
+  const teacherId = useSelector((state) => state.teacher.id);
   return (
     <nav id="sidebar" className="col-md-3 col-lg-2 d-md-block bg sidebar" style={{ borderRight: '1px solid #ccc', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
       <div className="position-sticky">
         <ul className="nav flex-column">
           <li className="nav-item">
             <Link
-              to={'/teacher'}
+              to={'/teacherhome'}
               className="nav-link black-text"
               style={{
                 marginTop: '50px',
@@ -39,7 +42,7 @@ function TeacherSidebar() {
           </li>
           <li className="nav-item">
             <Link
-              to={'/ViewCourses'}
+              to={`/teacherViewCourse?teacherId=${teacherId}`}
               className="nav-link black-text"
               style={{
                 marginTop: '50px',
@@ -52,7 +55,7 @@ function TeacherSidebar() {
               View Courses
             </Link>
             <Link
-              to={'/AddCourse'}
+              to={'/addCourse'}
               className="nav-link black-text"
               style={{
                 marginTop: '50px',
@@ -62,10 +65,10 @@ function TeacherSidebar() {
                 color: 'black',
               }}
             >
-              Add Courses
+              Add Courses 
             </Link>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <Link
               to={'/teacher-profile'}
               className="nav-link black-text"
@@ -79,7 +82,7 @@ function TeacherSidebar() {
             >
               Profile
             </Link>
-          </li>
+          </li> */}
           {/*  more sidebar options for teachers  */}
         </ul>
       </div>

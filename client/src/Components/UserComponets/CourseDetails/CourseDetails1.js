@@ -7,17 +7,17 @@ function CourseDetails() {
   const { courseId } = useParams();
   const [course, setCourse] = useState(null);
 
-  useEffect(() => {
-    // Fetch course details using courseId from the route parameters
-    axios
-      .get(`/getCourseDetails/${courseId}`) // Replace with your actual API endpoint      
-      .then((response) => {
-        setCourse(response.data.course); // Assuming course data is inside a "course" key in the response
-      })
-      .catch((error) => {
-        console.error('Error fetching course details:', error);
-      });
-  }, [courseId]);
+  // useEffect(() => {
+  //   // Fetch course details using courseId from the route parameters
+  //   axios
+  //     .get(`/getCourseDetails/${courseId}`) // Replace with your actual API endpoint      
+  //     .then((response) => {
+  //       setCourse(response.data.course); // Assuming course data is inside a "course" key in the response
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching course details:', error);
+  //     });
+  // }, [courseId]);
 
   if (!course) {
     return <div>Loading...</div>;

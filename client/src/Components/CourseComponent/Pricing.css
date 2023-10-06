@@ -1,0 +1,152 @@
+/* Pricing.css */
+.pricing-container {
+    padding: 100px;
+    background-color: transparent;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Banner */
+  .pricing-banner {
+    background-color: #9b0c53;
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .pricing-banner h6 {
+    font-size: 18px;
+    margin: 0;
+    color: white;
+    font-weight: 1000;
+
+  }
+  
+  .pricing-banner .bannerP {
+    font-size: 24px;
+    margin: 10px 0;
+    color : white;
+    background-color: transparent;
+    font-weight: 800;
+  }
+  
+  /* How it works */
+  /* Add these styles to your CSS stylesheet */
+
+ .pricing-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items at the top */
+  }
+  
+  .step {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .how-it-works {
+    flex: 0 0 40%; /* Set the width for the "How it works?" section */
+  }
+  
+  .steps-right {
+    flex: 0 0 55%; /* Set the width for the right side steps */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Add some gap between the steps */
+  }
+  
+  .step-number {
+    background-color: #2196F3;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 65px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+  }
+  
+  
+  .step-content h3 {
+    font-size: 22px;
+    margin: 0;
+  }
+  
+  .step-content p {
+    font-size: 19px;
+    margin: 10;
+    color:black;
+    font-weight: 700;
+  }
+  
+  /* Pricing Cards */
+  .pricing-cards {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    margin-right: 10px;;
+  }
+  
+  .pricing-card {
+    background-color: #2196F3;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    width: 20%;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .pricing-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .pricing-card-number {
+    background-color: white;
+    color: #2196F3;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+  }
+  
+  .pricing-card h3 {
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .pricing-card-content p {
+    font-size: 16px;
+    margin: 5px 0;
+    background-color: transparent;
+  }
+  
+  .get-started-button {
+    background-color: white;
+    color: #2196F3;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    /* position: absolute; */
+    bottom: 20px;
+    right: 20px;
+    text-transform: uppercase;
+    width: auto;
+  }
+  
+  /* .get-started-button:hover {
+    background-color: #0d8bf0;
+  } */
+  

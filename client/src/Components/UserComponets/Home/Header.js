@@ -1,133 +1,247 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import './Header.css';
-import axios from '../../../utils/axios';
-import Swal from 'sweetalert2';
-import { useDispatch, useSelector } from 'react-redux';
-import { change } from '../../../Redux/usernameReducer';
-import { changeImage } from '../../../Redux/userimageReducer';
-import { verifyUserToken } from '../../../utils/Constants';
-import logo from './LOGO.png';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Avatar,
+} from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { change } from "../../../Redux/usernameReducer";
+import { changeImage } from "../../../Redux/userimageReducer";
+import { setUser } from "../../../Redux/userSlice";
+// import { verifyUserToken } from "../../../utils/Constants";
+import MenuIcon from "@mui/icons-material/Menu";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import logo from "./LOGO.png";
+import axios from "../../../utils/axios";
 
 function Header() {
+  const userToken = useSelector((state) => state.user.userToken);
+  const userId = useSelector((state) => state.user.userId);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [courses, setCourses] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElInstruments, setAnchorElInstruments] = useState(null);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  console.log("userToken header  " + userToken);
 
-  const handleLogoutUser = (e) => {
-    e.preventDefault();
-    Swal.fire({
-      title: 'Logout?',
-      text: 'Do you want to Logout?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Logout',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.clear();
-        dispatch({ type: 'logout' });
-        setIsLoggedIn(false)
-        navigate('/');
-      }
-    });
+  const handleUserMenuOpen = (event) => {
+    setAnchorElUser(event.currentTarget);
   };
 
-  useEffect(() => {
-    const Token = localStorage.getItem('token');
+  const handleUserMenuClose = () => {
+    setAnchorElUser(null);
+  };
 
-    if (!Token) {
-      setIsLoggedIn(false);
-      navigate('/');
-    } else {
-      const body = JSON.stringify({ Token });
-      axios.post(verifyUserToken, body, { headers: { 'Content-Type': 'application/json' } }).then((res) => {
-        dispatch(change(res.data.user.userName));
-        dispatch(changeImage(res.data.user.image));
-        setIsLoggedIn(true);
-      });
-    }
-  }, [dispatch]);
+  const handleInstrumentsMenuOpen = (event) => {
+    setAnchorElInstruments(event.currentTarget);
+  };
+
+  const handleInstrumentsMenuClose = () => {
+    setAnchorElInstruments(null);
+  };
+
+  const handleLogoutUser = () => {
+    localStorage.clear();
+    dispatch({ type: "logout" });
+    setIsLoggedIn(false);
+    navigate("/");
+    handleUserMenuClose();
+  };
+
+  // useEffect(() => {
+  //   const Token = localStorage.getItem('token');
+
+  //   if (!Token) {
+  //     setIsLoggedIn(false);
+  //     navigate('/');
+  //   } else {
+  //     const body = JSON.stringify({ Token });
+  //     axios.post('/verifyUserToken', body, { headers: { 'Content-Type': 'application/json' } }).then((res) => {
+  //       console.log({ data: res });
+  //       dispatch(change(res.data.user?.userName));
+  //       dispatch(changeImage(res.data.user.image));
+  //       // dispatch(setUser({ userId: res.data.user._id }));
+  //       setIsLoggedIn(true);
+  //     });
+  //   }
+  // }, [dispatch]);
 
   const username = useSelector((state) => state.username);
   const userImage = useSelector((state) => state.userImage);
+// ...
+
+useEffect(() => {
+  const Token = userToken;
+  console.log("Tokenotpuser   " + Token);
+  if (!Token) {
+    setIsLoggedIn(false);
+    navigate("/");
+  } else {
+    axios
+      .post("/verifyUserToken", {
+        Token: Token,
+        username: username,
+        userId: userId,
+      })
+      .then((res) => {
+        const userData = res.data.user;
+        console.log("userData " + res.data.user.userName);
+
+        if (userData) {
+          // User is authenticated, update the state with user data
+          dispatch(change(userData.userName));
+          dispatch(changeImage(userData.image));
+          dispatch(
+            setUser({
+              userName: userData.userName,
+              userId: userData._id, // Change this to _id
+              userToken: Token, // Use the Token variable here
+            })
+          );
+          console.log("logged in");
+          setIsLoggedIn(true);
+        } else {
+          // Token verification failed, handle as needed
+          setIsLoggedIn(false);
+          navigate("/");
+        }
+      })
+      .catch((error) => {
+        // Handle errors from the request
+        console.error("Error verifying user token:", error);
+      });
+  }
+}, [dispatch, userToken, userId, username]);
+
+// ...
+
+
+  useEffect(() => {
+    axios
+      .get("/viewCourses")
+      .then((response) => {
+        setCourses(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching courses:", error);
+      });
+  }, []);
 
   return (
-    <nav
-      className="navbar navbar-expand-lg"
-      style={{
-        background: 'linear-gradient(to bottom, #294b47, black)',
-        color: 'white',
-      }}
-    >
-      <div className="container-fluid">
-      <Link to="/" className="navbar-brand">
-          <img src={logo} alt="Logo" style={{ width: '50px' }} />
+    <AppBar position="static">
+      <Toolbar>
+        <Link to="/" style={{ textDecoration: "none", color: "white" }}>
+          <img src={logo} alt="Logo" style={{ width: "50px" }} />
         </Link>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <Link to="/">
-            <h6 className="nav-link whiteText">Home</h6>
+        <Typography variant="h6" style={{ flexGrow: 1 }}>
+          <Link to="/" style={{ textDecoration: "none", color: "white" }}>
+            Home
           </Link>
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link to="/CourseDetails">
-                <h6 className="nav-link whiteText">Courses</h6>
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/Option2">
-                <h6 className="nav-link whiteText">Teachers</h6>
-              </Link>
-            </li>            
-            <li className="nav-item">
-              <Link to="/gallery">
-                <h6 className="nav-link whiteText">Gallery</h6>
-              </Link>
-            </li>            
-          </ul>
-          {isLoggedIn ? (
-            <>
-              <Link to="/Profile">
-                <h6 className="nav-link active whiteText" aria-current="page">
-                  My Profile
-                </h6>
-              </Link>
-              <a className="navbar-brand">
-                <img src={userImage} className="userLogo" style={{ width: '30px' }} alt="User Logo" />
-              </a>
-              <form className="d-flex">
-                <span className="navUserName">{username}</span>
-                <button className="userLogoutButton" onClick={handleLogoutUser} type="submit">
-                  Logout
-                </button>
-              </form>
-            </>
-          ) : (
-            <>
-            <button
-      className="teachWithUsButton "
-      type="button"
-      style={{
-        background: 'transparent',
-        color: 'white',
-        border: 'none', 
-        cursor: 'pointer', 
-      }}
-        >Teach with us
-        </button>
-            <Link to="/login">
-              <button className="userLogoutButton" type="submit">
-                Login
-              </button>
-            </Link>
-
-           </>
-          )}
+        </Typography>
+        <Button
+          aria-controls="instruments-menu"
+          aria-haspopup="true"
+          onClick={handleInstrumentsMenuOpen}
+          color="inherit"
+          style={{ width: "150px" }}
+        >
+          Instruments
+        </Button>
+        <Button color="inherit" style={{ width: "150px" }}>
+          <Link
+            to="/pricing"
+            style={{
+              textDecoration: "none",
+              color: "inherit",
+              margin: "0 10px",
+            }}
+          >
+            Pricing
+          </Link>
+        </Button>
+        <Button color="inherit" style={{ width: "150px" }}>
+          <Link
+            to="/gallery"
+            style={{
+              textDecoration: "none",
+              color: "inherit",
+              margin: "0 10px",
+            }}
+          >
+            Gallery
+          </Link>
+        </Button>
+        {isLoggedIn ? (
+          <div>
+            <Button
+              aria-controls="user-menu"
+              aria-haspopup="true"
+              onClick={handleUserMenuOpen}
+              color="inherit"
+              style={{ width: "150px" }}
+            >
+              <Avatar alt="User Logo" src={userImage} />
+              <Typography variant="body1" style={{ marginLeft: "8px" }}>
+                {username}
+              </Typography>
+            </Button>
+            <Menu
+              id="user-menu"
+              anchorEl={anchorElUser}
+              keepMounted
+              open={Boolean(anchorElUser)}
+              onClose={handleUserMenuClose}
+            >
+              <MenuItem onClick={handleLogoutUser}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </MenuItem>
+            </Menu>
+          </div>
+        ) : (
+          <div>
+            <Button color="inherit" onClick={() => navigate("/loginwithotp")}>
+              Login
+            </Button>
+            <Button color="inherit" onClick={() => navigate("/signup")}>
+              Register
+            </Button>
+          </div>
+        )}
+        <div>
+          <Menu
+            id="instruments-menu"
+            anchorEl={anchorElInstruments}
+            keepMounted
+            open={Boolean(anchorElInstruments)}
+            onClose={handleInstrumentsMenuClose}
+          >
+            {courses.map((course) => (
+              <MenuItem key={course._id} onClick={handleInstrumentsMenuClose}>
+                <Link
+                  to={`/courses/${course._id}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  {course.name}
+                </Link>
+              </MenuItem>
+            ))}
+          </Menu>
         </div>
-      </div>
-    </nav>
+      </Toolbar>
+    </AppBar>
   );
 }
 

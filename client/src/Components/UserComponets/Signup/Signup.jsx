@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from 'axios'; // Import axios
 import Swal from 'sweetalert2';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import './Signup.css';
+import {useNavigate} from 'react-router-dom'
 
 function Signup() {
   const [userName, setUserName] = useState('');
@@ -32,16 +33,16 @@ function Signup() {
         teacherCertificate: isTeacher ? teacherCertificate : '',
         teacherCredentials: isTeacher ? teacherCredentials : '',
       };
-console.log(body+"body")
+
       try {
-        const response = await axios.post('http://localhost:4000/signup', body, {
+        const response = await axios.post("http://localhost:4000/signup", body, {
           headers: { 'Content-Type': 'application/json' },
         });
 
         if (response.data.status === 'ok') {
           Swal.fire('Good job!', 'Signup Success!', 'success');
           console.log(response.data);
-          navigate('/login');
+          navigate('/roleSelection')
         } else {
           Swal.fire({
             icon: 'error',
@@ -105,6 +106,7 @@ console.log(body+"body")
     }
   };
 
+
   return (
     <div style={{ backgroundColor: '#0b0c2a', minHeight: '100vh' }}>
       <div className="signInpage">
@@ -112,7 +114,7 @@ console.log(body+"body")
           <div className="shape"></div>
           <div className="shape"></div>
         </div>
-        <form className="signupForm" onSubmit={handleSubmit}>
+        <form className="signupForm" onSubmit={(e) => handleSubmit(e)}>
           <h3 className="tag1">Signup</h3>
           <label className="label1" htmlFor="username">
             User Name
@@ -177,7 +179,7 @@ console.log(body+"body")
           </button>
           <div className="social">
             <div className="go">
-              <i className="fab fa-google"></i> <Link to={'/'}>Login</Link>
+              <i className="fab fa-google"></i> <Link to={'/roleSelection'}>Login</Link>
             </div>
           </div>
         </form>

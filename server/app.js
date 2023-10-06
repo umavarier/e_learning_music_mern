@@ -20,16 +20,20 @@ app.use(express.static(path.join(__dirname, 'images')));
 
 const userRouter = require('./routes/users');
 const teacherRouter = require('./routes/teacherRoutes')
+const websocket = require('./websoket');
+const courseRoutes = require('./routes/courseRoutes');
+
 
 app.use('/', userRouter);
-// app.use('/teachers', teacherRouter);
+app.use('/teachers', teacherRouter);
+app.use('/courses',courseRoutes)
 async function startApp() {
     try {  
       db.connect()
-      app.listen(port, () => {
+     const server= app.listen(port, () => {
         console.log(`Server is up and running at ${port}`);
       });  
-  
+      websocket(server);
     } catch (error) {
       console.error('Error connecting to MongoDB:', error.message);
       process.exit(1);

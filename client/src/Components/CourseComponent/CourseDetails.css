@@ -1,0 +1,127 @@
+/* CourseDetails.css */
+
+/* Container for the entire banner */
+.course-details-banner {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 80vh; /* Set the banner height to 100% of the viewport height */
+    background-color: #ffff; /* Background color for the banner */
+    padding: 20px; /* Adjust the padding as needed */
+    border-radius: 8px; /* Add rounded corners to the banner */
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); Add a subtle shadow to the banner */
+    max-width: 1200px; /* Set the maximum width for the banner */
+    margin: 0 auto; /* Center the banner horizontally */
+  }
+  
+  /* Styles for the left-side image */
+  .course-details-image img {
+    max-width: 100%;
+    height: 400px; /* Make sure the image doesn't exceed its container */
+    border-radius: 8px; /* Add rounded corners to the image */
+  }
+  
+  /* Styles for the content on the right side */
+  .course-details-content {
+    flex: 1; /* Allow the content to grow and fill available space */
+    padding: 20px; /* Add padding to the content */
+    text-align: right; /* Align text to the right side */
+  }
+  
+  /* Header styles */
+  .course-details-content h1 {
+    font-size: 50px; /* Adjust the font size */
+    margin-bottom: 10px; /* Add spacing below the header */
+    color: #007bff; /* Blue color for h1 elements */
+  }
+  
+  /* Paragraph styles */
+  .course-details-content p {
+    font-size: 20px; /* Adjust the font size */
+    line-height: 1.5; /* Set the line height for better readability */
+    margin-bottom: 20px; /* Add spacing below paragraphs */
+    max-width : 600px;
+    color : rgb(1, 1, 31);
+  }
+  .course-details-content .book-demo-button {
+    background-color: #f91056; /* Blue background color */
+    color: #fff; /* White text color */
+    padding: 10px 20px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-items: center;
+  }
+  .course-details-content .book-demo-button:hover {
+    background-color: #5e062f; /* Darker blue on hover */
+  }
+
+  .course-details-content .book-button-container {
+    display: flex;
+    justify-content: center; /* Horizontally center-align */
+    align-items: center; /* Vertically center-align */
+    margin-top: 20px; /* Add spacing from the paragraphs */
+  }
+  
+  /* Style the button */
+  .course-details-content .book-button {
+    background-color: #f91056; /* Blue background color */
+    color: #fff; /* White text color */
+    padding: 10px 20px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-items: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .course-details-content .book-button:hover {
+    background-color: #bc0746; /* Darker blue on hover */
+  }
+ 
+  /* CourseDetails.css */
+  
+  /* ... (previous CSS code) ... */
+  
+  /* Center-align the button horizontally */
+  .course-details-content .book-button-container {
+    display: flex;
+    justify-content: center; /* Horizontally center-align */
+    margin-top: 20px; /* Add spacing from the paragraphs */
+  }
+  
+  /* Style the button */
+  .course-details-content .book-button {
+    background-color: #d00c6b; /* Blue background color */
+    color: #fff; /* White text color */
+    padding: 10px 20px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .course-details-content .book-button:hover {
+    background-color: #7b0365; /* Darker blue on hover */
+  }
+  p {
+  font-size: 18px; /* Set the font size */
+  line-height: 1.5; /* Set the line height for better readability */
+  color: #333; /* Set the text color */
+}
+
+/* Style for the statistics paragraphs */
+div.statistics p {
+  font-size: 14px; /* Adjust font size for statistics */
+  color: #777; /* Adjust text color for statistics */
+  margin-bottom: 10px; /* Add some spacing between statistics paragraphs */
+}
+
+/* Style for the span elements within statistics paragraphs */
+div.statistics p span {
+  font-weight: bold; /* Make the numbers bold */
+  color: #555; /* Adjust the color of numbers */
+}
+  

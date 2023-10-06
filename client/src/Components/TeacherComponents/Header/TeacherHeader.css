@@ -2,7 +2,7 @@
 
 /* Navbar background color */
 .teacherHeadernav {
-  background-color: #020c15; /* Your chosen background color */
+  background-color: #eef3f7; /* Your chosen background color */
 }
 
 /* Brand text styling */
@@ -60,4 +60,10 @@
 /* Hover effect for the logout button */
 .teacherLogoutBtn:hover {
   background-color: #c82333; /* Slightly darker background color on hover */
+}
+
+.teachername{
+  padding: 8px;
+  color:brown;
+  font-size: 25px;;
 }

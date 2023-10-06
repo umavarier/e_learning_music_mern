@@ -1,12 +1,15 @@
 const mongoose = require('mongoose');
 
 const courseSchema = new mongoose.Schema({
-  name: {
+  name:
+   {
     type: String,
     required: true,
   },
-  instructor: {
-    type: String,
+  instructorId: 
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Teacher', // references the Teacher model
     required: true,
   },
   duration: String,
@@ -17,7 +20,10 @@ const courseSchema = new mongoose.Schema({
   startDate: Date,
   endDate: Date,
   enrollments: Number,
-  ratings: [
+
+
+  ratings:
+   [
     {
       userId: Number,
       rating: Number,
