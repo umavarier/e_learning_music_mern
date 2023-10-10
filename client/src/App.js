@@ -10,6 +10,7 @@ import AdminPage1 from "./Pages/AdminPages/AdminPage1";
 import AdminTeacherManagement from "./Components/AdminComponents/Teachers/TeacherManagement";
 import AdminAddTeacher from "./Components/AdminComponents/Teachers/AdminAddTeacher";
 import AdminGetTeachers from "./Components/AdminComponents/Teachers/TeacherManagement";
+import AdminCoursePrice from "./Components/AdminComponents/CoursePricing/AdminEnrollmentPricing";
 
 import TeacherLogin from "./Components/TeacherComponents/TeacherLogin/teacherLogin";
 import FetchteacherData from "./Components/TeacherComponents/Header/TeacherHeader";
@@ -19,6 +20,8 @@ import ViewCourses from "./Components/UserComponets/Home/Home";
 import CourseDetails from "./Components/CourseComponent/CourseDetails";
 import TeacherDash from "./Components/TeacherComponents/TeacherDash/TeacherDash";
 import TeacherViewCourse from "./Components/TeacherComponents/TeacherCourse/ViewCourse";
+import TeacherProfile from "./Components/TeacherComponents/TeacherProfile/teacherProfile";
+import TeacherUploadProfilePhoto from './Components/TeacherComponents/TeacherProfile/teacherProfile';
 
 // import { getCourseById } from './Components/CourseComponent/Course';
 import usergetUserDetails from "./Components/CourseComponent/CourseDetails";
@@ -56,10 +59,8 @@ function App() {
         <Route path="/updateUser/:id" element={<UpdateUser />} />
         <Route path="/adminAddTeacher" element={<AdminAddTeacher />} />
         <Route path="/adminGetTeachers" element={<AdminGetTeachers />} />
-        <Route
-          path="/AdminTeacherManagement"
-          element={<AdminTeacherManagement />}
-        />
+        <Route path="/AdminTeacherManagement" element={<AdminTeacherManagement />}/>
+        <Route path="/adminUpdateEnrollmentPricing" element={<AdminCoursePrice/>} />
         <Route path="/roleselection" element={<RoleSelection />} />
 
         {/* <Route path = '/teacher'element={<Login/>}/> */}
@@ -68,6 +69,8 @@ function App() {
         <Route path="/teacherhome" element={<TeacherDash />} />
         <Route path="/TeacherGetAllUsers" element={<TeacherUserManagement />} />
         <Route path="/teacherViewCourse" element={<TeacherViewCourse />} />
+        <Route path="/teacherProfile" element={<TeacherProfile/>} />
+        <Route path="/teacherUploadProfilePhoto" element={<TeacherUploadProfilePhoto/>} />
 
         <Route path="/addCourse" element={<AddCourse />} />
         <Route path="/ViewCourses" element={<ViewCourses />} />

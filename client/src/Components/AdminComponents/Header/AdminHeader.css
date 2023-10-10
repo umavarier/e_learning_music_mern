@@ -1,16 +1,26 @@
 /* .adminHeadernav{
   background-color: #030712;
+}*/
+
+/* Add this CSS to your AdminHeader.css file */
+
+.adminLogoutBtn {
+  background-color: #3085d6; /* Background color of the button */
+  color: white; /* Text color */
+  border: none; /* Remove button border */
+  padding: 10px 15px; /* Padding around the button text */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Show pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition for background color change */
+  margin-left: 1000px;
+  box-shadow: #040404;
+  /* You can add more styles as needed */
 }
 
-.adminLogoutBtn{
-  border-radius: 5px;
-  border: 1px #1864ab solid;
-  margin-top: 15px;
-  width: 70px;
-  height: 35px;
- background-color: transparent;
-  color: white;
-} */
+.adminLogoutBtn:hover {
+  background-color: #1f65c5; /* Background color on hover */
+}
+
 
 .nav-bar {
   background: linear-gradient(180deg, rgb(248, 250, 252) 0%, rgba(255, 255, 255, 0) 100%);
@@ -66,10 +76,10 @@
   white-space: nowrap;
 }
 
-.nav-bar .div {
+.nav-bar .name11 {
   color: #000000;
   font-family: "Inter-SemiBold", Helvetica;
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 600;
   left: 6px;
   letter-spacing: 0;

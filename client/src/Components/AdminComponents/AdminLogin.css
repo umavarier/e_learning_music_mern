@@ -1,64 +1,71 @@
-
-.login-form{
-  width:400px; 
-  height:auto; 
-  margin:0px auto; 
-  padding: 50px;
-  border: 1px solid #221d1d;
-  border-radius: 5%;
-  background: #fdfdfd;
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-image: url('../AdminComponents/images/loginbackground.jpeg');
+  background-size: cover;
+  background-blur: 10px;
+  border: 2px solid rgb(248, 244, 244); /* Add border to the container */
+  padding: 20px; /* Add padding to the container */
 }
 
-h1{
-  text-align:center;
+.login-content {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  width: 450px; /* Increase the width of the login card */
+  margin-right: 20px; /* Add a gap between image and login card */
 }
 
-.input-fields{
-  width:320px; 
-  height:40px; 
-  margin:30px auto; 
-  border:1px solid #36393b;
-  }
-
-p{
-  transform: scale(1) translateY(-5px); 
-  background:#fff; 
-  display:inline-block; 
-  padding:0 10px; 
-  letter-spacing:1px; 
-  transition:all 100ms ease-out; 
-  color:#313131;
+h1 {
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-input.input-box{
-  width:308px; 
-  padding-left:5px; 
-  padding-right:5px; 
-  height:38px; 
-  position:absolute; 
-  border:0px; 
-  outline:none;
+.input-fields {
+  margin-bottom: 20px;
+  text-align: left;
 }
 
-input.input-box:focus + p{
-  color:#232629; 
-  transform: scale(.85) translateY(-30px);
+label {
+  font-size: 16px;
+  color: #555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+input.input-box {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
 }
 
 .btn {
-  display: block;
-  height: 50px;
-  width: 156px;
-  margin:auto;
-  text-decoration: none;
-  text-transform: uppercase;
+  width: 100%;
+  padding: 12px;
+  background: rgba(52, 152, 219, 0.7);
   color: white;
-  font-size: 14px;
-  text-align: center;
-  background: #0b0c2a;
-  border:0px; outline:none;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
-.btn:hover{
-  background: #6d6797;
+.btn:hover {
+  background: rgba(41, 128, 185, 0.7);
+}
+
+.loginimage {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  margin-top: 20px;
 }

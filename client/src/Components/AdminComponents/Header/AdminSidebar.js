@@ -56,7 +56,7 @@ function AdminSidebar() {
                 </li>
                 <li className="nav-item">
                   <Link
-                    to={'/notes'}
+                    to={'/adminUpdateEnrollmentPricing'}
                     className="nav-link black-text"
                     // style={{
                     //   marginTop: '50px',
@@ -66,7 +66,7 @@ function AdminSidebar() {
                     //   color: 'black', // Set text color to black
                     // }}
                   >
-                    Leaves
+                    Pricing
                   </Link>
                 </li>
                 {/* Add more sidebar options as needed */}

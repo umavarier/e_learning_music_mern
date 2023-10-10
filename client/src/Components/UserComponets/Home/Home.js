@@ -110,9 +110,9 @@ function Home() {
               <div className="card mb-4">
                 <div className="card-img-square">
                   <img
-                    src={teacher.image}
+                    src={teacher.profilePhoto}
                     className="card-img-top"
-                    alt="image"
+                    // alt="image"
                   />
                 </div>
                 <div className="card-body">

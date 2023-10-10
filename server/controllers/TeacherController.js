@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken')
 const Teacher = require('../model/teacherModel')
 const Course = require('../model/courseModel')
 const bcrypt = require('bcrypt');
+const multer = require('../util/multer1');
+
 
 const teacherLogin = async (req, res) => {
   console.log("test")
@@ -122,10 +124,62 @@ const teacherViewCourse = async(req,res) => {
 
 }
 
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, './public/uploads'); // Specify the upload directory
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + '-' + file.originalname); // Generate a unique filename
+//   },
+// });
+
+// const upload = multer({ storage: storage });
+
+
+const teacherUploadProfilePhoto = async (req, res) => {  
+  console.log("here",req.body)
+    try {
+      // const file = req.file;
+      // if (!file) {
+      //   return res.status(400).json({ error: 'No file uploaded' });
+      // }
+
+      // const filePath = file.path;
+      // Access the uploaded file using req.file
+      const uploadedFilePath = req.file.path;
+  
+      console.log(uploadedFilePath)
+      // Find the teacher by ID or any unique identifier
+      // console.log("req.body " + req.body)
+      const teacherId = req.body.teacherId; // Assuming you have the teacher's ID in the request object
+      const teacher = await Teacher.findById(teacherId);
+      
+      if (!teacher) {
+        return res.status(404).json({ message: 'Teacher not found' });
+      }
+  
+      // Update the teacher's profilePhoto field with the uploaded file path
+      teacher.profilePhoto = uploadedFilePath;
+      console.log("teacher  "+teacher)
+  
+      // Save the updated teacher object in the database
+      await teacher.save();
+  
+      res.status(200).json({ message: 'Profile photo uploaded successfully' });
+    } catch (error) {
+      console.error('Error uploading profile photo', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+  
+  
+
 
 module.exports = {
     TeacherGetAllUsers,
     teacherLogin,
     teacherData,
     teacherViewCourse,
+    teacherUploadProfilePhoto,
+    
 }

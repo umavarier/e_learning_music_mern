@@ -13,8 +13,10 @@ import {
   Avatar,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { change } from "../../../Redux/usernameReducer";
-import { changeImage } from "../../../Redux/userimageReducer";
+// import { change } from "../../../Redux/usernameReducer";
+// import { changeImage } from "../../../Redux/userimageReducer";
+import { changeImage } from "../../../Redux/userSlice";
+import { changeUsername } from "../../../Redux/userSlice";
 import { setUser } from "../../../Redux/userSlice";
 // import { verifyUserToken } from "../../../utils/Constants";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -25,6 +27,9 @@ import axios from "../../../utils/axios";
 function Header() {
   const userToken = useSelector((state) => state.user.userToken);
   const userId = useSelector((state) => state.user.userId);
+  const username = useSelector((state) => state.user.username);
+  const userImage = useSelector((state) => state.user.userImage);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [courses, setCourses] = useState([]);
@@ -76,54 +81,54 @@ function Header() {
   //   }
   // }, [dispatch]);
 
-  const username = useSelector((state) => state.username);
-  const userImage = useSelector((state) => state.userImage);
-// ...
+ 
+  console.log("Username from Redux store:", username);
 
-useEffect(() => {
-  const Token = userToken;
-  console.log("Tokenotpuser   " + Token);
-  if (!Token) {
-    setIsLoggedIn(false);
-    navigate("/");
-  } else {
-    axios
-      .post("/verifyUserToken", {
-        Token: Token,
-        username: username,
-        userId: userId,
-      })
-      .then((res) => {
-        const userData = res.data.user;
-        console.log("userData " + res.data.user.userName);
+  // ...
 
-        if (userData) {
-          // User is authenticated, update the state with user data
-          dispatch(change(userData.userName));
-          dispatch(changeImage(userData.image));
-          dispatch(
-            setUser({
-              userName: userData.userName,
-              userId: userData._id, // Change this to _id
-              userToken: Token, // Use the Token variable here
-            })
-          );
-          console.log("logged in");
-          setIsLoggedIn(true);
-        } else {
-          // Token verification failed, handle as needed
-          setIsLoggedIn(false);
-          navigate("/");
-        }
-      })
-      .catch((error) => {
-        // Handle errors from the request
-        console.error("Error verifying user token:", error);
-      });
-  }
-}, [dispatch, userToken, userId, username]);
+  useEffect(() => {
+    const Token = userToken;
+    console.log("Tokenotpuser   " + Token);
+    if (!Token) {
+      setIsLoggedIn(false);
+      navigate("/");
+    } else {
+      axios
+        .post("/verifyUserToken", {
+          Token: Token,
+          username: username,
+          userId: userId,
+        })
+        .then((res) => {
+          const userData = res.data.user;
+          console.log("userData " + res.data.user.userName);
 
-// ...
+          if (userData) {
+            // User is authenticated, update the state with user data
+            dispatch(changeUsername(userData.userName));
+            dispatch(
+              setUser({
+                userName: userData.userName,
+                userId: userData._id,
+                userToken: Token,
+              })
+            );
+            dispatch(changeImage(userData.image));
+            console.log("logged in");
+            setIsLoggedIn(true);
+          } else {
+            // Token verification failed, handle as needed
+            setIsLoggedIn(false);
+            navigate("/");
+          }
+        })
+        .catch((error) => {
+          // Handle errors from the request
+          console.error("Error verifying user token:", error);
+        });
+    }
+  }, [dispatch, userToken, userId, username]);
+
 
 
   useEffect(() => {
@@ -169,6 +174,7 @@ useEffect(() => {
             Pricing
           </Link>
         </Button>
+        
         <Button color="inherit" style={{ width: "150px" }}>
           <Link
             to="/gallery"
@@ -183,6 +189,18 @@ useEffect(() => {
         </Button>
         {isLoggedIn ? (
           <div>
+            <Button color="inherit" style={{ width: "150px" }}>
+          <Link
+            to="/profile"
+            style={{
+              textDecoration: "none",
+              color: "inherit",
+              margin: "0 10px",
+            }}
+          >
+            My Profile
+          </Link>
+        </Button>
             <Button
               aria-controls="user-menu"
               aria-haspopup="true"
@@ -191,10 +209,11 @@ useEffect(() => {
               style={{ width: "150px" }}
             >
               <Avatar alt="User Logo" src={userImage} />
-              <Typography variant="body1" style={{ marginLeft: "8px" }}>
+              <Typography variant="body1" style={{ marginLeft: "8px", color: "red" }}>
                 {username}
               </Typography>
             </Button>
+            
             <Menu
               id="user-menu"
               anchorEl={anchorElUser}

@@ -1,130 +1,128 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import './TeacherHeader.css'; // Create a separate CSS file for styling
-import Swal from 'sweetalert2';
-import axios from '../../../utils/axios'
-import { clearTeacher } from '../../../Redux/teacherSlice'; 
+import { Link, useNavigate } from 'react-router-dom';
+import { clearTeacher, setTeacher } from '../../../Redux/teacherSlice';
+import { selectTeacherName, selectTeacherProfilePicture } from '../../../Redux/teacherSlice';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { styled } from '@mui/system';
+
+const TeacherName = styled(Typography)(({ theme }) => ({
+  marginRight: theme.spacing(1), // You can adjust the margin as needed
+}));
+
+const AvatarWrapper = styled('div')(({ theme }) => ({
+  marginLeft: 'auto', // Pushes the avatar and name to the right
+  display: 'flex',
+  alignItems: 'center',
+  marginRight: theme.spacing(2), // Adjust the margin as needed
+}));
+
+const LogoutButtonWrapper = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+}));
 
 function TeacherHeader() {
   const navigate = useNavigate();
-  // const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
-  // const [teacherName, setTeacherName] = useState(''); // Store teacher's name
-  // const teacherName = useSelector((state) => state.teacher.userName);
-  const dispatch = useDispatch(); // Initialize useDispatch
-  const isLoggedIn = useSelector((state) => !!state.teacher.id); // Check if teacher is logged in
-  const teacherName = useSelector((state) => state.teacher.name); //get teachers name
-  
-  // Function to handle teacher logout
-  const teacherLogout = (e) => {
-    e.preventDefault();
-    Swal.fire({
-      title: 'Logout?',
-      text: 'Do you want to Logout?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Logout',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.clear(); // Clear local storage
-        dispatch(clearTeacher());// Dispatch clearTeacher action to clear teacher data in Redux
-        navigate('/teacherLogin'); // Navigate to the teacher's login page
-      }
-    });
+  const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  // Load teacher data from local storage on component mount
+  useEffect(() => {
+    const storedTeacherData = localStorage.getItem('teacherData');
+    if (storedTeacherData) {
+      const teacherData = JSON.parse(storedTeacherData);
+      // Update Redux state with teacher data
+      dispatch(setTeacher(teacherData));
+    }
+  }, [dispatch]);
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  // Check if the user is logged in by looking for a valid token in local storage
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    console.log("token :::"+token)
-    const config = {
-      headers: {
-        // Authorization: `Bearer ${token}`,
-        'Authorization': token
-      },
-    };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
-    const fetchTeacherData = async () => {
-      try {
-        console.log("heyyyyyyyy")
-        // const response = await axios.get('/teachers/teacher-data',config);
-        const response = await axios.get('/teachers/teacher-data',config);
+  const handleLogout = () => {
+    // Dispatch clearTeacher action to clear teacher data in Redux
+    dispatch(clearTeacher());
+    // Clear the token from local storage
+    localStorage.removeItem('token');
+    // Clear teacher data from local storage
+    localStorage.removeItem('teacherData');
+    // Redirect to the Teacher Login page
+    navigate('/teacherLogin');
+  };
 
-          
-        console.log("res:  "+response.status)
-        console.log("data  "+response.data);
+  // Select teacher name and profile picture from Redux
+  const teacherName = useSelector(selectTeacherName);
+  const profilePicture = useSelector(selectTeacherProfilePicture);
 
-        if (response.status === 200) {
-          const teacherData = await response.data;
-          console.log("teacherData  "+teacherData)
-          // Assuming teacherData contains a 'name' property
-          const fetchedTeacherName = teacherData.userName;
-          
-          // Set the fetched teacher name in the component's state
-         
-        } else {
-          console.error('Error fetching teacher data::::', response.statusText);
-          
-        }
-      } catch (error) {
-        console.error('Error fetching teacher data:', error);
-        
-      }
-    };
-    if(isLoggedIn){
-      fetchTeacherData();
-    }  
-  
-},[isLoggedIn]);
-
+  console.log("anthanooo",profilePicture)
   return (
-    <nav className="navbar navbar-expand-lg teacherHeadernav">
-      <div className="container-fluid">
-        {/* Brand */}
-        <a className="navbar-brand" href="/teacherHome" style={{ color: 'black' }}>
-          TEACHER DASHBOARD
-        </a>
+    <div>
+      <AppBar position="static" color="default">
+        <Toolbar>
+          {/* Brand */}
+          <Link to="/teacherHome" style={{ color: 'black', textDecoration: 'none' }}>
+            <Typography variant="h6" color="inherit">
+              TEACHER DASHBOARD
+            </Typography>
+          </Link>
 
-        {/* Toggle button */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+          {/* Navbar menu */}
+          <AvatarWrapper>
+            {/* Teacher profile */}
+            {profilePicture ? (
+              <Avatar src={profilePicture} alt="" />
+            ) : (
+              <Avatar>{teacherName ? teacherName.charAt(0).toUpperCase() : ''}</Avatar>
+            )}
+            {/* Use the TeacherName styled component */}
+            <TeacherName variant="body1" color="red">{teacherName}</TeacherName>
+          </AvatarWrapper>
 
-        {/* Navbar menu */}
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item"></li>
-            <li className="nav-item"></li>
-            <li className="nav-item dropdown">
-              <ul className="dropdown-menu"></ul>
-            </li>
-            <li className="nav-item"></li>
-          </ul>
+          <LogoutButtonWrapper>
+            
+            <Menu
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              id="profile-menu"
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              {/* <MenuItem onClick={handleMenuClose}>
+                <Link to="/teacherProfile" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  Profile
+                </Link>
+              </MenuItem> */}
+            </Menu>
 
-          {/* Logout button */}
-          {isLoggedIn ? (
-            <form className="d-flex">
-              <span className="teacherName text-dark">{teacherName}</span>
-              <button className="teacherLogoutBtn" onClick={teacherLogout}>
-                Logout
-              </button>
-            </form>
-          ) : (
-            <Link to="/teacherLogin">Teacher Login</Link>
-          )}
-        </div>
-      </div>
-    </nav>
+            {/* Logout button */}
+            <Button variant="outlined" color="secondary" onClick={handleLogout}>
+              Logout
+            </Button>
+          </LogoutButtonWrapper>
+        </Toolbar>
+      </AppBar>
+    </div>
   );
 }
 

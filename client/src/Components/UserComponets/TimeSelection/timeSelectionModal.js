@@ -5,7 +5,7 @@ import './timeSelectionModal.css'; // You can create a CSS file for styling
 function TimeSelectionModal({ isOpen, onRequestClose, onTimeSelected, handleScheduleDemo }) {
   const [selectedTime, setSelectedTime] = useState('');
 
-  const availableTimes = ['7:52 PM', '2:00 PM', '4:00 PM', '7:00 PM']; // Example available times
+  const availableTimes = ['10:00 AM', '2:00 PM', '4:00 PM', '7:00 PM']; // Example available times
 
   const handleTimeClick = (time) => {
     console.log("timenew   "+time)

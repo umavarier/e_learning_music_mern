@@ -2,6 +2,7 @@ const { json } = require("express");
 const User = require("../model/userModel");
 const Teacher = require("../model/teacherModel");
 const jwt = require("jsonwebtoken");
+const Enrollment = require('../model/enrollmentModel')
 
 const adminLoginn = async (req, res) => {
   try {
@@ -180,6 +181,36 @@ const adminBlockTeacher = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+ const getEnrollmentPricing = async (req, res) => {
+  try { 
+    const enrollment = await Enrollment.findOne();
+    res.json(enrollment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const updateEnrollmentPricing = async (req, res) => {
+  console.log("enroll")
+  try {
+    const { classPricing } = req.body;
+
+    let enrollment = await Enrollment.findOne();
+    console.log("enrollment2 "+enrollment)
+    if (!enrollment) {
+      enrollment = new Enrollment({ classPricing });
+    } else {
+      enrollment.classPricing = classPricing;
+    }
+
+    await enrollment.save();
+    res.json({ message: 'Enrollment pricing updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 module.exports = {
   adminLoginn,
@@ -191,4 +222,6 @@ module.exports = {
   adminAddTeacher,
   adminGetTeachers,
   adminBlockTeacher,
+  getEnrollmentPricing,
+  updateEnrollmentPricing,
 };

@@ -6,7 +6,10 @@ import "./teacherLogin.css";
 import { useDispatch } from "react-redux";
 import { fetchTeacherData } from "../../../Redux/teacherActions";
 import setTeacherName from "../../../Redux/teacherSlice";
-import { setTeacher } from "../../../Redux/teacherSlice";
+import {
+  setTeacher,
+  setTeacherProfilePicture,
+} from "../../../Redux/teacherSlice";
 
 function TeacherLogin() {
   const [email, setEmail] = useState("");
@@ -48,11 +51,19 @@ function TeacherLogin() {
         } else if (response.status === 200) {
           Swal.fire("Good job!", "Teacher Login Success!", "success");
           localStorage.setItem("token", response.data.token);
+          console.log("data from login ", response.data);
+          console.log("propic from db" ,response.data.teacher.profilePhoto)
           //   dispatch(fetchTeacherData());
           dispatch(
             setTeacher({
               id: response.data.teacher._id,
               name: response.data.teacher.userName,
+            })
+          );
+          dispatch(
+            setTeacherProfilePicture({
+              
+              profilePicture: response.data.teacher.profilePhoto,
             })
           );
 
@@ -68,7 +79,7 @@ function TeacherLogin() {
         }
       } catch (err) {
         console.error(err);
-        Swal.fire("Error", "Internal server error", "error");
+        Swal.fire("Error", "Teacher not found", "error");
       }
     }
   };

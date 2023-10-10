@@ -67,6 +67,19 @@ function TeacherSidebar() {
             >
               Add Courses 
             </Link>
+            <Link
+              to={'/teacherProfile'}
+              className="nav-link black-text"
+              style={{
+                marginTop: '50px',
+                border: '1px solid #ccc',
+                borderRadius: '5px',
+                backgroundColor: 'white',
+                color: 'black',
+              }}
+            >
+              View Profile 
+            </Link>
           </li>
           {/* <li className="nav-item">
             <Link

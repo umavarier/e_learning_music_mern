@@ -11,8 +11,20 @@ const multerStorageCategory = multer.diskStorage({
     }
 })
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/uploads'); // Specify the upload directory
+    console.log("multer")
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname); // Generate a unique filename
+  },
+});
+
+
 const multerStorageCertificates = multer.diskStorage({
     destination: function (req, file, cb) {
+     
       cb(null, './public/certificates'); // Store certificates in the 'certificates' subdirectory
     },
     filename: function (req, file, cb) {
@@ -22,8 +34,10 @@ const multerStorageCertificates = multer.diskStorage({
     },
   });
   
-const uploadSingleFile = multer({ storage: multerStorageCategory }).fields([{ name: 'image', maxCount: 1 }])
+const uploadSingleFile = multer({ storage: storage }).fields([{ name: 'image', maxCount: 1 }])
 const uploadSingleCertificate = multer({ storage: multerStorageCertificates }).single('certificate');
+// const upload = multer({ storage: storage });
+
 
 module.exports = {
      uploadSingleFile,

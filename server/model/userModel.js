@@ -45,6 +45,11 @@ const User= new mongoose.Schema({
      {
         type: String
     },
+    enrollmentFee: 
+    {
+        type: Number,
+       
+    },
     credentials:
     {
         type: String
@@ -64,10 +69,11 @@ const User= new mongoose.Schema({
 
 User.methods.generateAuthtoken = async function(){
     try {
+        console.log("generated")
         let newtoken = jwt.sign({_id:this._id},"secret123",{
             expiresIn:"1d"
         });
-
+        console.log("newtoken ", newtoken)
         this.tokens = this.tokens.concat({token:newtoken});
         await this.save();
         return newtoken;

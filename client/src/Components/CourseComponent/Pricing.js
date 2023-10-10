@@ -1,8 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from '../../utils/axios';
 import './Pricing.css'; // Import your CSS file for styling
 import Header from '../UserComponets/Home/Header';
 
 const Pricing = () => {
+  const [pricingData, setPricingData] = useState([]);
+
+  useEffect(() => {
+    // Fetch pricing data from the backend API
+    axios.get('/getPricing')
+      .then((response) => {
+        setPricingData(response.data[0]?.classPricing ||[] );
+        console.log("pricingdata "+JSON.stringify(response.data))
+
+      })
+      .catch((error) => {
+        console.error('Error fetching pricing data:', error);
+      });
+  }, []);
+
   return (
     <div className="pricing-container">
       {/* <Header />  */}
@@ -62,98 +78,25 @@ const Pricing = () => {
 
       {/* Pricing Cards */}
       <div className="pricing-cards">
-        {/* Basic */}
-        <div className="pricing-card">
-          <div className="pricing-card-header">
-            <div className="pricing-card-number">1</div>
-            <h3>BASIC</h3>
+        {pricingData.map((pricingPlan, index) => (
+          <div className="pricing-card" key={index}>
+            <div className="pricing-card-header">
+              <div className="pricing-card-number">{pricingPlan.planNumber}</div>
+              <h3>{pricingPlan.planName}</h3>
+            </div>
+            <div className="pricing-card-content">
+              <p>{pricingPlan.numberOfClasses} Classes</p>
+              <p>₹ {pricingPlan.price}</p>
+              {/* Add more pricing details based on your model */}
+            </div>
+            <button className="get-started-button">Get Started</button>
           </div>
-          <div className="pricing-card-content">
-            <p>4 Classes / Month</p>
-            <p>₹ 3600</p>
-            
-            <p>Beginner Lessons</p>
-            <p>4 Online Classes</p>
-            <p>60 min / Class</p>
-            <p>Regional / English Instructions</p>
-          </div>
-          <button className="get-started-button">Get Started</button>
-        </div>
-
-        {/* Most-Selling */}
-        <div className="pricing-card">
-          <div className="pricing-card-header">
-            <div className="pricing-card-number">2</div>
-            <h3>MOST-SELLING</h3>
-          </div>
-          <div className="pricing-card-content">
-            <p>12 Classes / Quarter</p>
-            <p>₹ 9600</p>
-            
-            <p>Beginner Lessons</p>
-            <p>12 Online Classes</p>
-            <p>60 min / Class</p>
-            <p>Regional / English Instructions</p>
-          </div>
-          <button className="get-started-button">Get Started</button>
-        </div>
-
-        {/* Standard */}
-        <div className="pricing-card">
-          <div className="pricing-card-header">
-            <div className="pricing-card-number">3</div>
-            <h3>STANDARD</h3>
-          </div>
-          <div className="pricing-card-content">
-            <p>8 Classes / Month</p>
-            <p>₹ 5600</p>
-            
-            <p>Beginner Lessons</p>
-            <p>8 Online Classes</p>
-            <p>45 min / Class</p>
-            <p>Regional / English Instructions</p>
-          </div>
-          <button className="get-started-button">Get Started</button>
-        </div>
-
-        {/* Value-Pack */}
-        <div className="pricing-card">
-          <div className="pricing-card-header">
-            <div className="pricing-card-number">4</div>
-            <h3>VALUE-PACK</h3>
-          </div>
-          <div className="pricing-card-content">
-            <p>24 Classes / Quarter</p>
-            <p>₹ 14500</p>
-            <p>₹ 18000 19% OFF</p>
-            <p>Beginner Lessons</p>
-            <p>24 Online Classes</p>
-            <p>45 min / Class</p>
-            {/* <p>Regional / English Instructions</p> */}
-          </div>
-          <button className="get-started-button">Get Started</button>
-        </div>
-
-        {/* VIP */}
-        <div className="pricing-card">
-          <div className="pricing-card-header">
-            <div className="pricing-card-number">5</div>
-            <h3>VIP</h3>
-          </div>
-          <div className="pricing-card-content">
-            <p>48 Classes</p>
-            <p>₹ 39999</p>
-            <p>Beginner Lessons</p>
-            <p>48 Online Classes</p>
-            <p>45 min / Class</p>
-            <p>Regional / English Instructions</p>
-            {/* <p>Classes can be split among family & friends</p> */}
-          </div>
-          <button className="get-started-button">Get Started</button>
-        </div>
+        ))}
       </div>
     </div>
   );
 };
 
 export default Pricing;
+  
+

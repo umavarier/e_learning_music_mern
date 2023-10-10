@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../model/userModel");
 const Course = require("../model/courseModel");
 const Teacher = require("../model/teacherModel");
+const Enrollment = require("../model/enrollmentModel")
 const userotp = require("../model/userOtp");
 const nodemailer = require("nodemailer");
 
@@ -9,7 +10,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const fs = require("fs");
-const storage = require("../util/multer");
+const storage = require("../util/multer1");
 const directoryPath = "public/";
 
 //email config
@@ -251,6 +252,8 @@ const userotpsend = async (req, res) => {
 
 const userLoginwithOtp = async (req, res) => {
   const { email, otp } = req.body;
+  console.log("req.body  "+req.body.email)
+  console.log("req.body  "+req.body.otp)
 
   if (!otp || !email) {
     res.status(400).json({ error: "Please Enter Your OTP and email" });
@@ -262,10 +265,10 @@ const userLoginwithOtp = async (req, res) => {
 
     if (otpverification.otp === otp) {
       const preuser = await User.findOne({ email: email });
-
+      console.log("preuser ",preuser)
       // token generate
       const token = await preuser.generateAuthtoken();
-
+      console.log("token===  "+token)
       console.log("userId  " + preuser._id);
       res.status(200).json({
         message: "User Login Succesfully Done",
@@ -284,8 +287,8 @@ const userLoginwithOtp = async (req, res) => {
 const verifyUserToken = async (req, res) => {
   try {
     const token =
-    req.body.Token || req.query.Token || req.headers["x-access-token"];
-    console.log("verify " +token)
+      req.body.Token || req.query.Token || req.headers["x-access-token"];
+    console.log("verify " + token);
 
     if (!token) {
       return res
@@ -294,12 +297,12 @@ const verifyUserToken = async (req, res) => {
     }
 
     // Verify the token using your JWT secret
-    const decoded = jwt.verify(token, "secret123"); 
-    console.log("decoded  token: "+decoded._id)
+    const decoded = jwt.verify(token, "secret123");
+    console.log("decoded  token: " + decoded._id);
 
     // Find the user from  database based on the decoded user ID
     const user = await User.findById(decoded._id);
-    console.log("user   {}{}{"+user)
+    console.log("user   {}{}{" + user);
     if (!user) {
       return res
         .status(404)
@@ -370,6 +373,7 @@ const upload = multer({ storage: multer });
 const userImageUpdate = async (req, res) => {
   try {
     let Token = req.params.id;
+    
     let token2 = JSON.parse(Token);
     console.log(token2);
     const decodedToken = jwt.verify(token2, "secret123");
@@ -436,6 +440,19 @@ const getCourseDetails = async (req, res) => {
   }
 };
 
+
+
+const getPricing = async (req, res) => {
+  try {
+    const pricingData = await Enrollment.find().lean();
+    console.log("pricingdata" + pricingData)
+    res.json(pricingData);
+  } catch (error) {
+    console.error('Error fetching pricing data:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   userSignup,
   userLogin,
@@ -446,4 +463,5 @@ module.exports = {
   viewTeachers,
   getCourseDetails,
   usergetUserDetails,
+  getPricing,
 };

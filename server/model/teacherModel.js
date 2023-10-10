@@ -36,7 +36,11 @@ const teacherSchema =  new mongoose.Schema({
     {
         type : Boolean,
         default : false,
-    }
+    },
+    profilePhoto: 
+    {
+        type: String,
+    },
 })
 
 const Teacher =  mongoose.model('Teacher', teacherSchema)

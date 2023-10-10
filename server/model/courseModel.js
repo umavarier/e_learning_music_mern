@@ -30,6 +30,12 @@ const courseSchema = new mongoose.Schema({
       review: String,
     },
   ],
+  pricing: [
+    {
+      numberOfClasses: Number, 
+      price: Number, 
+    },
+  ],
   syllabus: [
     {
       week: Number,

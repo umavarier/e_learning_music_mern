@@ -24,6 +24,7 @@ function CourseDetails() {
   const navigate = useNavigate();
 
   const handleOpenModal = () => {
+    console.log("Opening modal");
     setIsModalOpen(true);
   };
 
@@ -37,8 +38,8 @@ function CourseDetails() {
   };
 
   const isScheduledTime = () => {
-    console.log("isScheduled???")
-    console.log("selectedtime "+selectedTime)
+    console.log("isScheduled???");
+    console.log("selectedtime " + selectedTime);
     if (!selectedTime) {
       return false;
     }
@@ -46,6 +47,7 @@ function CourseDetails() {
     const currentTime = new Date();
     return currentTime >= appointmentTime;
   };
+
   const fetchAppointmentDetails = async () => {
     try {
       const response = await axios.get("/getAppointmentDetails", {
@@ -57,7 +59,7 @@ function CourseDetails() {
       });
 
       const appointmentTime = response.data.appointmentTime;
-      console.log("apptime   "+appointmentTime)
+      console.log("apptime   " + appointmentTime);
       setScheduledAppointmentTime(appointmentTime);
     } catch (error) {
       console.error("Error fetching appointment details:", error);
@@ -111,15 +113,20 @@ function CourseDetails() {
   }, [courseId]);
 
   useEffect(() => {
+    console.log('Selected Time:', selectedTime);
+    
     if (isScheduledTime()) {
-      // Enable the video button when it's the scheduled time
+      console.log('Video button should be enabled.');
       setIsVideoButtonEnabled(true);
+    } else {
+      console.log('Video button should be disabled.');
+      setIsVideoButtonEnabled(false);
     }
   }, [selectedTime]);
   useEffect(() => {
-    console.log("fetchAppointmentDetails")
+    console.log("fetchAppointmentDetails");
     fetchAppointmentDetails();
-  }, [userId, teacherId, courseId]);
+  }, [userId, teacherId, courseId, selectedTime]);
 
   const handleScheduleDemo = () => {
     console.log("handleScheduleDemo called"); // Add this line
@@ -135,7 +142,7 @@ function CourseDetails() {
     // const instructorId = course.instructorId;
     // console.log("instructorId++"+instructorId)
     const studentId = userId;
-    console.log("studentid: " + studentId); 
+    console.log("studentid: " + studentId);
 
     axios
       .post("/schedule-demo", {
@@ -191,28 +198,27 @@ function CourseDetails() {
             <button className="book-button">Book a Free Demo</button>
           </div>
         )}
-        {/* {isVideoButtonEnabled && ( */}
-        <>
-          <input
-            type="text text-dark"
-            placeholder="Enter Room id"
-            onChange={(e) => setValue(e.target.value)}
-            name=""
-            id=""
-          />
+        {isVideoButtonEnabled && (
+          <>
+            <input
+              type="text text-dark"
+              placeholder="Enter Room id"
+              onChange={(e) => setValue(e.target.value)}
+              name=""
+              id=""
+            />
 
-          {scheduledAppointmentTime && (
-            <button
-              className="start-demo-button"
-              onClick={handleStartVideoDemo}
-              disabled={!isScheduledTime()} // Disable the button if it's not the scheduled time
-            >
-              Start Video Demo
-            </button>
-          )}
-        </>
-
-        {/* )} */}
+            {scheduledAppointmentTime && (
+              <button
+                className="start-demo-button"
+                onClick={handleStartVideoDemo}
+                disabled={!isScheduledTime()} // Disable the button if it's not the scheduled time
+              >
+                Start Video Demo
+              </button>
+            )}
+          </>
+        )}
       </div>
       <TimeSelectionModal
         isOpen={isModalOpen}

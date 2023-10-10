@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp} = require('../controllers/userController');
-const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher } = require('../controllers/adminControllers');
+const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing} = require('../controllers/userController');
+const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher, getEnrollmentPricing, updateEnrollmentPricing } = require('../controllers/adminControllers');
 
 const {TeacherGetAllUsers, } = require('../controllers/TeacherController')
 // const {addCourse, viewCourses, getCourseById} = require('../controllers/courseController')
 const { viewCourses, getCourseById} = require('../controllers/courseController')
-const { uploadSingleFile } = require('../util/multer');
+const { uploadSingleFile } = require('../util/multer1');
 const {authenticateTeacher} = require('../midleware/authTeacher'); 
 const {scheduleDemo , getAppointmentDetails} = require('../controllers/appointmentController')
 const {userotpsend} = require('../controllers/userController')
@@ -33,6 +33,8 @@ router.get('/searchUser/:userkey',adminSearchUser)
 router.post('/adminAddTeacher',adminAddTeacher)
 router.get('/adminGetTeachers',adminGetTeachers)
 router.patch('/adminToggleBlockTeacher/:teacherId', adminBlockTeacher)
+router.get('/admingetEnrollmentPricing',getEnrollmentPricing)
+router.post('/adminUpdateEnrollmentPricing',updateEnrollmentPricing)
 // router.get('/courses/:id',getCourseDetails);
 // router.get('/getCourseDetails/:id',getCourseDetails)
 // router.get('/getCourseDetails/:courseId', getCourseById)
@@ -44,4 +46,5 @@ router.get('/viewTeachers', viewTeachers)
 
 router.post('/schedule-demo',scheduleDemo);
 router.get('/getAppointmentDetails', getAppointmentDetails)
+router.get('/getPricing', getPricing)
 module.exports = router;
