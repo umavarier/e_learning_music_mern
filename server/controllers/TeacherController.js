@@ -146,9 +146,9 @@ const teacherUploadProfilePhoto = async (req, res) => {
 
       // const filePath = file.path;
       // Access the uploaded file using req.file
-      const uploadedFilePath = req.file.path;
+      const uploadedFilePath = req.file.filename;
   
-      console.log(uploadedFilePath)
+      console.log(uploadedFilePath+"  filename")
       // Find the teacher by ID or any unique identifier
       // console.log("req.body " + req.body)
       const teacherId = req.body.teacherId; // Assuming you have the teacher's ID in the request object

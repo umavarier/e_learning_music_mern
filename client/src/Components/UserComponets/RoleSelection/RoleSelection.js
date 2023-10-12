@@ -19,10 +19,10 @@ function RoleSelection() {
   };
 
   return (
-    <div>
-      <h2>Select Your Role</h2>
+    <div className='role-box'>
+      <h2 className='role-h2'>Select Your Role</h2>
       <div>
-        <label className='text-dark'>
+        <label className='role-label'>
           <input
             type="checkbox" 
             checked={isStudent}
@@ -35,7 +35,7 @@ function RoleSelection() {
         </label>
       </div>
       <div>
-        <label className='text-dark'> 
+        <label className='role-label'> 
           <input
             type="checkbox"
             checked={isTeacher}
@@ -47,7 +47,7 @@ function RoleSelection() {
           Teacher
         </label>
       </div>
-      <button onClick={handleRoleSelection}>Continue</button>
+      <button className='role-button' onClick={handleRoleSelection}>Continue</button>
       <Link to="/">Back to Home</Link>
     </div>
   );

@@ -453,6 +453,21 @@ const getPricing = async (req, res) => {
   }
 };
 
+const processPayment = async (req,res) => {
+  const { amount, paymentMethod, userId } = req.body;
+
+  // Save payment details
+  const payment = new Payment({
+    amount,
+    paymentMethod,
+    userId,
+  });
+
+  await payment.save();
+
+  res.json({ success: true, message: 'Payment processed successfully' });
+}
+
 module.exports = {
   userSignup,
   userLogin,
@@ -464,4 +479,5 @@ module.exports = {
   getCourseDetails,
   usergetUserDetails,
   getPricing,
+  processPayment,
 };

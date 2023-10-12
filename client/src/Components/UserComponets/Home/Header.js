@@ -146,7 +146,7 @@ function Header() {
     <AppBar position="static">
       <Toolbar>
         <Link to="/" style={{ textDecoration: "none", color: "white" }}>
-          <img src={logo} alt="Logo" style={{ width: "50px" }} />
+          <img src={logo} alt="Logo" style={{ width: "80px" }} />
         </Link>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           <Link to="/" style={{ textDecoration: "none", color: "white" }}>
@@ -158,11 +158,11 @@ function Header() {
           aria-haspopup="true"
           onClick={handleInstrumentsMenuOpen}
           color="inherit"
-          style={{ width: "150px" }}
+          style={{ width: "350px", background: "transparent", border: "none",  fontSize: "20px"  }}
         >
           Instruments
         </Button>
-        <Button color="inherit" style={{ width: "150px" }}>
+        <Button color="inherit" style={{ width: "250px" , background: "transparent", border: "none" , fontSize: "20px"}}>
           <Link
             to="/pricing"
             style={{
@@ -175,7 +175,7 @@ function Header() {
           </Link>
         </Button>
         
-        <Button color="inherit" style={{ width: "150px" }}>
+        <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none" , fontSize: "20px" }}>
           <Link
             to="/gallery"
             style={{
@@ -189,13 +189,15 @@ function Header() {
         </Button>
         {isLoggedIn ? (
           <div>
-            <Button color="inherit" style={{ width: "150px" }}>
+            <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none", fontSize: "20px"  }}>
           <Link
             to="/profile"
             style={{
               textDecoration: "none",
               color: "inherit",
               margin: "0 10px",
+              background: "transparent",
+              fontSize: "20px"
             }}
           >
             My Profile
@@ -206,10 +208,10 @@ function Header() {
               aria-haspopup="true"
               onClick={handleUserMenuOpen}
               color="inherit"
-              style={{ width: "150px" }}
+              style={{ width: "250px" }}
             >
               <Avatar alt="User Logo" src={userImage} />
-              <Typography variant="body1" style={{ marginLeft: "8px", color: "red" }}>
+              <Typography variant="body1" style={{ marginLeft: "10px", color: "white" , fontSize: "20px" ,background: "transparent"}}>
                 {username}
               </Typography>
             </Button>
@@ -231,10 +233,10 @@ function Header() {
           </div>
         ) : (
           <div>
-            <Button color="inherit" onClick={() => navigate("/loginwithotp")}>
+            <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none", fontSize: "20px"  }} onClick={() => navigate("/loginwithotp")}>
               Login
             </Button>
-            <Button color="inherit" onClick={() => navigate("/signup")}>
+            <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none", fontSize: "20px"  }} onClick={() => navigate("/signup")}>
               Register
             </Button>
           </div>

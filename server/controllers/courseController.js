@@ -67,10 +67,33 @@ const getCourseById = async (req, res) => {
   }
 };
 
+const enrollUser = async (req, res) => {
+  // Handle course enrollment logic
+  const { userId, courseId } = req.body;
+
+  try {
+    // Find the user by ID and update the enrolled courses
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    user.coursesEnrolled.push(courseId)
+
+    await user.save();
+
+    res.json({ success: true, message: 'Enrollment successful' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Enrollment failed' });
+  }
+};
 
 module.exports = {
   addCourse,
   viewCourses,
   getCourseById,
+  enrollUser,
   // teacherViewCourse,
 };

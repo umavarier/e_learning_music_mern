@@ -59,18 +59,18 @@ const Login = () => {
 
     return (
         <>
-            <section>
-                <div className="form_data">
-                    <div className="form_heading">
-                        <h1>Welcome Back, Log In</h1>
-                        <p>Hi, we are you glad you are back. Please login.</p>
+            <section className="login-section">
+                <div className="loginuser-form_data">
+                    <div className="loginuser-form_heading">
+                        <h1 className='user-h1'>Welcome Back, Log In</h1>
+                        <p className='user-p'>Hi, we are you glad you are back. Please login.</p>
                     </div>
                     <form>
-                        <div className="form_input">
+                        <div className="user-form_input">
                             <label htmlFor="email">Email</label>
                             <input type="email" name="email" id="" onChange={(e) => setEmail(e.target.value)} placeholder='Enter Your Email Address' />
                         </div>
-                        <button className='btn' onClick={sendOtp}>Login
+                        <button className='user-btn' onClick={sendOtp}>Login
                         {
                             spiner ? <span><Spinner animation="border" /></span>:""
                         }

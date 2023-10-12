@@ -27,6 +27,7 @@ const courseRoutes = require('./routes/courseRoutes');
 app.use('/', userRouter);
 app.use('/teachers', teacherRouter);
 app.use('/courses',courseRoutes)
+app.use(express.static('public'))
 async function startApp() {
     try {  
       db.connect()

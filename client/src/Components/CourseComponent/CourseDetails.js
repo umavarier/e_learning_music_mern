@@ -37,7 +37,7 @@ function CourseDetails() {
     console.log("timetime " + time);
   };
 
-  const isScheduledTime = () => {
+  const   isScheduledTime = () => {
     console.log("isScheduled???");
     console.log("selectedtime " + selectedTime);
     if (!selectedTime) {
@@ -132,15 +132,18 @@ function CourseDetails() {
     console.log("handleScheduleDemo called"); // Add this line
     console.log("Selected Time:", selectedTime);
     console.log("Course ID:", courseId);
-    console.log("User:", user);
+    console.log({user});
     console.log("TeacherID : " + teacherId);
-    // if (!selectedTime || !course || !user) {
-    //   console.error("Selected time, course, or user data is missing.");
-    //   return;
-    // }
 
-    // const instructorId = course.instructorId;
-    // console.log("instructorId++"+instructorId)
+    if ( !user) {
+      console.error("user not logged in.");
+      alert("please login first!!!")
+      navigate('/loginwithotp')
+      return;
+    }
+
+    const instructorId = course.instructorId;
+    console.log("instructorId++"+instructorId)
     const studentId = userId;
     console.log("studentid: " + studentId);
 

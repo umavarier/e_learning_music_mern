@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../utils/axios';
+import { useNavigate } from 'react-router-dom';
 import './Pricing.css'; // Import your CSS file for styling
 import Header from '../UserComponets/Home/Header';
 
 const Pricing = () => {
   const [pricingData, setPricingData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch pricing data from the backend API
@@ -18,6 +20,9 @@ const Pricing = () => {
         console.error('Error fetching pricing data:', error);
       });
   }, []);
+  const handleGetStartedClick = () => {
+    navigate(`/payment/${pricingData}`)
+  }
 
   return (
     <div className="pricing-container">
@@ -89,7 +94,13 @@ const Pricing = () => {
               <p>₹ {pricingPlan.price}</p>
               {/* Add more pricing details based on your model */}
             </div>
-            <button className="get-started-button">Get Started</button>
+            <button
+              className="get-started-button"
+              onClick={() => handleGetStartedClick(pricingPlan)}
+            >
+              Get Started
+            </button>
+
           </div>
         ))}
       </div>

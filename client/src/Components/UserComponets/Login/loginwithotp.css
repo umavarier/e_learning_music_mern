@@ -1,6 +1,6 @@
 /* Login.css */
-section { 
-  background: url('../../AdminComponents/images/loginbackground.jpeg') center/cover no-repeat fixed; /* Replace 'your-background-image.jpg' with your actual background image URL */
+.login-section { 
+  background: url('../../AdminComponents/images/loginbackground.jpeg') center/cover no-repeat fixed;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -8,24 +8,25 @@ section {
   backdrop-filter: blur(10px);
 }
 
-.form_data {
+.loginuser-form_data {
   background: rgb(255, 255, 255); /* Glassmorphism effect */
   border-radius: 10px;
   padding: 20px;
   width: 500px;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  align-items: center;
 }
 
-.form_heading h1 {
-  font-size: 24px;
-  color: #fff;
+.loginuser-form_heading .user-h1 {
+  font-size:40px;
+  color: #06023f;
   margin-bottom: 10px;
 }
 
-.form_heading p {
-  font-size: 14px;
-  color: #ddd;
+.loginuser-form_heading .user-p {
+  font-size: 20px;
+  color: #18045a;
 }
 
 form {
@@ -40,7 +41,7 @@ form {
 label {
   display: block;
   font-size: 14px;
-  color: #fff;
+  color: #0f0c30;
   opacity: 0.8;
   margin-bottom: 5px;
 }
@@ -48,39 +49,42 @@ label {
 input[type='email'] {
   width: 100%;
   padding: 10px;
-  border: none;
+  border-color: #06023f; 
   border-radius: 5px;
   background: rgb(255, 255, 255);
   color: #fff;
   font-size: 16px;
   outline: none;
+  margin-bottom: 10px;
 }
 
-button.btn {
-  width: 100%;
+.user-btn {
+  width: 10 0%;
   padding: 10px;
   background: #2196F3;
   color: #fff;
   border: none;
+  box-shadow:#06023f;
   border-radius: 5px;
   font-size: 18px;
   cursor: pointer;
   transition: background 0.3s ease;
-  position: relative;
+  /* position: relative; */
+ align-items: center;
 }
 
-button.btn:hover {
+.user-btn:hover {
   background: #0d8bf0;
 }
 
-button.btn span {
+.user-btn span {
   position: absolute;
   top: 50%;
   right: 10px;
   transform: translateY(-50%);
 }
 
-p {
+/* p {
   font-size: 14px;
   color: #fff;
   opacity: 0.7;
@@ -96,7 +100,7 @@ p a {
 
 p a:hover {
   color: #0d8bf0;
-}
+} */
 
 /* ToastContainer styling (you can adjust as needed) */
 .Toastify__toast {

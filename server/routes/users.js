@@ -12,6 +12,7 @@ const {authenticateTeacher} = require('../midleware/authTeacher');
 const {scheduleDemo , getAppointmentDetails} = require('../controllers/appointmentController')
 const {userotpsend} = require('../controllers/userController')
 const {auth} = require('../midleware/auth');
+const {processPayment}= require ('../controllers/userController');
 
 
 /* GET home page. */
@@ -47,4 +48,5 @@ router.get('/viewTeachers', viewTeachers)
 router.post('/schedule-demo',scheduleDemo);
 router.get('/getAppointmentDetails', getAppointmentDetails)
 router.get('/getPricing', getPricing)
+router.post('/process-payment', processPayment)
 module.exports = router;

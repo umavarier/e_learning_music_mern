@@ -12,7 +12,7 @@ const {teacherViewCourse} = require('../controllers/TeacherController')
 router.post('/teacherLogin', teacherLogin);
 router.get('/teacher-data',authenticateTeacher, teacherData);
 router.get('/teacherViewCourse', teacherViewCourse);
-router.post('/teacherAddCourse',)
+router.post('/Course',)
 router.post('/teacherUploadProfilePhoto', multerConfig.logRequestMiddleware, multerConfig.uploadProfilePhoto.single('profilePhoto'), teacherUploadProfilePhoto)
   
 

@@ -37,6 +37,8 @@ import TeacherHome from "./Pages/TeacherPages/TeacherHomepage";
 import ScheduleDemo from "./Components/CourseComponent/CourseDetails";
 import Pricing from "./Components/CourseComponent/Pricing";
 import VideoRoom from "./Components/CourseComponent/VideoRoom";
+import Payment from './Components/UserComponets/Payment/Payment'
+import Gallery from './Components/UserComponets/Gallery/Gallery'
 
 function App() {
   return (
@@ -83,6 +85,9 @@ function App() {
         <Route path = '/otp' element={<Otp/>} />
         {/* <Route path="/userLoginWithOTP" element={<UserLoginwithOTP />} /> */}
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/gallery" element={< Gallery />}/>
+
       </Routes>
     </Router>
   );

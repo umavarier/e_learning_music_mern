@@ -1,30 +1,30 @@
 /* Otp.css */
-section {
+.otp-section {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-      url('') center/cover no-repeat fixed;
+      url('../../AdminComponents/images/loginbackground.jpeg') center/cover no-repeat fixed;
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;    
   }
   
-  .form_data {
+  .otp-form_data {
     background: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     padding: 20px;
-    width: 300px;
+    width: 500px;
     text-align: center;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  .form_heading h1 {
+  .otp-form_heading h1 {
     font-size: 24px;
     color: #fff;
     margin-bottom: 20px;
   }
   
-  form {
+  otp-form {
     margin-top: 20px;
   }
   
@@ -36,7 +36,7 @@ section {
   label {
     display: block;
     font-size: 14px;
-    color: #fff;
+    color: #0a0227;
     opacity: 0.8;
     margin-bottom: 5px;
   }
@@ -52,8 +52,9 @@ section {
     outline: none;
   }
   
-  button.btn {
+.otp-btn {
     width: 100%;
+    margin-top :10px;
     padding: 10px;
     background: #2196F3;
     color: #fff;
@@ -65,13 +66,13 @@ section {
     position: relative;
   }
   
-  button.btn:hover {
+ .otp-btn:hover {
     background: #0d8bf0;
   }
   
   /* ToastContainer styling (you can adjust as needed) */
-  .Toastify__toast {
+  /* .Toastify__toast {
     font-size: 14px;
     border-radius: 5px;
-  }
+  } */
   

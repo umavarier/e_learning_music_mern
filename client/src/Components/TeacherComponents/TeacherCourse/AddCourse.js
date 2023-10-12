@@ -37,10 +37,23 @@ function AddCourse() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('/addCourse', course)
+    axios.post('courses/addCourse', course)
       .then((response) => {
         console.log('Course added successfully:', response.data);
-        // Optionally, you can redirect to the course catalog or perform other actions here
+        setCourse({
+          name: '',
+          instructor: teacherName,
+          instructorId: teacherId,
+          duration: '',
+          level: '',
+          description: '',
+          image: '',    
+          startDate: '',
+          endDate: '',
+          enrollments: 0,
+          syllabus: [],
+        });
+       
       })
       .catch((error) => {
         console.error('Error adding course:', error);

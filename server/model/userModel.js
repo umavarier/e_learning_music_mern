@@ -22,6 +22,12 @@ const User= new mongoose.Schema({
         type:String,
         required:true
     },
+    enrolledCourses: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Course', 
+        },
+      ],
     role: {
         type: Number,
         default: 0 // 0 = user, 1 = teacher

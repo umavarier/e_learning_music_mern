@@ -55,13 +55,13 @@ const Otp = () => {
   };
 
   return (
-    <section>
-      <div className="form_data">
-        <div className="form_heading">
+    <section className="otp-section">
+      <div className="otp-form_data">
+        <div className="otp-form_heading">
           <h1>Please Enter Your OTP Here</h1>
         </div>
         <form>
-          <div className="form_input">
+          <div className="otp-form_input">
             <label htmlFor="otp">OTP</label>
             <input
               type="text"
@@ -71,7 +71,7 @@ const Otp = () => {
               placeholder="Enter Your OTP"
             />
           </div>
-          <button className="btn" onClick={LoginUser}>
+          <button className="otp-btn" onClick={LoginUser}>
             Submit
           </button>
         </form>
