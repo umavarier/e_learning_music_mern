@@ -1,37 +1,44 @@
 const Course = require("../model/courseModel");
 const Teacher = require("../model/teacherModel")
+const User = require('../model/userModel')
 
 const addCourse = async (req, res) => {
   try {
     const {
       name,
-      instructorId,
+      // instructorId,
       duration,
       level,
       description,
-      image,
-      startDate,
-      endDate,
-      enrollments,
+      // startDate,
+      // endDate,
+      // enrollments,
     } = req.body;
 
-    console.log("req.body::::"+req.body.instructorId) 
+    // Extract the image file from the request
+    // const image = req.file;
+
+    // Ensure that an image file is uploaded
+    // if (!image) {
+    //   return res.status(400).json({ message: "Image is required" });
+    // }
 
     const course = new Course({
       name,
-      instructorId ,
+      // instructorId,
       duration,
       level,
       description,
-      image,
-      startDate,
-      endDate,
-      enrollments,
+      // image: {
+      //   data: image.buffer, // Store the image buffer
+      //   contentType: image.mimetype, // Store the image MIME type
+      // },
+      // startDate,
+      // endDate,
+      // enrollments,
     });
-    console.log("course:::"+course) //working
 
     const saved = await course.save();
-    console.log('saved::'+saved)
     res.status(201).json({ message: "Course added successfully" });
   } catch (error) {
     console.error(error);
@@ -95,5 +102,6 @@ module.exports = {
   viewCourses,
   getCourseById,
   enrollUser,
+  
   // teacherViewCourse,
 };

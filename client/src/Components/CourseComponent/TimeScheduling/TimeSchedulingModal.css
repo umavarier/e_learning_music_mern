@@ -1,0 +1,23 @@
+/* TimeSchedulingModal.css */
+
+.modal {
+  display: none;
+  /* Your other styles for the modal */
+}
+
+.modal.open {
+  display: block;
+}
+
+.schedule-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.schedule-button:hover {
+  background-color: #0056b3;
+}

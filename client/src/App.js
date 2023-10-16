@@ -39,6 +39,9 @@ import Pricing from "./Components/CourseComponent/Pricing";
 import VideoRoom from "./Components/CourseComponent/VideoRoom";
 import Payment from './Components/UserComponets/Payment/Payment'
 import Gallery from './Components/UserComponets/Gallery/Gallery'
+import TeacherAvailabilityPage from "./Components/TeacherComponents/TeacherAvailability/TeacherAvailability.js";
+import CourseTeacherSelection from "./Components/UserComponets/CourseTeacherSelection/CourseTeacherSelection";
+import AdminCourseManagement from "./Components/AdminComponents/AdminCourses/AdminCourses";
 
 function App() {
   return (
@@ -63,6 +66,7 @@ function App() {
         <Route path="/adminGetTeachers" element={<AdminGetTeachers />} />
         <Route path="/AdminTeacherManagement" element={<AdminTeacherManagement />}/>
         <Route path="/adminUpdateEnrollmentPricing" element={<AdminCoursePrice/>} />
+        <Route path="/adminCourseManagement" element={<AdminCourseManagement />} />
         <Route path="/roleselection" element={<RoleSelection />} />
 
         {/* <Route path = '/teacher'element={<Login/>}/> */}
@@ -73,13 +77,16 @@ function App() {
         <Route path="/teacherViewCourse" element={<TeacherViewCourse />} />
         <Route path="/teacherProfile" element={<TeacherProfile/>} />
         <Route path="/teacherUploadProfilePhoto" element={<TeacherUploadProfilePhoto/>} />
+        {/* <Route path="/teacherAvailability" element={<TeacherAvailabilityPage/>} /> */}
+
 
         <Route path="/addCourse" element={<AddCourse />} />
         <Route path="/ViewCourses" element={<ViewCourses />} />
         {/* <Route path="/courses/:courseId" element={<getCourseById/>} /> */}
         <Route path="/courses/:courseId" element={<CourseDetails />} />
         {/* <Route path="/courses/:courseId?userId=:userId" element={<CourseDetails />}/> */}
-        <Route path="/schedule-demo" element={<ScheduleDemo />} />
+        <Route path="/select-course-teacher" element={<CourseTeacherSelection />} /> 
+        {/* <Route path="/schedule-demo" element={<ScheduleDemo />} /> */}
         <Route path="/videoRoom/:roomId" element={<VideoRoom />} />
         <Route path="/user:userId" element={<usergetUserDetails />} />
         <Route path = '/otp' element={<Otp/>} />
@@ -87,6 +94,7 @@ function App() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/gallery" element={< Gallery />}/>
+
 
       </Routes>
     </Router>

@@ -25,7 +25,7 @@ function TeacherDash() {
                   <div className="container-fluid">
                     <div className="card-body">
                       <h2 className="mb-4">TEACHER DASHBOARD</h2>
-                      {/* Add teacher-specific content here */}
+                      <Link to="/teacherAvailability">Manage Availability</Link>
                     </div>
                   </div>
                 </div>

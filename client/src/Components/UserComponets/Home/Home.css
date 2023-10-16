@@ -53,8 +53,8 @@
   border-radius: 15px;
   box-shadow: 0 2px 4px rgba(18, 2, 89, 0.1);
   transition: box-shadow 0.3s ease;
-  width: 250px; /* Increase the width */
-  height: 350px; /* Increase the height */
+  width: 150px; /* Increase the width */
+  height: 2 50px; /* Increase the height */
 }
 .teacher-card:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -65,7 +65,7 @@
   overflow: hidden;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  height: 250px; /* Adjust the height as needed */
+  height: 150px; /* Adjust the height as needed */
 }
 
 .card-img-square img {

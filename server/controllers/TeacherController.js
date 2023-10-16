@@ -5,6 +5,7 @@ const Teacher = require('../model/teacherModel')
 const Course = require('../model/courseModel')
 const bcrypt = require('bcrypt');
 const multer = require('../util/multer1');
+const Availability = require('../model/availabilityModel')
 
 
 const teacherLogin = async (req, res) => {
@@ -100,7 +101,7 @@ const TeacherGetAllUsers = async(req,res)=>{
 const teacherViewCourse = async(req,res) => {
   console.log("tvc")
   try {
-    const teacherId = req.query.teacherId; // Get the teacherId from the query parameter
+    const teacherId = req.query.teacherId; 
     console.log("teacher   "+teacherId)
 
     if (!teacherId || !mongoose.isValidObjectId(teacherId)) {
@@ -149,9 +150,8 @@ const teacherUploadProfilePhoto = async (req, res) => {
       const uploadedFilePath = req.file.filename;
   
       console.log(uploadedFilePath+"  filename")
-      // Find the teacher by ID or any unique identifier
-      // console.log("req.body " + req.body)
-      const teacherId = req.body.teacherId; // Assuming you have the teacher's ID in the request object
+      
+      const teacherId = req.body.teacherId;
       const teacher = await Teacher.findById(teacherId);
       
       if (!teacher) {
@@ -171,9 +171,44 @@ const teacherUploadProfilePhoto = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
-  
-  
 
+  const addAvailability = async (req, res) => {
+    try {
+      const { teacherId, availableTimings } = req.body;
+  
+      if (!Array.isArray(availableTimings) || availableTimings.length === 0) {
+        return res.status(400).json({ message: 'Invalid availableTimings data' });
+      }
+  
+      const savedAvailabilities = [];
+      for (const timing of availableTimings) {
+        const { dayOfWeek, startTime, endTime } = timing;
+  
+        // Create a new availability
+        const newAvailability = new Availability({
+          teacher: teacherId,
+          dayOfWeek,
+          startTime,
+          endTime,
+        });
+  
+        const savedAvailability = await newAvailability.save();
+        savedAvailabilities.push(savedAvailability);
+      }
+  
+      // Update the teacher's availableTimings array
+      const teacher = await Teacher.findByIdAndUpdate(
+        teacherId,
+        { $push: { availableTimings: { $each: availableTimings } } },
+        { new: true }
+      );
+  
+      res.status(201).json(savedAvailabilities);
+    } catch (error) {
+      console.error('Error adding availability:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
 
 module.exports = {
     TeacherGetAllUsers,
@@ -181,5 +216,5 @@ module.exports = {
     teacherData,
     teacherViewCourse,
     teacherUploadProfilePhoto,
-    
+    addAvailability,
 }

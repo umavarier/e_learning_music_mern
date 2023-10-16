@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing} = require('../controllers/userController');
+const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo} = require('../controllers/userController');
 const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher, getEnrollmentPricing, updateEnrollmentPricing } = require('../controllers/adminControllers');
 
 const {TeacherGetAllUsers, } = require('../controllers/TeacherController')
@@ -44,9 +44,15 @@ router.get('/TeacherGetAllUsers',TeacherGetAllUsers)
 router.get('/viewCourses',viewCourses)
 // router.post('/addCourse', addCourse)
 router.get('/viewTeachers', viewTeachers)
+router.get('/getTeachersInCourse',getTeachersInCourse)
+router.get('/userGetCourses', userGetCourses)
+router.get('/userGetTeachers/:courseId', userGetTeachers)
+router.get('/userGetTeachersTiming/:teacherId/availableTimings',userGetTeachersTiming)
+router.post('/book-demo',auth, bookDemo)
 
 router.post('/schedule-demo',scheduleDemo);
-router.get('/getAppointmentDetails', getAppointmentDetails)
+// router.get('/getAppointmentDetails', getAppointmentDetails)
 router.get('/getPricing', getPricing)
 router.post('/process-payment', processPayment)
+router.get('/getCourseForSignup',getCourseForSignup)
 module.exports = router;

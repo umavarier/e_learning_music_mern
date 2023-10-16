@@ -65,7 +65,9 @@ function Home() {
                 <span>100+</span> Cities <br></br> Worldwide
               </p>
             </div>
-            {/* <button className="book-button">Book a Free Demo</button> */}
+            <Link to="/select-course-teacher">
+              <button className="book-button">Book a Free Demo</button>
+            </Link>
           </div>
         </div>
       </div>

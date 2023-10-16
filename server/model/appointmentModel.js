@@ -16,8 +16,16 @@ const appointmentSchema = new mongoose.Schema({
     ref: 'Course', // Reference to the Course model
     required: true,
   },
-  appointmentTime: {
-    type: Date,
+  dayOfWeek: {
+    type: Number, // You can specify the appropriate data type for dayOfWeek
+    required: true,
+  },
+  startTime: {
+    type: String, // Assuming startTime is a string in "HH:mm" format
+    required: true,
+  },
+  endTime: {
+    type: String, // Assuming endTime is a string in "HH:mm" format
     required: true,
   },
 });

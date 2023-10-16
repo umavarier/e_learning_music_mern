@@ -2,7 +2,8 @@ const express = require("express");
 const User = require("../model/userModel");
 const Course = require("../model/courseModel");
 const Teacher = require("../model/teacherModel");
-const Enrollment = require("../model/enrollmentModel")
+const Enrollment = require("../model/enrollmentModel");
+const Appointment = require("../model/appointmentModel");
 const userotp = require("../model/userOtp");
 const nodemailer = require("nodemailer");
 
@@ -58,6 +59,7 @@ const userSignup = async (req, res) => {
       description,
       headline,
       certificate,
+      courses,
     } = req.body;
 
     // Check if the user already exists
@@ -91,11 +93,16 @@ const userSignup = async (req, res) => {
         description,
         headline,
         certificate,
+        courses,
       });
 
       await teacher.save();
-    }
 
+      await Course.updateMany(
+        { _id: { $in: courses } },
+        { $addToSet: { instructorIds: teacher._id } }
+      );
+    }
     // Save the user data
     await user.save();
 
@@ -183,6 +190,7 @@ const userLogin = async (req, res) => {
     console.log(err);
   }
 };
+
 const userotpsend = async (req, res) => {
   const { email } = req.body;
   if (!email) {
@@ -193,6 +201,7 @@ const userotpsend = async (req, res) => {
     if (preuser) {
       const OTP = Math.floor(100000 + Math.random() * 900000);
       const existEmail = await userotp.findOne({ email: email });
+      console.log("OTP :" + OTP);
 
       if (existEmail) {
         const updateData = await userotp.findByIdAndUpdate(
@@ -252,8 +261,8 @@ const userotpsend = async (req, res) => {
 
 const userLoginwithOtp = async (req, res) => {
   const { email, otp } = req.body;
-  console.log("req.body  "+req.body.email)
-  console.log("req.body  "+req.body.otp)
+  console.log("req.body  " + req.body.email);
+  console.log("req.body  " + req.body.otp);
 
   if (!otp || !email) {
     res.status(400).json({ error: "Please Enter Your OTP and email" });
@@ -265,10 +274,10 @@ const userLoginwithOtp = async (req, res) => {
 
     if (otpverification.otp === otp) {
       const preuser = await User.findOne({ email: email });
-      console.log("preuser ",preuser)
+      console.log("preuser ", preuser);
       // token generate
       const token = await preuser.generateAuthtoken();
-      console.log("token===  "+token)
+      console.log("token===  " + token);
       console.log("userId  " + preuser._id);
       res.status(200).json({
         message: "User Login Succesfully Done",
@@ -373,7 +382,7 @@ const upload = multer({ storage: multer });
 const userImageUpdate = async (req, res) => {
   try {
     let Token = req.params.id;
-    
+
     let token2 = JSON.parse(Token);
     console.log(token2);
     const decodedToken = jwt.verify(token2, "secret123");
@@ -440,20 +449,18 @@ const getCourseDetails = async (req, res) => {
   }
 };
 
-
-
 const getPricing = async (req, res) => {
   try {
     const pricingData = await Enrollment.find().lean();
-    console.log("pricingdata" + pricingData)
+    console.log("pricingdata" + pricingData);
     res.json(pricingData);
   } catch (error) {
-    console.error('Error fetching pricing data:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error fetching pricing data:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-const processPayment = async (req,res) => {
+const processPayment = async (req, res) => {
   const { amount, paymentMethod, userId } = req.body;
 
   // Save payment details
@@ -465,8 +472,93 @@ const processPayment = async (req,res) => {
 
   await payment.save();
 
-  res.json({ success: true, message: 'Payment processed successfully' });
-}
+  res.json({ success: true, message: "Payment processed successfully" });
+};
+
+const getTeachersInCourse = async (req, res) => {
+  try {
+    const courses = await Course.find().populate("instructors");
+    res.json(courses);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const getCourseForSignup = async (req, res) => {
+  console.log("courses   :");
+  try {
+    const courses = await Course.find();
+    res.status(200).json(courses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const userGetCourses = async (req, res) => {
+  try {
+    const courses = await Course.find();
+    res.status(200).json(courses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+const userGetTeachers = async (req, res) => {
+  const courseId = req.params.courseId;
+
+  try {
+    const teachers = await Teacher.find({ courses: courseId });
+    res.json({ teachers });
+  } catch (error) {
+    console.error("Error fetching teachers for the course:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching teachers." });
+  }
+};
+
+const userGetTeachersTiming = async (req, res) => {
+  try {
+    const teacherId = req.params.teacherId;
+
+    const teacher = await Teacher.findById(teacherId, "availableTimings");
+
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+
+    const availableTimings = teacher.availableTimings;
+
+    res.json({ availableTimings });
+  } catch (error) {
+    console.error("Error fetching teacher timings", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+const bookDemo = async (req, res) => { 
+  try {
+    const { course, teacher, token, dayOfWeek, startTime, endTime } = req.body;
+    const studentId = req.user.id;
+
+    const newAppointment = new Appointment({
+      studentId,
+      teacherId: teacher,
+      courseId: course,
+      dayOfWeek,
+      startTime,
+      endTime,
+    });
+
+    await newAppointment.save();
+
+    res.status(201).json({ message: "Booking successful!" });
+  } catch (error) {
+    console.error("Error booking", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 
 module.exports = {
   userSignup,
@@ -480,4 +572,10 @@ module.exports = {
   usergetUserDetails,
   getPricing,
   processPayment,
+  getTeachersInCourse,
+  getCourseForSignup,
+  userGetCourses,
+  userGetTeachers,
+  userGetTeachersTiming,
+  bookDemo,
 };

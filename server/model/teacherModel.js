@@ -1,18 +1,22 @@
 const mongoose=require('mongoose');
+const timingSchema = new mongoose.Schema({
+    from: String,
+    to: String,
+  });
 
 const teacherSchema =  new mongoose.Schema({
     userName : {
         type : String,
-        required : true,
+        required : [true, 'userName is required']
     },
     email: {
         type: String, 
-        required: true,
+        required: [true, 'Email is required'],
         unique: true,
     },
     password: {
         type: String,
-        required: true,
+        required: [true, 'Password is required'],
     },
     role: {
         type: Number,
@@ -23,12 +27,15 @@ const teacherSchema =  new mongoose.Schema({
         required : true,
         default : false
     },
-    description: {
-        type: String,
-    },
-    headline: {
-        type: String,
-    },  
+    specializations: [
+        {
+            type: String,
+            required:[true, 'Specialization is required'] ,
+        },
+    ], 
+    // headline: {
+    //     type: String,
+    // },  
     certificate:{
         type: String,
     },
@@ -41,6 +48,29 @@ const teacherSchema =  new mongoose.Schema({
     {
         type: String,
     },
+    courses: 
+    [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Course'
+        }
+    ],
+    availableTimings: [
+        {
+          dayOfWeek: {
+            type: Number,
+            required: true,
+          },
+          startTime: {
+            type: String,
+            required: true,
+          },
+          endTime: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
 })
 
 const Teacher =  mongoose.model('Teacher', teacherSchema)

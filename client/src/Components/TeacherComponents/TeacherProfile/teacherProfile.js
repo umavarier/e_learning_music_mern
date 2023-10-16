@@ -3,10 +3,7 @@ import TeacherHeader from "../Header/TeacherHeader";
 import TeacherSidebar from "../Sidebar/TeacherSidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { setTeacherProfilePicture } from "../../../Redux/teacherSlice";
-import {
-  selectTeacherId,
-  selectTeacherProfilePicture,
-} from "../../../Redux/teacherSlice";
+import {selectTeacherId, selectTeacherProfilePicture} from "../../../Redux/teacherSlice";
 import axios from "../../../utils/axios";
 
 const TeacherProfile = () => {
@@ -18,12 +15,17 @@ const TeacherProfile = () => {
   const dispatch = useDispatch();
   const teacherId = useSelector(selectTeacherId);
   const profilePic = useSelector(selectTeacherProfilePicture);
+  const [newEmail, setNewEmail] = useState("");
+  const [availableTimings, setAvailableTimings] = useState([]);
+  const [dayOfWeek, setDayOfWeek] = useState(0); // Default: Sunday
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [specializations, setSpecializations] = useState("");
 
-  useEffect(()=>{
-    console.log("pro pic from state" ,profilePic)
+  useEffect(() => {
+    console.log("pro pic from state", profilePic);
     setPropic(profilePic);
-  })
-
+  });
 
   console.log(propic);
   const handleProfilePhotoChange = (e) => {
@@ -158,6 +160,101 @@ const TeacherProfile = () => {
       }
     }
   };
+  const handleEmailChange = () => {
+    if (newEmail) {
+      axios
+        .put(`/teachers/${teacherId}/changeEmail`, { newEmail })
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("Email address updated successfully");
+            // Update the email address in the component state if needed
+            // setTeacherEmail(newEmail);
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating email address", error);
+        });
+    }
+  };
+
+  const handleAddAvailability = () => {
+    // Add the new availability to the list
+    const newAvailability = {
+      dayOfWeek,
+      startTime,
+      endTime,
+    };
+    setAvailableTimings([...availableTimings, newAvailability]);
+
+    // Clear the input fields
+    setDayOfWeek(0); // Reset to Sunday
+    setStartTime("");
+    setEndTime("");
+  };
+
+  const handleRemoveAvailability = (index) => {
+    // Remove the availability at the given index
+    const updatedTimings = [...availableTimings];
+    updatedTimings.splice(index, 1);
+    setAvailableTimings(updatedTimings);
+  };
+
+  const handleSubmitTimings = async () => {
+console.log("submit")
+    try {
+     const token = localStorage.getItem("token");
+     const timingsData = availableTimings.map((timing) => {
+      return {
+        dayOfWeek: timing.dayOfWeek,
+        startTime: timing.startTime,
+        endTime: timing.endTime,
+      };
+    });
+    await axios.post("/teachers/addAvailability", {
+      teacherId,
+      availableTimings: timingsData,
+      token,
+    });
+
+      // Handle success or error
+      console.log("Available timings saved successfully.");
+    } catch (error) {
+      console.error("Error saving available timings", error);
+    }
+  };
+  function getDayOfWeekName(dayOfWeek) {
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    return daysOfWeek[dayOfWeek] || "";
+  }
+  const handleSpecializationsChange = () => {
+    if (specializations) {
+      const specializationList = specializations
+        .split(",")
+        .map((s) => s.trim());
+      axios
+        .put(`/teachers/${teacherId}/updateSpecializations`, {
+          specializations: specializationList,
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("Specializations updated successfully");
+            // Update the specialization state if needed
+            // setTeacherSpecializations(specializationList);
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating specializations", error);
+        });
+    }
+  };
 
   return (
     <>
@@ -253,6 +350,98 @@ const TeacherProfile = () => {
                   </button>
                 </form>
               </div>
+            </div>
+            <div className="form-group">
+              <label>New Email:</label>
+              <input
+                type="email"
+                className="form-control"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label>Specializations (comma-separated):</label>
+              <input
+                type="text"
+                className="form-control"
+                value={specializations}
+                onChange={(e) => setSpecializations(e.target.value)}
+              />
+            </div>
+
+            <div className="availability-form">
+              <h3>Add Available Timings</h3>
+              <form>
+                <div className="form-group">
+                  <label>Day of the Week:</label>
+                  <select
+                    className="form-control"
+                    value={dayOfWeek}
+                    onChange={(e) => setDayOfWeek(e.target.value)}
+                  >
+                    {/* Options for day of the week */}
+                    <option value={0}>Sunday</option>
+                    <option value={1}>Monday</option>
+                    <option value={2}>Tuesday</option>
+                    <option value={3}>Wednesday</option>
+                    <option value={4}>Thursday</option>
+                    <option value={5}>Friday</option>
+                    <option value={6}>Saturday</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Start Time:</label>
+                  <input
+                    type="time"
+                    className="form-control"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>End Time:</label>
+                  <input
+                    type="time"
+                    className="form-control"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleAddAvailability}
+                >
+                  Add Timing
+                </button>
+              </form>
+              {availableTimings.length > 0 && (
+                <div className="available-timings">
+                  <h3>Available Timings:</h3>
+                  <ul>
+                    {availableTimings.map((timing, index) => (
+                      <li key={index}>
+                        {getDayOfWeekName(timing.dayOfWeek)}: {timing.startTime}{" "}
+                        - {timing.endTime}
+                        <button
+                          onClick={() => handleRemoveAvailability(index)}
+                          className="btn btn-link text-danger"
+                        >
+                          Remove
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmitTimings}
+              >
+                Save Available Timings
+              </button>
             </div>
           </main>
         </div>

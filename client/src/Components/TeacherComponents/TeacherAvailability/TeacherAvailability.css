@@ -1,0 +1,58 @@
+/* TeacherAvailabilityPage.css */
+.time-container {
+    background-color: #fff; /* Card background color */
+    border-radius: 10px; /* Rounded corners for the card */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for the card */
+    padding: 20px; /* Add padding for content within the card */
+    margin: 20px; /* Add some margin to create space around the card */
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px; /* Adjust the maximum width as needed */
+    margin: 0 auto;
+  }
+  
+  label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  input[type="time"],
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button[type="submit"] {
+    background-color: #980c60; /* Button background color */
+    color: #fff; /* Text color for the button */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #b3006e; /* Change color on hover */
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  table, th, td {
+    border: 1px solid #ccc;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: center;
+  }
+  

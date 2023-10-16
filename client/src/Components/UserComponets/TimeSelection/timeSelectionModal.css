@@ -1,60 +1,200 @@
-/* TimeSelectionModal.css */
-/* Style the modal overlay */
-.ReactModal__Overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* Style the modal content */
-  .ReactModal__Content {
-    position: relative;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 4px;
-    max-width: 400px; /* Adjust the width as needed */
-    width: 100%;
-    height: 400p;
-    text-align: center;
-  }
-  
-  /* Style the modal title */
-  h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-  }
-  
-  /* Style the select input */
-  select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  /* Style the schedule button */
-  button {
-    display: block;
-    width: 100%;
-    padding: 10px 0;
-    background-color: #ff006a;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  /* Style the schedule button on hover */
-  button:hover {
-    background-color: #7e0546;
-  }
-  
+/* timeSelectionModal.css */
+
+.time-selection-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.time-selection-modal.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 20px 0;
+}
+
+.time-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.time-option {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.time-option:hover {
+  background: #0056b3;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.cancel-button,
+.confirm-button {
+  background: #ccc;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cancel-button:hover,
+.confirm-button:hover {
+  background: #888;
+}
+
+.confirm-button {
+  background: #007bff;
+}
+
+.confirm-button:hover {
+  background: #0056b3;
+}
+
+.react-date-picker {
+  display: inline-flex;
+  position: relative;
+}
+
+.react-date-picker,
+.react-date-picker *,
+.react-date-picker *:before,
+.react-date-picker *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.react-date-picker--disabled {
+  background-color: #f0f0f0;
+  color: #6d6d6d;
+}
+
+.react-date-picker__wrapper {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+  border: thin solid gray;
+}
+
+.react-date-picker__inputGroup {
+  min-width: calc((4px * 3) + 0.54em * 8 + 0.217em * 2);
+  flex-grow: 1;
+  padding: 0 2px;
+  box-sizing: content-box;
+}
+
+.react-date-picker__inputGroup__divider {
+  padding: 1px 0;
+  white-space: pre;
+}
+
+.react-date-picker__inputGroup__divider,
+.react-date-picker__inputGroup__leadingZero {
+  display: inline-block;
+}
+
+.react-date-picker__inputGroup__input {
+  min-width: 0.54em;
+  height: 100%;
+  position: relative;
+  padding: 0 1px;
+  border: 0;
+  background: none;
+  color: currentColor;
+  font: inherit;
+  box-sizing: content-box;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.react-date-picker__inputGroup__input::-webkit-outer-spin-button,
+.react-date-picker__inputGroup__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.react-date-picker__inputGroup__input:invalid {
+  background: rgba(255, 0, 0, 0.1);
+}
+
+.react-date-picker__inputGroup__input--hasLeadingZero {
+  margin-left: -0.54em;
+  padding-left: calc(1px + 0.54em);
+}
+
+.react-date-picker__button {
+  border: 0;
+  background: transparent;
+  padding: 4px 6px;
+}
+
+.react-date-picker__button:enabled {
+  cursor: pointer;
+}
+
+.react-date-picker__button:enabled:hover .react-date-picker__button__icon,
+.react-date-picker__button:enabled:focus .react-date-picker__button__icon {
+  stroke: #0078d7;
+}
+
+.react-date-picker__button:disabled .react-date-picker__button__icon {
+  stroke: #6d6d6d;
+}
+
+.react-date-picker__button svg {
+  display: inherit;
+}
+
+.react-date-picker__calendar {
+  width: 350px;
+  max-width: 100vw;
+  z-index: 1;
+}
+
+.react-date-picker__calendar--closed {
+  display: none;
+}
+
+.react-date-picker__calendar .react-calendar {
+  border-width: thin;
+}

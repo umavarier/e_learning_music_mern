@@ -6,19 +6,21 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  instructorId: 
-  {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Teacher', // references the Teacher model
-    required: true,
-  },
-  duration: String,
+  instructorIds: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Teacher', 
+     
+    },
+  ],
+ 
   level: String,
   description: String,
   image: String,
   price: Number,
   startDate: Date,
   endDate: Date,
+  duration: String,
   enrollments: Number,
 
 

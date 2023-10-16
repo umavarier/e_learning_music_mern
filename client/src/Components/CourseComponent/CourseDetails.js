@@ -5,6 +5,8 @@ import axios from "../../utils/axios";
 import "./CourseDetails.css";
 import TimeSelectionModal from "../UserComponets/TimeSelection/timeSelectionModal";
 import img from "./guitar.jpeg";
+import Header from "../UserComponets/Home/Header"
+import moment from 'moment'
 
 function CourseDetails() {
   const { courseId } = useParams();
@@ -22,6 +24,41 @@ function CourseDetails() {
   const [value, setValue] = useState();
   const [roomValue, setRoomValue] = useState();
   const navigate = useNavigate();
+  
+
+  const [availableTimes, setAvailableTimes] = useState([]);
+  const [isBookingSuccessful, setIsBookingSuccessful] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [isTimePickerDisabled, setIsTimePickerDisabled] = useState(true);
+
+  const currentDate = moment();
+  useEffect(() => {
+    if (selectedDate) {
+      const selectedDateTime = moment(selectedDate).add(moment(selectedTime).format('HH:mm:ss'));
+      setIsTimePickerDisabled(selectedDateTime.isBefore(currentDate));
+    }
+  }, [selectedDate, selectedTime, currentDate]);
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setIsTimePickerDisabled(true); // Disable the time picker when the date changes
+  };
+
+
+
+  const fetchAvailableTimes = async () => {
+    try {
+      // const response = await axios.get("/getAvailableTimes", {
+      //   params: {
+      //     teacherId: teacherId,
+      //   },
+      // });
+
+      // setAvailableTimes(response.data);
+    } catch (error) {
+      console.error("Error fetching available times:", error);
+    }
+  };
 
   const handleOpenModal = () => {
     console.log("Opening modal");
@@ -35,6 +72,7 @@ function CourseDetails() {
   const handleTimeSelected = (time) => {
     setSelectedTime(time);
     console.log("timetime " + time);
+    setIsModalOpen(false);
   };
 
   const   isScheduledTime = () => {
@@ -57,13 +95,22 @@ function CourseDetails() {
           courseId: courseId,
         },
       });
-
+      console.log("fetch")
       const appointmentTime = response.data.appointmentTime;
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+  const localTime = new Date(appointmentTime).toLocaleString('en-US', options);
+      
       console.log("apptime   " + appointmentTime);
-      setScheduledAppointmentTime(appointmentTime);
+
+      // const appointmentTimeIST = moment.tz(appointmentTime, 'YYYY-MM-DDTHH:mm:ss.SSSZ', 'Asia/Kolkata');
+      setScheduledAppointmentTime(localTime);
     } catch (error) {
       console.error("Error fetching appointment details:", error);
     }
+  };
+
+  const handleTimeChange = (time) => {
+    setSelectedTime(time);
   };
 
   useEffect(() => {
@@ -98,14 +145,15 @@ function CourseDetails() {
   //       console.error("Error fetching course details:", error);
   //     });
   // }, [courseId]);
+ 
   useEffect(() => {
     axios
       .get(`/courses/getCourseById/${courseId}`)
       .then((response) => {
         const courseData = response.data;
         console.log("treacherdataincluded?? " + courseData.instructorId);
-        setCourse(courseData); // Set the course data in your state
-        setTeacherId(courseData.instructorId); // Extract and set teacherId
+        setCourse(courseData); 
+        setTeacherId(courseData.instructorId);
       })
       .catch((error) => {
         console.error("Error fetching course details:", error);
@@ -129,11 +177,11 @@ function CourseDetails() {
   }, [userId, teacherId, courseId, selectedTime]);
 
   const handleScheduleDemo = () => {
-    console.log("handleScheduleDemo called"); // Add this line
-    console.log("Selected Time:", selectedTime);
-    console.log("Course ID:", courseId);
-    console.log({user});
-    console.log("TeacherID : " + teacherId);
+    // console.log("handleScheduleDemo called"); // Add this line
+    // console.log("Selected Time:", selectedTime);
+    // console.log("Course ID:", courseId);
+    // console.log({user});
+    // console.log("TeacherID : " + teacherId);
 
     if ( !user) {
       console.error("user not logged in.");
@@ -143,9 +191,9 @@ function CourseDetails() {
     }
 
     const instructorId = course.instructorId;
-    console.log("instructorId++"+instructorId)
+    // console.log("instructorId++"+instructorId)
     const studentId = userId;
-    console.log("studentid: " + studentId);
+    // console.log("studentid: " + studentId);
 
     axios
       .post("/schedule-demo", {
@@ -180,7 +228,10 @@ function CourseDetails() {
   };
 
   return (
+    <>
+    <Header />
     <div className="course-details-banner">
+      
       <div className="course-details-image">
         <img src={img} alt="Course Image" />
       </div>
@@ -223,13 +274,20 @@ function CourseDetails() {
           </>
         )}
       </div>
+      {isModalOpen && (
       <TimeSelectionModal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        onTimeSelected={handleTimeSelected}
-        handleScheduleDemo={handleScheduleDemo}
+      isOpen={isModalOpen}
+      onRequestClose={handleCloseModal}
+      onTimeSelected={handleTimeSelected}
+      handleScheduleDemo={handleScheduleDemo}
+      selectedDate={selectedDate}
+      selectedTime={selectedTime}
+      isTimePickerDisabled={isTimePickerDisabled}
       />
+      )}
     </div>
+    
+    </>
   );
 }
 

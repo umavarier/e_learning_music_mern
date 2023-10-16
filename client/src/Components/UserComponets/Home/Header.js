@@ -148,11 +148,11 @@ function Header() {
         <Link to="/" style={{ textDecoration: "none", color: "white" }}>
           <img src={logo} alt="Logo" style={{ width: "80px" }} />
         </Link>
-        <Typography variant="h6" style={{ flexGrow: 1 }}>
+        {/* <Typography variant="h6" style={{ flexGrow: 1 }}>
           <Link to="/" style={{ textDecoration: "none", color: "white" }}>
             Home
           </Link>
-        </Typography>
+        </Typography> */}
         <Button
           aria-controls="instruments-menu"
           aria-haspopup="true"
@@ -236,9 +236,9 @@ function Header() {
             <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none", fontSize: "20px"  }} onClick={() => navigate("/loginwithotp")}>
               Login
             </Button>
-            <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none", fontSize: "20px"  }} onClick={() => navigate("/signup")}>
+            {/* <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none", fontSize: "20px"  }} onClick={() => navigate("/signup")}>
               Register
-            </Button>
+            </Button> */}
           </div>
         )}
         <div>

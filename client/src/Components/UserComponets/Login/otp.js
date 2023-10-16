@@ -64,7 +64,7 @@ const Otp = () => {
           <div className="otp-form_input">
             <label htmlFor="otp">OTP</label>
             <input
-              type="text"
+              type="text-light"
               name="otp"
               id=""
               onChange={(e) => setOtp(e.target.value)}

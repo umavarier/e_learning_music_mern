@@ -14,14 +14,14 @@ import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/system';
 
 const TeacherName = styled(Typography)(({ theme }) => ({
-  marginRight: theme.spacing(1), // You can adjust the margin as needed
+  marginRight: theme.spacing(1), 
 }));
 
 const AvatarWrapper = styled('div')(({ theme }) => ({
-  marginLeft: 'auto', // Pushes the avatar and name to the right
+  marginLeft: 'auto',
   display: 'flex',
   alignItems: 'center',
-  marginRight: theme.spacing(2), // Adjust the margin as needed
+  marginRight: theme.spacing(2), 
 }));
 
 const LogoutButtonWrapper = styled('div')(({ theme }) => ({
@@ -53,13 +53,9 @@ function TeacherHeader() {
   };
 
   const handleLogout = () => {
-    // Dispatch clearTeacher action to clear teacher data in Redux
     dispatch(clearTeacher());
-    // Clear the token from local storage
     localStorage.removeItem('token');
-    // Clear teacher data from local storage
     localStorage.removeItem('teacherData');
-    // Redirect to the Teacher Login page
     navigate('/teacherLogin');
   };
 
@@ -67,7 +63,7 @@ function TeacherHeader() {
   const teacherName = useSelector(selectTeacherName);
   const profilePicture = useSelector(selectTeacherProfilePicture);
 
-  console.log("anthanooo",profilePicture)
+  // console.log("anthanooo",profilePicture)
   return (
     <div>
       <AppBar position="static" color="default">

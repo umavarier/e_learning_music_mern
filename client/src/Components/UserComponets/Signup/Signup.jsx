@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import axios from 'axios'; // Import axios
+import React, { useState,useEffect } from 'react';
+import axios from '../../../utils/axios'; // Import axios
 import Swal from 'sweetalert2';
 import {Link} from 'react-router-dom';
 import './Signup.css';
@@ -14,6 +14,9 @@ function Signup() {
   const [teacherDescription, setTeacherDescription] = useState('');
   const [teacherCertificate, setTeacherCertificate] = useState('');
   const [teacherCredentials, setTeacherCredentials] = useState('');
+  const [selectedCourses, setSelectedCourses] = useState([]);
+  const [availableCourses, setAvailableCourses] = useState([]);
+
 
   const navigate = useNavigate();
 
@@ -29,6 +32,7 @@ function Signup() {
         password,
         phoneNumber,
         isTeacher,
+        courses: selectedCourses,
         teacherDescription: isTeacher ? teacherDescription : '',
         teacherCertificate: isTeacher ? teacherCertificate : '',
         teacherCredentials: isTeacher ? teacherCredentials : '',
@@ -61,7 +65,26 @@ function Signup() {
   const handleTeacherSignup = () => {
     setIsTeacher(!isTeacher);
   };
+  useEffect(() => {
+    axios.get('/getCourseForSignup')                                                                                                        
+      .then((response) => {
+        setAvailableCourses(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching courses:', error);
+      });
+  }, []);
 
+  const handleCourseChange = (courseId) => {
+    const isSelected = selectedCourses.includes(courseId);
+  
+    if (isSelected) {
+      setSelectedCourses(selectedCourses.filter((id) => id !== courseId));
+    } else {
+      setSelectedCourses([...selectedCourses, courseId]);
+    }
+  };
+  
   const renderTeacherFields = () => {
     if (isTeacher) {
       return (
@@ -77,7 +100,7 @@ function Signup() {
             onChange={(e) => setTeacherDescription(e.target.value)}
             id="teacherDescription"
           />
-          <label className="label1" htmlFor="teacherCertificate">
+          {/* <label className="label1" htmlFor="teacherCertificate">
             Teacher Certificate
           </label>
           <input
@@ -87,7 +110,23 @@ function Signup() {
             value={teacherCertificate}
             onChange={(e) => setTeacherCertificate(e.target.value)}
             id="teacherCertificate"
-          />
+          /> */}
+          <label className="label1" htmlFor="courses">
+          Courses You Can Teach
+        </label>
+        {availableCourses.map((course) => (
+          <div key={course._id}>
+            <label>
+              <input
+                type="checkbox"
+                value={course._id}
+                checked={selectedCourses.includes(course._id)}
+                onChange={() => handleCourseChange(course._id)}
+              />
+              {course.name}
+            </label>
+          </div>
+        ))}
           <label className="label1" htmlFor="teacherCredentials">
             Teacher Credentials
           </label>

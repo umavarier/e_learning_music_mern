@@ -3,6 +3,7 @@ import {configureStore} from '@reduxjs/toolkit';
 // import usernameReducer from './usernameReducer';
 import userReducer from './userSlice';
 import teacherReducer from './teacherSlice'
+import courseReducer from './courseSlice'
 
 const store=configureStore({
     reducer : {
@@ -10,6 +11,7 @@ const store=configureStore({
         // userImage : userimageReducer,
         user : userReducer,
         teacher:teacherReducer,
+        course:courseReducer,
     },
 })
 

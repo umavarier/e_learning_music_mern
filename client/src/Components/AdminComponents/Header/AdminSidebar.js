@@ -56,6 +56,15 @@ function AdminSidebar() {
                 </li>
                 <li className="nav-item">
                   <Link
+                    to={'/adminCourseManagement'}
+                    className="nav-link black-text"
+                   
+                  >
+                    Courses
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
                     to={'/adminUpdateEnrollmentPricing'}
                     className="nav-link black-text"
                     // style={{
