@@ -42,6 +42,7 @@ import Gallery from './Components/UserComponets/Gallery/Gallery'
 import TeacherAvailabilityPage from "./Components/TeacherComponents/TeacherAvailability/TeacherAvailability.js";
 import CourseTeacherSelection from "./Components/UserComponets/CourseTeacherSelection/CourseTeacherSelection";
 import AdminCourseManagement from "./Components/AdminComponents/AdminCourses/AdminCourses";
+import Notifications from "./Components/UserComponets/Notification/Notifications";
 
 function App() {
   return (
@@ -94,6 +95,7 @@ function App() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/gallery" element={< Gallery />}/>
+        <Route path="/notifications" element={< Notifications />}/>
 
 
       </Routes>

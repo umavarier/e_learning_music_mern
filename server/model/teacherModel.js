@@ -58,7 +58,7 @@ const teacherSchema =  new mongoose.Schema({
     availableTimings: [
         {
           dayOfWeek: {
-            type: Number,
+            type: String,
             required: true,
           },
           startTime: {

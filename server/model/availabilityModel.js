@@ -8,7 +8,7 @@ const AvailabilitySchema = new mongoose.Schema({
     },
     dayOfWeek:
     { 
-        type:  Number, 
+        type:  String, 
         required: true 
     }, 
     startTime: 

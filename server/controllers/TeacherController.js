@@ -3,9 +3,11 @@ const User=require('../model/userModel');
 const jwt = require('jsonwebtoken')
 const Teacher = require('../model/teacherModel')
 const Course = require('../model/courseModel')
+const Appointment = require('../model/appointmentModel')
 const bcrypt = require('bcrypt');
 const multer = require('../util/multer1');
 const Availability = require('../model/availabilityModel')
+const Notification = require('../model/notificationModel');
 
 
 const teacherLogin = async (req, res) => {
@@ -73,7 +75,7 @@ const teacherData = async (req, res) => {
 const TeacherGetAllUsers = async(req,res)=>{        
     try{
         let users= await User.find();
-        console.log(users+'userslist')
+        // console.log(users+'userslist')
         if(users){               
             res.json({status:"ok",users:users})
         }else{
@@ -210,6 +212,34 @@ const teacherUploadProfilePhoto = async (req, res) => {
     }
   };
 
+  const getAppointments = async(req, res) => {
+    console.log("tg-a")
+    try {
+      const { teacherId } = req.params;
+  
+      const appointments = await Appointment.find({ teacherId });
+  
+      return res.json(appointments);
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  const getNotifications =  async (req, res) => {
+    try {
+      const { teacherId } = req.params;
+  
+      // Find notifications for the given teacherId
+      const notifications = await Notification.find({ receiver: teacherId });
+  
+      return res.json(notifications);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
 module.exports = {
     TeacherGetAllUsers,
     teacherLogin,
@@ -217,4 +247,6 @@ module.exports = {
     teacherViewCourse,
     teacherUploadProfilePhoto,
     addAvailability,
+    getAppointments,
+    getNotifications,
 }

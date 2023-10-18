@@ -8,13 +8,16 @@ import axios from "../../../utils/axios";
 import banner2 from "./banner2.avif";
 import img from "./banner1.png";
 import Header from "./Header";
+// import Notifications from "../Notification/Notifications";
 
 function Home() {
   const userId = useSelector((state) => state.user);
+  const notifications = useSelector((state) => state.notifications?.notifications);
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [profilePhoto, setProfilePhoto] = useState([]);
 
+console.log("notify: "+notifications)
   console.log(userId.userId + "     userId    ");
   useEffect(() => {
     axios
@@ -44,6 +47,7 @@ function Home() {
     <div>
       {/* <Header userToken={userId.userToken} /> */}
       {/* Banner */}
+      {/* <Notifications notifications={notifications} /> */}
       <div className="home-banner-container">
         <div className="left-side">
           <img

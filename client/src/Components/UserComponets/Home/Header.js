@@ -12,6 +12,10 @@ import {
   ListItemText,
   Avatar,
 } from "@mui/material";
+
+import NotificationsIcon from "@mui/icons-material/Notifications"; // Add this import
+import Notifications from "../Notification/Notifications";
+
 import { useDispatch, useSelector } from "react-redux";
 // import { change } from "../../../Redux/usernameReducer";
 // import { changeImage } from "../../../Redux/userimageReducer";
@@ -29,6 +33,8 @@ function Header() {
   const userId = useSelector((state) => state.user.userId);
   const username = useSelector((state) => state.user.username);
   const userImage = useSelector((state) => state.user.userImage);
+  const notifications = useSelector((state) => state.notifications?.notifications);
+
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,6 +42,9 @@ function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElInstruments, setAnchorElInstruments] = useState(null);
+  const [userNotifications, setUserNotifications] = useState([]);
+  const [anchorElNotifications, setAnchorElNotifications] = useState(null);
+
 
   console.log("userToken header  " + userToken);
 
@@ -84,7 +93,14 @@ function Header() {
  
   console.log("Username from Redux store:", username);
 
-  // ...
+  const handleNotificationsMenuOpen = (event) => {
+    setAnchorElNotifications(event.currentTarget);
+  };
+
+  const handleNotificationsMenuClose = () => {
+    setAnchorElNotifications(null);
+  };
+  
 
   useEffect(() => {
     const Token = userToken;
@@ -141,6 +157,15 @@ function Header() {
         console.error("Error fetching courses:", error);
       });
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      axios.get(`/getNotifications/${userId}`).then((response) => {
+        setUserNotifications(response.data);
+        console.log("usernot:"+JSON.stringify(response))
+      });
+    }
+  }, [isLoggedIn, userId]);
 
   return (
     <AppBar position="static">
@@ -216,6 +241,22 @@ function Header() {
               </Typography>
             </Button>
             
+            <IconButton
+              color="inherit"
+              onClick={handleNotificationsMenuOpen}
+            >
+              <NotificationsIcon />
+            </IconButton>
+            <Menu
+              id="notifications-menu"
+              anchorEl={anchorElNotifications}
+              keepMounted
+              open={Boolean(anchorElNotifications)}
+              onClose={handleNotificationsMenuClose}
+            >
+              <Notifications notifications={userNotifications} />
+            </Menu>
+
             <Menu
               id="user-menu"
               anchorEl={anchorElUser}

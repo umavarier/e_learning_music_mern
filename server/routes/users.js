@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo} = require('../controllers/userController');
+const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo,getNotifications,sendNotifications, checkAppointmentTiming} = require('../controllers/userController');
 const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher, getEnrollmentPricing, updateEnrollmentPricing } = require('../controllers/adminControllers');
 
 const {TeacherGetAllUsers, } = require('../controllers/TeacherController')
@@ -49,10 +49,14 @@ router.get('/userGetCourses', userGetCourses)
 router.get('/userGetTeachers/:courseId', userGetTeachers)
 router.get('/userGetTeachersTiming/:teacherId/availableTimings',userGetTeachersTiming)
 router.post('/book-demo',auth, bookDemo)
+router.get('/getNotifications/:userId', getNotifications)
+router.post('/sendNotifications',auth, sendNotifications)
+
 
 router.post('/schedule-demo',scheduleDemo);
-// router.get('/getAppointmentDetails', getAppointmentDetails)
+// router.get('/mentDetails', getAppointmentDetails)
 router.get('/getPricing', getPricing)
 router.post('/process-payment', processPayment)
 router.get('/getCourseForSignup',getCourseForSignup)
+router.get('/check-appointment-timing/:appointmentId',checkAppointmentTiming)
 module.exports = router;

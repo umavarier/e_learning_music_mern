@@ -4,6 +4,7 @@ const Course = require("../model/courseModel");
 const Teacher = require("../model/teacherModel");
 const Enrollment = require("../model/enrollmentModel");
 const Appointment = require("../model/appointmentModel");
+const Notification = require("../model/notificationModel");
 const userotp = require("../model/userOtp");
 const nodemailer = require("nodemailer");
 
@@ -274,10 +275,10 @@ const userLoginwithOtp = async (req, res) => {
 
     if (otpverification.otp === otp) {
       const preuser = await User.findOne({ email: email });
-      console.log("preuser ", preuser);
+      // console.log("preuser ", preuser);
       // token generate
       const token = await preuser.generateAuthtoken();
-      console.log("token===  " + token);
+      // console.log("token===  " + token);
       console.log("userId  " + preuser._id);
       res.status(200).json({
         message: "User Login Succesfully Done",
@@ -297,7 +298,7 @@ const verifyUserToken = async (req, res) => {
   try {
     const token =
       req.body.Token || req.query.Token || req.headers["x-access-token"];
-    console.log("verify " + token);
+    // console.log("verify " + token);
 
     if (!token) {
       return res
@@ -359,18 +360,15 @@ const verifyUserToken = async (req, res) => {
 
 const usergetUserDetails = async (req, res) => {
   try {
-    console.log(req.params.userId + "userId");
-    // You can extract user ID from the request query or parameters
-    const userId = req.params.userId; // Adjust the parameter name as needed
+    // console.log(req.params.userId + "userId");
 
-    // Use the extracted user ID to find the user in the database
+    const userId = req.params.userId; 
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Return user data as JSON response
     return res.json(user);
   } catch (error) {
     console.error(error);
@@ -424,8 +422,7 @@ const viewTeachers = async (req, res) => {
   try {
     // Query your database to fetch the list of users who are teachers
     const teachers = await Teacher.find({ isTeacher: true });
-    // console.log(teachers+"teachers")
-    // Send the list of teachers as a JSON response
+    
     res.json(teachers);
   } catch (error) {
     console.error("Error fetching teachers:", error);
@@ -536,11 +533,12 @@ const userGetTeachersTiming = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-const bookDemo = async (req, res) => { 
+const bookDemo = async (req, res) => {
+  console.log("book-demo")
   try {
     const { course, teacher, token, dayOfWeek, startTime, endTime } = req.body;
-    const studentId = req.user.id;
-
+    const studentId = req.user._id;
+    console.log('user:'+req.user._id )
     const newAppointment = new Appointment({
       studentId,
       teacherId: teacher,
@@ -552,12 +550,97 @@ const bookDemo = async (req, res) => {
 
     await newAppointment.save();
 
-    res.status(201).json({ message: "Booking successful!" });
+    const adminId = "adminUserId"; 
+    const teacherId = teacher; 
+    const message = `New appointment booked by user: ${studentId}`;
+
+    // const adminNotification = new Notification({
+    //   sender: studentId,
+    //   receiver: adminId,
+    //   message,
+    //   appointment: newAppointment._id,
+    // });
+
+    const teacherNotification = new Notification({
+      sender: studentId,
+      receiver: teacherId,
+      message :message,
+      appointment: newAppointment._id,
+    });
+
+    // await Promise.all([adminNotification.save(), teacherNotification.save()]);
+     await Promise.all([teacherNotification.save()]);
+
+    res.status(201).json({ message: "Booking successful!",appointmentId:newAppointment._id });
   } catch (error) {
     console.error("Error booking", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+const getNotifications = async (req, res) => {
+  console.log("getnot")
+  const userId = req.body;
+  console.log("msguser: "+req.body._id)
+  try {
+    const notifications = await Notification.find({ sender: userId }).sort({
+      createdAt: -1,
+      
+    });
+    console.log("msg "+notifications)
+
+    res.json(notifications);
+  } catch (error) {
+    console.error("Error fetching notifications", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const sendNotifications = async (req, res) => {
+  console.log("sender: ")
+  try {
+    const { receiver, message,token } = req.body;
+    console.log('user:'+req.user._id )
+    const sender = req.user._id;
+    const newNotification = new Notification({
+      sender,
+      receiver,
+      message,
+    });
+
+    await newNotification.save();
+
+    res.status(201).json({ message: "Notification sent successfully" });
+  } catch (error) {
+    console.error("Error sending notification", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const checkAppointmentTiming = async(req,res) => {
+  const { appointmentId } = req.params;
+  console.log("appid: "+JSON.stringify(req.params))
+
+  try {
+    const appointment = await Appointment.findById(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    // Parse the appointment time and current time as JavaScript Date objects
+    const appointmentTime = new Date(`${appointment.dayOfWeek}T${appointment.startTime}`);
+    const currentTime = new Date();
+
+    // Check if the current time has passed the appointment time
+    const isTimePassed = currentTime > appointmentTime;
+
+    res.json({ isTimePassed });
+  } catch (error) {
+    console.error('Error checking appointment timing:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
 
 
 module.exports = {
@@ -578,4 +661,7 @@ module.exports = {
   userGetTeachers,
   userGetTeachersTiming,
   bookDemo,
+  getNotifications,
+  sendNotifications,
+  checkAppointmentTiming,
 };

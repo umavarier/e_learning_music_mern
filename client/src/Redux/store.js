@@ -4,6 +4,7 @@ import {configureStore} from '@reduxjs/toolkit';
 import userReducer from './userSlice';
 import teacherReducer from './teacherSlice'
 import courseReducer from './courseSlice'
+import notificationReducer from './notificationSlice'
 
 const store=configureStore({
     reducer : {
@@ -12,6 +13,7 @@ const store=configureStore({
         user : userReducer,
         teacher:teacherReducer,
         course:courseReducer,
+        notification:notificationReducer,
     },
 })
 

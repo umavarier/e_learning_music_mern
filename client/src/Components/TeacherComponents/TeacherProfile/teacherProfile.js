@@ -3,7 +3,10 @@ import TeacherHeader from "../Header/TeacherHeader";
 import TeacherSidebar from "../Sidebar/TeacherSidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { setTeacherProfilePicture } from "../../../Redux/teacherSlice";
-import {selectTeacherId, selectTeacherProfilePicture} from "../../../Redux/teacherSlice";
+import {
+  selectTeacherId,
+  selectTeacherProfilePicture,
+} from "../../../Redux/teacherSlice";
 import axios from "../../../utils/axios";
 
 const TeacherProfile = () => {
@@ -17,10 +20,14 @@ const TeacherProfile = () => {
   const profilePic = useSelector(selectTeacherProfilePicture);
   const [newEmail, setNewEmail] = useState("");
   const [availableTimings, setAvailableTimings] = useState([]);
-  const [dayOfWeek, setDayOfWeek] = useState(0); // Default: Sunday
+  const [dayOfWeek, setDayOfWeek] = useState("Sunday"); // Default: Sunday
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [specializations, setSpecializations] = useState("");
+  const [isTimePassed, setIsTimePassed] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [appointments, setAppointments] = useState([]);
+  const [appointmentId, setAppointmentId] = useState(null); // Initialize appointmentId
 
   useEffect(() => {
     console.log("pro pic from state", profilePic);
@@ -84,7 +91,7 @@ const TeacherProfile = () => {
 
   const handleChangePhoto = () => {
     console.log("here6 ");
-    // Trigger the file input element to select a new profile photo.
+    
     document.getElementById("profilePhotoInput").click();
   };
 
@@ -92,7 +99,7 @@ const TeacherProfile = () => {
     console.log("here7 ");
     e.preventDefault();
 
-    // Handle PDF upload
+    
     if (pdfFile) {
       const pdfFormData = new FormData();
       pdfFormData.append("pdfFile", pdfFile);
@@ -187,7 +194,7 @@ const TeacherProfile = () => {
     setAvailableTimings([...availableTimings, newAvailability]);
 
     // Clear the input fields
-    setDayOfWeek(0); // Reset to Sunday
+    setDayOfWeek("Sunday"); // Reset to Sunday
     setStartTime("");
     setEndTime("");
   };
@@ -200,21 +207,21 @@ const TeacherProfile = () => {
   };
 
   const handleSubmitTimings = async () => {
-console.log("submit")
+    console.log("submit");
     try {
-     const token = localStorage.getItem("token");
-     const timingsData = availableTimings.map((timing) => {
-      return {
-        dayOfWeek: timing.dayOfWeek,
-        startTime: timing.startTime,
-        endTime: timing.endTime,
-      };
-    });
-    await axios.post("/teachers/addAvailability", {
-      teacherId,
-      availableTimings: timingsData,
-      token,
-    });
+      const token = localStorage.getItem("token");
+      const timingsData = availableTimings.map((timing) => {
+        return {
+          dayOfWeek: timing.dayOfWeek,
+          startTime: timing.startTime,
+          endTime: timing.endTime,
+        };
+      });
+      await axios.post("/teachers/addAvailability", {
+        teacherId,
+        availableTimings: timingsData,
+        token,
+      });
 
       // Handle success or error
       console.log("Available timings saved successfully.");
@@ -256,6 +263,59 @@ console.log("submit")
     }
   };
 
+  useEffect(() => {
+    console.log("teacherId :::::"+teacherId)
+    const token = localStorage.getItem("token");
+    console.log('t-app')    
+    axios
+      .get(`/teachers/teacherGetAppointments/${teacherId}`, {
+        headers: {
+          Authorization: token,
+        },
+      })    .then((response) => {
+        setAppointments(response.data);
+        console.log("app-response " + JSON.stringify(response.data));
+  
+        // Check appointment times and enable the "Join for Demo" button
+        const currentTime = new Date();
+        const currentDayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][currentTime.getUTCDay()];
+  
+        for (const appointment of response.data) {
+          if (appointment.dayOfWeek === currentDayOfWeek) {
+            // Extract hours and minutes from the appointment's startTime
+            const [hours, minutes] = appointment.startTime.split(':');
+            const appointmentTime = new Date();
+            appointmentTime.setHours(parseInt(hours, 10));
+            appointmentTime.setMinutes(parseInt(minutes, 10));
+  
+            console.log("appointmentTime: " + appointmentTime);
+            console.log("current "+currentTime)
+  
+            if (currentTime >= appointmentTime) {
+              setIsButtonDisabled(false);              
+              setAppointmentId(appointment._id); 
+              break; 
+            }
+          }
+        }
+      });
+      axios.get(`/teachers/teacherGetNotifications/${teacherId}`, {
+        headers: {
+          Authorization: token,
+        },
+        
+      }).then((response) => {
+      // Filter appointments with notifications
+      console.log("notres: "+JSON.stringify(response.data))
+          
+        })  
+  }, [teacherId]);
+
+  const handleJoinDemo = (appointmentId) => {
+    // Implement video call logic here
+    // You can start the video call for the selected appointment
+  };
+
   return (
     <>
       <TeacherHeader />
@@ -263,7 +323,19 @@ console.log("submit")
         <div className="row">
           <TeacherSidebar />
           <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            
             <h2>Teacher Profile</h2>
+            <div className="position-relative mb-3">
+              <div className="position-absolute top-0 end-0">
+            <button
+                onClick={() => handleJoinDemo(appointmentId)}
+                disabled={isButtonDisabled}
+                className={`join-button ${isButtonDisabled ? "disabled" : ""}`}
+              >
+                Join for Demo
+              </button>
+            </div>
+            </div>
             <div className="row">
               <div className="col-md-4 mb-4">
                 <div className="profile-photo">
@@ -298,6 +370,7 @@ console.log("submit")
                   Upload Profile Photo
                 </button>
               </div>
+
               <div className="col-md-8">
                 <div className="btn-group mb-3" role="group">
                   <label
@@ -351,6 +424,7 @@ console.log("submit")
                 </form>
               </div>
             </div>
+
             <div className="form-group">
               <label>New Email:</label>
               <input
@@ -381,13 +455,23 @@ console.log("submit")
                     onChange={(e) => setDayOfWeek(e.target.value)}
                   >
                     {/* Options for day of the week */}
-                    <option value={0}>Sunday</option>
+                    {/* <option value={0}>Sunday</option>
                     <option value={1}>Monday</option>
                     <option value={2}>Tuesday</option>
                     <option value={3}>Wednesday</option>
                     <option value={4}>Thursday</option>
                     <option value={5}>Friday</option>
                     <option value={6}>Saturday</option>
+                  </select> */}
+
+                    <option value="">Select a Day</option>
+                    <option value="Sunday">Sunday</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
                   </select>
                 </div>
                 <div className="form-group">

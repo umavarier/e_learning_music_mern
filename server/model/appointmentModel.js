@@ -17,7 +17,7 @@ const appointmentSchema = new mongoose.Schema({
     required: true,
   },
   dayOfWeek: {
-    type: Number, // You can specify the appropriate data type for dayOfWeek
+    type: String, // You can specify the appropriate data type for dayOfWeek
     required: true,
   },
   startTime: {
