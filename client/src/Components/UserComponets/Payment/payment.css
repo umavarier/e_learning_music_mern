@@ -1,23 +1,27 @@
-/* PaymentPage.css */
-
-/* Container styles */
+body {
+  background-image: url('../../../../public/images/checkout.jpeg'); 
+  background-size: cover; 
+  background-position: center;
+  background-attachment: fixed; 
+}
 .payment-container {
-    max-width: 500px; /* Adjust the maximum width as needed */
+    max-width: 600px; 
     margin: 100px auto;
-    padding: 20px;
-    background-color: #f5f5f5;
+    padding: 40px;
+    background-color: #B0DBF1;
+    border-color: #0056b3;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 2 2px 4px rgba(2, 1, 56, 0.1);
+    /* background-image: url('../../../../public/images/checkout.jpeg'); */
+    background-size: cover; 
+    background-position: center;
   }
   
-  /* Heading styles */
-  h2 {
+    h2 {
     font-size: 24px;
     margin-bottom: 20px;
   }
-  
-  /* Pricing details styles */
-  h3 {
+    h3 {
     font-size: 20px;
     margin-top: 20px;
   }
@@ -37,7 +41,7 @@
   
   /* Button styles */
   .payment-button {
-    background-color: #ce096f;
+    background-color: #253DA1;
     color: #fff;
     padding: 10px 15px; /* Adjust the padding to make the button shorter */
     font-size: 16px;
@@ -45,11 +49,13 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 50%; /* Make the button span the full width of the container */
+    width: 50%;
+    display:flex;
+    align-items: center;
   }
   
   .payment-button:hover {
-    background-color: #0056b3;
+    background-color: #02055A;
   }
   
   /* Payment success message styles */

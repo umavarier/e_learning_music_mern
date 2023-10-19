@@ -220,8 +220,8 @@ function CourseDetails() {
   const handleStartVideoDemo = () => {
     if (isScheduledTime()) {
       // Call the function to start the video demo
-      console.log("Starting the video demo...");
-      navigate(`/videoRoom/${value}`);
+  
+      // navigate(`/videoRoom/${value}`);
     } else {
       alert("Video demo can only be started at the scheduled time.");
     }
@@ -249,7 +249,7 @@ function CourseDetails() {
           </p>
         ) : (
           <div className="book-button-container" onClick={handleOpenModal}>
-            <button className="book-button">Book a Free Demo</button>
+            {/* <button className="book-button">Book a Free Demo</button> */}
           </div>
         )}
         {isVideoButtonEnabled && (
@@ -262,7 +262,7 @@ function CourseDetails() {
               id=""
             />
 
-            {scheduledAppointmentTime && (
+            {/* {scheduledAppointmentTime && (
               <button
                 className="start-demo-button"
                 onClick={handleStartVideoDemo}
@@ -270,7 +270,7 @@ function CourseDetails() {
               >
                 Start Video Demo
               </button>
-            )}
+            )} */}
           </>
         )}
       </div>

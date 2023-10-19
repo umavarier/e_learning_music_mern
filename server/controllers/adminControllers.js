@@ -181,6 +181,7 @@ const adminBlockTeacher = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
  const getEnrollmentPricing = async (req, res) => {
   try { 
     const enrollment = await Enrollment.findOne();
@@ -192,25 +193,26 @@ const adminBlockTeacher = async (req, res) => {
 };
 
 const updateEnrollmentPricing = async (req, res) => {
-  console.log("enroll")
   try {
     const { classPricing } = req.body;
 
     let enrollment = await Enrollment.findOne();
-    console.log("enrollment2 "+enrollment)
+
     if (!enrollment) {
       enrollment = new Enrollment({ classPricing });
     } else {
       enrollment.classPricing = classPricing;
     }
-
+    console.log("enrollment"+enrollment)
     await enrollment.save();
+
     res.json({ message: 'Enrollment pricing updated successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Error updating enrollment pricing' });
   }
 };
+
 
 module.exports = {
   adminLoginn,

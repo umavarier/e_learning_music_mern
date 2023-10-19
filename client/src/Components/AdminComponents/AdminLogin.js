@@ -42,30 +42,31 @@ function AdminLogin() {
 
   return (
     <div className="login-container">
-      <div className="login-card">
+     <div className='login-card-img'> 
+      <div className="admin-login-card">
         <h1 className="text-light">Admin Login</h1>
-        <form onSubmit={(e) => handleadminLogin(e)} className="login-form">
+        <form onSubmit={(e) => handleadminLogin(e)} className="admin-login-form">
           <div className="input-fields">
+          <p className="text-light">Email</p>
             <input
               type="email"
               name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="input-box"
-            />
-            <p>Email</p>
+            />            
           </div>
           <div className="input-fields">
+          <p className="text-light">Password</p>
             <input
               type="password"
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="input-box"
-            />
-            <p>Password</p>
+            />            
           </div>
-          <input type="submit" value="Login" className="btn" />
+          <input type="submit" value="Login" className="admin-login-btn" />
         </form>
       </div>
       <div className="login-image">
@@ -75,6 +76,7 @@ function AdminLogin() {
           alt="Login Image"
           className="loginimage"
         />
+      </div>
       </div>
     </div>
   );

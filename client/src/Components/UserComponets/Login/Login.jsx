@@ -5,6 +5,7 @@ import { FaSignInAlt } from "react-icons/fa";
 import { LoginPost } from "../../../utils/Constants";
 import { useDispatch } from "react-redux";
 import "./Login.css";
+import logo from "../Home/LOGO.png";
 import Swal from "sweetalert2";
 
 function Login() {
@@ -61,18 +62,20 @@ function Login() {
   };
 
   return (
-
+    <>
+    
     <div className="loginpage">
       <div className="background">
         <div className="shape"></div>
         <div className="shape"></div>
       </div>
       <form className="loginForm" onSubmit={(e) => handleSubmit(e)}>
+      <img src={logo} alt="Logo" className="logo" style={{ width: "80px" }} />
         <h3 className="tag1">
           <FaSignInAlt /> Login
         </h3>
 
-        <label className="label1" htmlFor="username">
+        <label className="login-label1" htmlFor="username">
           Email Id
         </label>
         <input
@@ -118,6 +121,7 @@ function Login() {
         </div>
       </form>
     </div>
+    </>
   );
 }
 

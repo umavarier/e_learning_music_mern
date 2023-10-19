@@ -53,8 +53,8 @@
   border-radius: 15px;
   box-shadow: 0 2px 4px rgba(18, 2, 89, 0.1);
   transition: box-shadow 0.3s ease;
-  width: 150px; /* Increase the width */
-  height: 2 50px; /* Increase the height */
+  width: 250px; /* Increase the width */
+  height: 350px; /* Increase the height */
 }
 .teacher-card:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -65,7 +65,7 @@
   overflow: hidden;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  height: 150px; /* Adjust the height as needed */
+  height: 250px; /* Adjust the height as needed */
 }
 
 .card-img-square img {
@@ -149,11 +149,11 @@ div.statistics p span {
 }
 
 /* Banner Image */
-.banner1 img {
+/* .banner1 img {
   max-width: 150%;
-  height: auto;
-}
-/* Style the subscription section container */
+  height: auto; */
+/* } */
+  
 .subscription-section {
   background-color: #007bff; /* Blue background color */
   color: #fff; /* White text color */
@@ -204,4 +204,43 @@ div.statistics p span {
 .enroll-button:hover {
   background-color: #0056b3; /* Darker blue on hover */
 }
+.book-button {
+  width: 30%;
+    padding: 10px;
+    margin-top: 100px;
+    margin-left: 250px;
+    border: none;
+    border-radius: 5px;    
+    background-color: #067ef6;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    align-items: center;
+}
+.book-button:hover {
+  background: linear-gradient(to right, #053190, #25049e); 
+}
+.join-demo-button {
+  width: 30%;
+    padding: 10px;
+    margin-top: 100px;
+    margin-left: 250px;
+    border: none;
+    border-radius: 5px;    
+    background-color: #067ef6;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    align-items: center;
+}
+.join-demo-button:hover {
+  background: linear-gradient(to right, #053190, #25049e); 
+}
 
+.banner-home-end {
+  width:150%;
+  justify-content: center;
+  align-items: center;
+}
+
+   

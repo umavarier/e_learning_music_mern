@@ -38,10 +38,10 @@ form {
   margin-bottom: 15px;
 }
 
-label {
+.login-label1  {
   display: block;
   font-size: 14px;
-  color: #0f0c30;
+  color: #0000;
   opacity: 0.8;
   margin-bottom: 5px;
 }
@@ -52,7 +52,7 @@ input[type='email'] {
   border-color: #06023f; 
   border-radius: 5px;
   background: rgb(255, 255, 255);
-  color: #fff;
+  color: #000;
   font-size: 16px;
   outline: none;
   margin-bottom: 10px;
@@ -102,7 +102,7 @@ p a:hover {
   color: #0d8bf0;
 } */
 
-/* ToastContainer styling (you can adjust as needed) */
+
 .Toastify__toast {
   font-size: 14px;
   border-radius: 5px;

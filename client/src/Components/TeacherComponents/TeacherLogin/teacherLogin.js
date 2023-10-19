@@ -87,7 +87,7 @@ function TeacherLogin() {
   return (
     <div className="teacher-login-container">
       <form className="teacher-login-form" onSubmit={(e) => handleSubmit(e)}>
-        <h2>Teacher Login</h2>
+        <h2 className="text text-dark">Teacher Login</h2>
         <label htmlFor="email">Email</label>
         <input
           type="text"

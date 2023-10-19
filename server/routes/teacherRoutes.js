@@ -6,7 +6,7 @@ const { uploadSingleFile } = require('../util/multer1');
 const {verifyToken} = require('../midleware/verifyToken')
 const {authenticateTeacher} = require('../midleware/authTeacher')
 // const teacherController = require('../controllers/TeacherController');
-const {teacherLogin, teacherData, teacherUploadProfilePhoto, addAvailability,getAppointments, getNotifications} = require('../controllers/TeacherController')
+const {teacherLogin, teacherData, teacherUploadProfilePhoto, addAvailability,getAppointments, getNotifications, getSenderEmail} = require('../controllers/TeacherController')
 const {teacherViewCourse} = require('../controllers/TeacherController')
 
 router.post('/teacherLogin', teacherLogin);
@@ -17,5 +17,6 @@ router.post('/teacherUploadProfilePhoto', multerConfig.logRequestMiddleware, mul
 router.post('/addAvailability',authenticateTeacher,  addAvailability) 
 router.get('/teacherGetAppointments/:teacherId',getAppointments)
 router.get('/teacherGetNotifications/:teacherId', getNotifications)
+router.get('/getSenderEmail/:notificationId',getSenderEmail);
 
 module.exports = router;

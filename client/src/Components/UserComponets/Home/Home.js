@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import { Dropdown } from "react-bootstrap";
 import Carousel from "react-material-ui-carousel";
@@ -8,18 +9,55 @@ import axios from "../../../utils/axios";
 import banner2 from "./banner2.avif";
 import img from "./banner1.png";
 import Header from "./Header";
+import Pricing from "../../CourseComponent/Pricing"
 // import Notifications from "../Notification/Notifications";
 
 function Home() {
   const userId = useSelector((state) => state.user);
-  const notifications = useSelector((state) => state.notifications?.notifications);
+  const notifications = useSelector(
+    (state) => state.notifications?.notifications
+  );
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [profilePhoto, setProfilePhoto] = useState([]);
+  const [userAppointments, setUserAppointments] = useState([]);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [appointmentId, setAppointmentId] = useState(null);
+  const [buttonLabel, setButtonLabel] = useState("Join for Demo");
+  const [teacherMeetingLink, setTeacherMeetingLink] = useState("");
+  const [teacherId, setTeacherId]= useState(null)
+  const [pricingData, setPricingData] = useState([]);
+  const navigate = useNavigate();
 
-console.log("notify: "+notifications)
+  useEffect(() => {
+    // Fetch pricing data from the backend API
+    axios
+      .get("/getPricing")
+      .then((response) => {
+        setPricingData(response.data[0]?.classPricing || []);
+        console.log("pricingdata " + JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.error("Error fetching pricing data:", error);
+      });
+  }, []);
+  const handleGetStartedClick = () => {
+    navigate(`/payment/${pricingData}`);
+  };
+
+  console.log("notify: " + notifications);
   console.log(userId.userId + "     userId    ");
   useEffect(() => {
+    axios
+      .get(`/userGetAppointmentTime/${userId.userId}/`)
+      .then((response) => {
+        setUserAppointments(response.data);
+        setAppointmentId(response.data.appointmentId);
+        setTeacherId(response.data.teacherId)
+      })
+      .catch((error) => {
+        console.error("Error fetching user's appointments:", error);
+      });
     axios
       .get("/viewCourses")
       .then((response) => {
@@ -42,6 +80,45 @@ console.log("notify: "+notifications)
         console.error("Error fetching teachers:", error);
       });
   }, []);
+
+  const isAppointmentTimePassed = (appointment) => {
+    const currentTime = new Date();
+    const [startHours, startMinutes] = appointment.startTime.split(":");
+    const [endHours, endMinutes] = appointment.endTime.split(":");
+    const appointmentStartTime = new Date(
+      currentTime.getFullYear(),
+      currentTime.getMonth(),
+      currentTime.getDate(),
+      parseInt(startHours, 10),
+      parseInt(startMinutes, 10)
+    );
+    const appointmentEndTime = new Date(
+      currentTime.getFullYear(),
+      currentTime.getMonth(),
+      currentTime.getDate(),
+      parseInt(endHours, 10),
+      parseInt(endMinutes, 10)
+    );
+
+    console.log("startTime: " + appointmentStartTime);
+    console.log("endTime: " + appointmentEndTime);
+    console.log("currentTime: " + currentTime);
+
+    return (
+      currentTime >= appointmentStartTime && currentTime <= appointmentEndTime
+    );
+  };
+  const isButtonEnabled =
+    userAppointments.length > 0 && isAppointmentTimePassed(userAppointments[0]);
+  const handleJoinDemo = () => {
+    if (isButtonEnabled) {
+      // console.log("videoApp "+appointmentId)
+      navigate(`/videoRoom/${teacherId}/${appointmentId}`);
+    }
+  };
+  const handlebookDemo = () => {
+    navigate("/selectTeacherCourse");
+  };
 
   return (
     <div>
@@ -70,8 +147,18 @@ console.log("notify: "+notifications)
               </p>
             </div>
             <Link to="/select-course-teacher">
-              <button className="book-button">Book a Free Demo</button>
+            {userAppointments.length === 0 && (
+              <button className="book-button" onClick={handlebookDemo}>
+                Book a Free Demo
+              </button>
+            )} 
             </Link>
+
+            {userAppointments.length > 0 && (
+              <button className="join-demo-button" onClick={handleJoinDemo}>
+                {isButtonEnabled ? "Join for Demo" : "Book a Free Demo"}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -133,84 +220,40 @@ console.log("notify: "+notifications)
         </Carousel>
       </div>
 
-      {/* pricing section
-            <br></br><br /><br/>
+      {/* pricing section */}
+            
       <div className="subscription-section">
-        <div className="container">
-          <h2>Subscription Plans</h2>
-          <div className="subscription-cards">
-            <div className="subscription-card">
-              <h3>BASIC</h3>
-              <p>4 Classes / Month</p>
-              <p>₹ 3600</p>
-              <p>
-                <span className="discounted-price">₹ 4000</span> 10% OFF
-              </p>
-              <p>Beginner Lessons</p>
-              <p>4 Online Classes</p>
-              <p>60 min / Class</p>
-              <p>Regional / English Instructions</p>
-              <button className="enroll-button">Enroll Now</button>
+      <h1 className="text-dark">Our Pricing</h1>
+      <div className="pricing-cards">
+          {pricingData.map((pricingPlan, index) => (
+            <div className="pricing-card" key={index}>
+              <div className="pricing-card-header">
+                {/* <div className="pricing-card-number">{pricingPlan.planNumber}</div> */}
+                <h3 className="pricing-plan-name">{pricingPlan.planName}</h3>
+              </div>
+              <div className="pricing-card-content">
+                <p>{pricingPlan.numberOfClasses} Classes</p>
+                <p className="pricing-price">₹ {pricingPlan.price}</p>
+                <p>Beginner Lessons</p>
+                <p>8 Online Classes</p>
+                <p>45 min / Class</p>
+                <p>Regional / English Instructions</p>
+              </div>
+              <button
+                className="get-started-button"
+                onClick={() => handleGetStartedClick(pricingPlan)}
+              >
+                Get Started
+              </button>
             </div>
-            <div className="subscription-card">
-              <h3>BASIC</h3>
-              <p>4 Classes / Month</p>
-              <p>₹ 3600</p>
-              <p>
-                <span className="discounted-price">₹ 4000</span> 10% OFF
-              </p>
-              <p>Beginner Lessons</p>
-              <p>4 Online Classes</p>
-              <p>60 min / Class</p>
-              <p>Regional / English Instructions</p>
-              <button className="enroll-button">Enroll Now</button>
-            </div>
-            <div className="subscription-card">
-              <h3>BASIC</h3>
-              <p>4 Classes / Month</p>
-              <p>₹ 3600</p>
-              <p>
-                <span className="discounted-price">₹ 4000</span> 10% OFF
-              </p>
-              <p>Beginner Lessons</p>
-              <p>4 Online Classes</p>
-              <p>60 min / Class</p>
-              <p>Regional / English Instructions</p>
-              <button className="enroll-button">Enroll Now</button>
-            </div>
-            <div className="subscription-card">
-              <h3>BASIC</h3>
-              <p>4 Classes / Month</p>
-              <p>₹ 3600</p>
-              <p>
-                <span className="discounted-price">₹ 4000</span> 10% OFF
-              </p>
-              <p>Beginner Lessons</p>
-              <p>4 Online Classes</p>
-              <p>60 min / Class</p>
-              <p>Regional / English Instructions</p>
-              <button className="enroll-button">Enroll Now</button>
-            </div>
-            <div className="subscription-card">
-              <h3>BASIC</h3>
-              <p>4 Classes / Month</p>
-              <p>₹ 3600</p>
-              <p>
-                <span className="discounted-price">₹ 4000</span> 10% OFF
-              </p>
-              <p>Beginner Lessons</p>
-              <p>4 Online Classes</p>
-              <p>60 min / Class</p>
-              <p>Regional / English Instructions</p>
-              <button className="enroll-button">Enroll Now</button>
-            </div>
-            {/* Add more subscription cards here */}
-      {/* </div>
+          ))}
         </div>
-      </div>  */}
+      </div>  
 
       {/* Banner Image */}
+    
       <div className="container mt-5">
+        <div className="banner-home-end">
         <div className="row">
           <div className="col-md-12">
             <div className="banner1">
@@ -223,6 +266,7 @@ console.log("notify: "+notifications)
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

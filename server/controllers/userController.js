@@ -5,6 +5,7 @@ const Teacher = require("../model/teacherModel");
 const Enrollment = require("../model/enrollmentModel");
 const Appointment = require("../model/appointmentModel");
 const Notification = require("../model/notificationModel");
+const Payment = require("../model/paymentModel")
 const userotp = require("../model/userOtp");
 const nodemailer = require("nodemailer");
 
@@ -362,7 +363,7 @@ const usergetUserDetails = async (req, res) => {
   try {
     // console.log(req.params.userId + "userId");
 
-    const userId = req.params.userId; 
+    const userId = req.params.userId;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -422,7 +423,7 @@ const viewTeachers = async (req, res) => {
   try {
     // Query your database to fetch the list of users who are teachers
     const teachers = await Teacher.find({ isTeacher: true });
-    
+
     res.json(teachers);
   } catch (error) {
     console.error("Error fetching teachers:", error);
@@ -449,7 +450,7 @@ const getCourseDetails = async (req, res) => {
 const getPricing = async (req, res) => {
   try {
     const pricingData = await Enrollment.find().lean();
-    console.log("pricingdata" + pricingData);
+    // console.log("pricingdata" + JSON.stringify(pricingData));
     res.json(pricingData);
   } catch (error) {
     console.error("Error fetching pricing data:", error);
@@ -458,17 +459,16 @@ const getPricing = async (req, res) => {
 };
 
 const processPayment = async (req, res) => {
+  console.log("processPayment")
   const { amount, paymentMethod, userId } = req.body;
-
-  // Save payment details
+  // console.log("req.body"+JSON.stringify(req.body))
   const payment = new Payment({
     amount,
     paymentMethod,
     userId,
   });
-
   await payment.save();
-
+  console.log("payment "+payment)
   res.json({ success: true, message: "Payment processed successfully" });
 };
 
@@ -534,11 +534,11 @@ const userGetTeachersTiming = async (req, res) => {
   }
 };
 const bookDemo = async (req, res) => {
-  console.log("book-demo")
+  console.log("book-demo");
   try {
     const { course, teacher, token, dayOfWeek, startTime, endTime } = req.body;
     const studentId = req.user._id;
-    console.log('user:'+req.user._id )
+    console.log("user:" + req.user._id);
     const newAppointment = new Appointment({
       studentId,
       teacherId: teacher,
@@ -550,8 +550,8 @@ const bookDemo = async (req, res) => {
 
     await newAppointment.save();
 
-    const adminId = "adminUserId"; 
-    const teacherId = teacher; 
+    const adminId = "adminUserId";
+    const teacherId = teacher;
     const message = `New appointment booked by user: ${studentId}`;
 
     // const adminNotification = new Notification({
@@ -564,14 +564,17 @@ const bookDemo = async (req, res) => {
     const teacherNotification = new Notification({
       sender: studentId,
       receiver: teacherId,
-      message :message,
+      message: message,
       appointment: newAppointment._id,
     });
 
     // await Promise.all([adminNotification.save(), teacherNotification.save()]);
-     await Promise.all([teacherNotification.save()]);
+    await Promise.all([teacherNotification.save()]);
 
-    res.status(201).json({ message: "Booking successful!",appointmentId:newAppointment._id });
+    res.status(201).json({
+      message: "Booking successful!",
+      appointmentId: newAppointment._id,
+    });
   } catch (error) {
     console.error("Error booking", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -579,15 +582,14 @@ const bookDemo = async (req, res) => {
 };
 
 const getNotifications = async (req, res) => {
-  console.log("getnot")
+  console.log("getnot");
   const userId = req.body;
-  console.log("msguser: "+req.body._id)
+  console.log("msguser: " + req.body._id);
   try {
     const notifications = await Notification.find({ sender: userId }).sort({
       createdAt: -1,
-      
     });
-    console.log("msg "+notifications)
+    console.log("msg " + notifications);
 
     res.json(notifications);
   } catch (error) {
@@ -597,10 +599,10 @@ const getNotifications = async (req, res) => {
 };
 
 const sendNotifications = async (req, res) => {
-  console.log("sender: ")
+  console.log("sender: ");
   try {
-    const { receiver, message,token } = req.body;
-    console.log('user:'+req.user._id )
+    const { receiver, message, token } = req.body;
+    console.log("user:" + req.user._id);
     const sender = req.user._id;
     const newNotification = new Notification({
       sender,
@@ -617,19 +619,21 @@ const sendNotifications = async (req, res) => {
   }
 };
 
-const checkAppointmentTiming = async(req,res) => {
+const checkAppointmentTiming = async (req, res) => {
   const { appointmentId } = req.params;
-  console.log("appid: "+JSON.stringify(req.params))
+  console.log("appid: " + JSON.stringify(req.params));
 
   try {
     const appointment = await Appointment.findById(appointmentId);
 
     if (!appointment) {
-      return res.status(404).json({ message: 'Appointment not found' });
+      return res.status(404).json({ message: "Appointment not found" });
     }
 
     // Parse the appointment time and current time as JavaScript Date objects
-    const appointmentTime = new Date(`${appointment.dayOfWeek}T${appointment.startTime}`);
+    const appointmentTime = new Date(
+      `${appointment.dayOfWeek}T${appointment.startTime}`
+    );
     const currentTime = new Date();
 
     // Check if the current time has passed the appointment time
@@ -637,11 +641,54 @@ const checkAppointmentTiming = async(req,res) => {
 
     res.json({ isTimePassed });
   } catch (error) {
-    console.error('Error checking appointment timing:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error checking appointment timing:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
+const userGetAppointmentTime = async (req, res) => {
+  console.log("ugat");
+
+  const userId = req.params.userID;
+  console.log("userAppId  ", userId);
+  try {
+    const currentTime = new Date();
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const currentDayOfWeek = daysOfWeek[currentTime.getUTCDay()];
+
+    const userAppointments = await Appointment.find({
+      studentId: userId,
+      dayOfWeek: currentDayOfWeek,
+      startTime: {
+        $lte: `${currentTime.getHours()}:${currentTime.getMinutes()}`,
+      },
+      endTime: {
+        $gte: `${currentTime.getHours()}:${currentTime.getMinutes()}`,
+      },
+    });
+    
+
+    console.log("userAppointments " + userAppointments);
+    if (userAppointments.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No matching appointments found." });
+    }
+
+    res.status(200).json(userAppointments);
+  } catch (error) {
+    console.error("Error fetching user's appointments:", error);
+    res.status(500).json({ error: "Error fetching appointments" });
+  }
+};
 
 module.exports = {
   userSignup,
@@ -664,4 +711,5 @@ module.exports = {
   getNotifications,
   sendNotifications,
   checkAppointmentTiming,
+  userGetAppointmentTime,
 };

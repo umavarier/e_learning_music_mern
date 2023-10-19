@@ -178,15 +178,15 @@ function Profile() {
                   {courses.map((course) => (
                     <li className="list-group-item" key={course.id}>
                       <h5>{course.title}</h5>
-                      <p>Category: {course.name}</p>
-                      <p>Instructor: {course.instructor}</p>
-                      <p>Price: ${course.price}</p>
-                      <button
+                      <p> {course.name}</p>
+                      {/* <p>Instructor: {course.instructor}</p>
+                      <p>Price: ${course.price}</p> */}
+                      {/* <button
                         onClick={() => enrollInCourse(course.id)}
                         className="btn btn-primary"
                       >
                         Enroll
-                      </button>
+                      </button> */}
                     </li>
                   ))}
                 </ul>

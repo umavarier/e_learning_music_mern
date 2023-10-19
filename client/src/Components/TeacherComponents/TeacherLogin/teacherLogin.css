@@ -5,20 +5,19 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-      url(''); /* Replace with your background image */
+    background:url('../../../../public/images/checkout.jpeg'); 
     background-size: cover;
     background-position: center;
   }
   
   .teacher-login-form {
-    background: rgba(255, 255, 255, 0.1);
+    background: #B0DBF1;
     backdrop-filter: blur(5px);
     border-radius: 10px;
     padding: 20px;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
+    max-width: 600px;
     width: 100%;
     color: #fff;
   }
@@ -32,6 +31,7 @@
     display: block;
     font-size: 18px;
     margin-top: 20px;
+    color:#000;
   }
   
   .teacher-login-form input[type="text"],
@@ -43,7 +43,7 @@
     background: rgba(255, 255, 255, 0.2);
     border: none;
     border-radius: 5px;
-    color: #fff;
+    color: #000;
     outline: none;
   }
   
@@ -52,7 +52,7 @@
     margin-top: 20px;
     padding: 10px;
     background: #2196F3;
-    color: #fff;
+    color: #000;
     border: none;
     border-radius: 5px;
     font-size: 18px;

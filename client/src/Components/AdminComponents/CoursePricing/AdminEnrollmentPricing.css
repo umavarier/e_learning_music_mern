@@ -1,72 +1,58 @@
 /* AdminEnrollmentPricing.css */
 
 .admin-enrollment-pricing-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh; /* Minimum viewport height */
-    background-color: #f0f0f0;
-  }
-  
-  .admin-enrollment-pricing {
-    font-family: Arial, sans-serif;
-    max-width: 400px; /* Adjust the max width as needed */
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-  }
-  
-  h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-  
-  input[type="number"] {
-    padding: 8px;
-    margin-bottom: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  div[class^="class-item"] {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 10px;
-  }
-  
-  button[type="button"] {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  button[type="button"]:hover {
-    background-color: #0056b3;
-  }
-  
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  li {
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-  
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.admin-enrollment-pricing h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.admin-enrollment-pricing form {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-enrollment-pricing label {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.admin-enrollment-pricing input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.admin-enrollment-pricing button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.admin-enrollment-pricing button:hover {
+  background-color: #0056b3;
+}
+
+.admin-enrollment-pricing ul {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-enrollment-pricing li {
+  font-size: 16px;
+  margin: 5px 0;
+}

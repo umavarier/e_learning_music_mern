@@ -40,30 +40,30 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PayPalButton } from "react-paypal-button-v2";
 
-export default function PayPal({ amount }) {
-  const onSuccess = (details, data) => {
-    console.log("Payment successful", details, data);
-    // Handle successful payment here (e.g., update your backend)
+export default function PayPal({ amount,onSuccess }) {
+  const handleSuccess = (details, data) => {    
+    console.log('Payment successful', details);
+    if (onSuccess) {
+      onSuccess(details);
+    }
   };
-
   const onError = (err) => {
     console.error("Payment error", err);
-    // Handle payment error here
+    
   };
 
   const onCancel = (data) => {
-    console.log("Payment canceled", data);
-    // Handle payment cancellation here
+    console.log("Payment canceled", data);    
   };
 
   return (
     <PayPalButton
       amount={amount}
       currency="CAD"
-      onSuccess={onSuccess}
+      onSuccess={handleSuccess}
       onError={onError}
       onCancel={onCancel}
-      style={{ shape: "rect" }} // You can customize the button style
+      style={{ shape: "rect" }} 
     />
   );
 }

@@ -5,27 +5,26 @@ import AdminHeader from "../Header/AdminHeader";
 import AdminSidebar from "../Header/AdminSidebar";
 
 function AdminEnrollmentPricing() {
-  const [enrollmentFee, setEnrollmentFee] = useState(0);
   const [classPricing, setClassPricing] = useState([]);
   const [numberOfClasses, setNumberOfClasses] = useState("");
   const [classPrice, setClassPrice] = useState("");
+  const [planName, setPlanName] = useState("");
+  const [planNumber, setPlanNumber] = useState(1);
 
   const handleAddClassPricing = () => {
-    console.log("class " + classPrice);
-    console.log("classNumber " + numberOfClasses);
-    if (numberOfClasses && classPrice) {
+    if (numberOfClasses && classPrice && planName && planNumber) {
       const updatedClassPricing = [
         ...classPricing,
         {
+          planNumber: parseInt(planNumber),
+          planName:planName,
           numberOfClasses: parseInt(numberOfClasses),
           price: parseFloat(classPrice),
         },
       ];
-      updatedClassPricing.forEach((item) => {
-        console.log("numberOfClasses: " + item.numberOfClasses);
-        console.log("classPrice: " + item.price);
-      });
       setClassPricing(updatedClassPricing);
+      setPlanNumber(1);
+      setPlanName("");
       setNumberOfClasses("");
       setClassPrice("");
     }
@@ -36,12 +35,13 @@ function AdminEnrollmentPricing() {
       // Send a POST request to update enrollment pricing on the backend
       console.log("Class Pricing:");
       classPricing.forEach((item) => {
+        console.log("Plan Number: " + item.planNumber);
+        console.log("Name of Plan: " + item.planName);
         console.log("Number of Classes: " + item.numberOfClasses);
         console.log("Class Price: " + item.price);
       });
 
       await axios.post("/adminUpdateEnrollmentPricing", {
-        // enrollmentFee,
         classPricing,
       });
       alert("Enrollment pricing updated successfully");
@@ -63,12 +63,26 @@ function AdminEnrollmentPricing() {
               <div className="admin-enrollment-pricing">
                 <h2>Admin Enrollment Pricing</h2>
                 <form>
-                  {/* <label>
-          Enrollment Fee:
-          <input type="number" value={enrollmentFee} onChange={(e) => setEnrollmentFee(e.target.value)} />
-        </label> */}
                   <br />
                   <div>
+                    <label>
+                      Plan Number:
+                      <input
+                        type="number"
+                        value={planNumber}
+                        onChange={(e) => setPlanNumber(e.target.value)}
+                      />
+                    </label>
+
+                    <label>
+                      Name of the Plan:
+                      <input
+                        type="string"
+                        value={planName}
+                        onChange={(e) => setPlanName(e.target.value)}
+                      />
+                    </label>
+
                     <label>
                       Number of Classes:
                       <input
@@ -92,9 +106,9 @@ function AdminEnrollmentPricing() {
                   <br></br>
                   <ul>
                     {classPricing.map((item, index) => (
-                      <li
-                        key={index}
-                      >{`${item.numberOfClasses} classes - ${item.price} rupees`}</li>
+                      <li key={index}>
+                        {`Plan ${item.planNumber}: ${item.PlanName}, ${item.numberOfClasses} classes - ${item.price} rupees`}
+                      </li>
                     ))}
                   </ul>
                   <button type="button" onClick={handleSubmit}>

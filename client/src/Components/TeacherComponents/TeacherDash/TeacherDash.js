@@ -15,7 +15,6 @@ function TeacherDash() {
           <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div
               style={{
-                backgroundColor: '#C9DAED',
                 minHeight: '100vh',
                 color: 'black',
               }}
@@ -25,7 +24,7 @@ function TeacherDash() {
                   <div className="container-fluid">
                     <div className="card-body">
                       <h2 className="mb-4">TEACHER DASHBOARD</h2>
-                      <Link to="/teacherAvailability">Manage Availability</Link>
+                      {/* <Link to="/teacherAvailability">Manage Availability</Link> */}
                     </div>
                   </div>
                 </div>

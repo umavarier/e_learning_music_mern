@@ -2,9 +2,10 @@
 
 /* Sidebar background color */
 .sidebar {
-  background-color: #ffffff; /* White background */
-  border-right: 1px solid #ccc; /* Right border */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  background-color: #B0DBF1; 
+  border-right: 1px solid #ccc; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  margin-bottom : 20px;
 }
 
 /* Sidebar links styling */

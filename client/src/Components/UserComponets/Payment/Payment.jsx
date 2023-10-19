@@ -1,128 +1,144 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import './payment.css'
+import "./payment.css";
 import PayPal from "../PayPal/PayPal";
-import axios from '../../../utils/axios'
+import axios from "../../../utils/axios";
+import Header from "../Home/Header"
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const PaymentPage = () => {
   const location = useLocation();
-  const { selectedPricing } = location.state || {};
-  const [paymentMethod, setPaymentMethod] = useState("creditCard"); // Default payment method
+  const { pricingPlan } = location.state || {};
+  const [paymentMethod, setPaymentMethod] = useState("creditCard"); 
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const [courses, setCourses] = useState([]);
+  const [courseId,setCourseId] = useState("")
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [checkout, setCheckout]= useState(false)
+  const [enrollmentCompleted, setEnrollmentCompleted] = useState(false);
+  const [checkout, setCheckout] = useState(false);
   const navigate = useNavigate();
- 
-  const handlePayment = () => {
-    // setPaymentSuccess(true);
-    // setCheckout(true)
+  const userId = useSelector((state) => state.user.userId);
 
-    const handlePayment = async () => {
-        try {
-          // Send a request to backend to process the payment
-          const response = await axios.post('/process-payment', {
-            amount: selectedPricing.price,
-            paymentMethod: paymentMethod,
-          });
-    
-          // If payment is successful, set paymentSuccess to true
-          if (response.data.success) {
-            setPaymentSuccess(true);
-          } else {
-            // Handle payment failure
-            console.error("Payment failed.");
-          }
-        } catch (error) {
-          // Handle errors
-          console.error("Error processing payment: ", error);
-        }
-      };
-  };
+  useEffect(() => {    
+    axios.get("/viewCourses").then((response) => {
+     
+      if (response.data && response.data.length > 0) {
+        setCourses(response.data);
+        setCourseId(response.data[0]._id);
+      }
+    });
+  }, []);
 
-  const enrollUser = async () => {
+  const handlePayment =async () => {
     try {
-      
-      const response = await axios.post('/enroll-user', {
-        userId: selectedPricing.userId, 
-        courseId: selectedPricing.courseId,
+      console.log("pricingplan " + JSON.stringify(pricingPlan));
+      console.log("pricingPlan.price"+pricingPlan.price)
+      console.log("paymentMethod "+paymentMethod)
+      console.log("userId"+userId)
+      const response = await axios.post("/process-payment", {
+        amount: pricingPlan.price,
+        paymentMethod: paymentMethod,
+        userId: userId,
       });
-
+      console.log(response.data +" paymentres")
       if (response.data.success) {
-        // User has been successfully enrolled in the course
-        alert("Payment successful. You are now enrolled in the course.");
-        navigate('/'); 
+        setPaymentSuccess(true);
       } else {
-        // Handle enrollment failure
+        console.error("Payment failed.");
+      }
+    } catch (error) {
+      console.error("Error processing payment: ", error);
+    }
+  }
+  console.log(paymentSuccess+"  what???")
+  const enrollUser = async () => {
+    console.log("enrol")
+    try {
+      console.log("pricingPlan.courseId "+courseId)
+      console.log("pricingPlan.userId "+userId)
+      const response = await axios.post("/courses/enroll-user", {
+        userId: userId,
+        courseId: courseId,
+      });
+      console.log("enrolres" + JSON.stringify(response.data))
+      if (response.data.success) {
+        alert("Payment successful. You are now enrolled in the course.");
+        navigate("/"); 
+      } else {
         console.error("Enrollment failed.");
       }
     } catch (error) {
-      // Handle any errors that occur during the enrollment process
       console.error("Error enrolling user: ", error);
     }
   };
+  
   useEffect(() => {
-    if (paymentSuccess) {      
+    if (paymentSuccess) {
       enrollUser();
     }
   }, [paymentSuccess]);
 
   return (
-    <div className="payment-container"> 
+    <>
+    <Header />
+    <div className="payment-container">
       <h2>Payment Page</h2>
-      <div>
-        <h3>Selected Pricing:</h3>
-        <p className="pricing-info">Plan Name: {selectedPricing?.planName}</p>
-        <p className="pricing-info">Number of Classes: {selectedPricing.numberOfClasses}</p>
-        <p className="pricing-info">Price: ₹{selectedPricing.price}</p>
-      </div>
-
+      {pricingPlan && (
+        <div>
+          <h3>Selected Pricing:</h3>
+          <p className="pricing-info">Plan Name: {pricingPlan?.planName}</p>
+          <p className="pricing-info">
+            Number of Classes: {pricingPlan.numberOfClasses}
+          </p>
+          <p className="pricing-info">Price: ₹{pricingPlan.price}</p>
+        </div>
+      )}
       <h3>Select Payment Method:</h3>
       <div>
-        {/* <label>
-          <input
-            type="radio"
-            value="creditCard"
-            checked={paymentMethod === "creditCard"}
-            onChange={() => setPaymentMethod("creditCard")}
-          />
-          Credit Card
-        </label>
-        
         <label>
           <input
             type="radio"
-            value="debitCard"
-            checked={paymentMethod === "debitCard"}
-            onChange={() => setPaymentMethod("debitCard")}
-          />
-          Debit Card
-        </label> */}
-        
-        <label>
-          <input
-            type="radio"
-            value="onlinePayemnt"
-            checked={paymentMethod === "OnlinePayment"}
-            onChange={() => setPaymentMethod("OnlinePayment")}
+            value="onlinePayment"
+            checked={paymentMethod === "onlinePayment"}
+            onChange={() => setPaymentMethod("onlinePayment")}
           />
           Online Payment
         </label>
-        
-        {/* Add more payment method options here (e.g., PayPal, etc.) */}
       </div>
-        {checkout ? (
-            <PayPal amount={selectedPricing.price} />
-        ): (
-      <button className="payment-button" onClick={handlePayment}>Pay Now</button>
+      <h3>Select Course:</h3>
+      <div>
+        <select
+          value={selectedCourse}
+          onChange={(e) => setSelectedCourse(e.target.value)}
+        >
+          <option value="">Select a course</option>
+          {courses.map((course) => (
+            <option key={course._id} value={course._id}>
+              {course.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {checkout ? (
+        <PayPal amount={pricingPlan.price} onSuccess={handlePayment} />
+      ) : (
+        <button
+          className="payment-button"
+          onClick={() => setCheckout(true)} 
+        >
+          Pay Now
+        </button>
       )}
-      {paymentSuccess && (
-        <div>
-          <p>Payment Successful!</p>
-         alert("payment success. enrolled")
-        </div>
+      {paymentSuccess && !enrollmentCompleted && (
+        <p>Processing enrollment...</p>
+      )}
+      {enrollmentCompleted && (
+        <p>Enrollment Successful! You are now enrolled in the course.</p>
       )}
     </div>
+    </>
   );
 };
-
 export default PaymentPage;

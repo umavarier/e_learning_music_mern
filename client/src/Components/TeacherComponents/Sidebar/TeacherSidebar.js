@@ -41,8 +41,8 @@ function TeacherSidebar() {
             </Link>
           </li>
           <li className="nav-item">
-            <Link
-              to={`/teacherViewCourse?teacherId=${teacherId}`}
+            {/* <Link
+              to={`/teachers/teacherViewCourse?teacherId=${teacherId}`}
               className="nav-link black-text"
               style={{
                 marginTop: '50px',
@@ -53,8 +53,8 @@ function TeacherSidebar() {
               }}
             >
               View Courses
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               to={'/addCourse'}
               className="nav-link black-text"
               style={{
@@ -66,7 +66,7 @@ function TeacherSidebar() {
               }}
             >
               Add Courses 
-            </Link>
+            </Link> */}
             <Link
               to={'/teacherProfile'}
               className="nav-link black-text"

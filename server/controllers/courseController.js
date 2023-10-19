@@ -74,19 +74,18 @@ const getCourseById = async (req, res) => {
   }
 };
 
-const enrollUser = async (req, res) => {
-  // Handle course enrollment logic
+const enrollUser = async (req, res) => {  
   const { userId, courseId } = req.body;
+  console.log("enroll"+req.body.courseId)
 
-  try {
-    // Find the user by ID and update the enrolled courses
+  try {   
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    user.coursesEnrolled.push(courseId)
+    user.enrolledCourses.push(courseId)
 
     await user.save();
 

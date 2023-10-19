@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import TeacherHeader from "../Header/TeacherHeader";
 import TeacherSidebar from "../Sidebar/TeacherSidebar";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setTeacherProfilePicture } from "../../../Redux/teacherSlice";
-import {
-  selectTeacherId,
-  selectTeacherProfilePicture,
-} from "../../../Redux/teacherSlice";
+import {selectTeacherId, selectTeacherProfilePicture} from "../../../Redux/teacherSlice";
 import axios from "../../../utils/axios";
+import './teacherProfile.css';
 
 const TeacherProfile = () => {
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -20,15 +19,17 @@ const TeacherProfile = () => {
   const profilePic = useSelector(selectTeacherProfilePicture);
   const [newEmail, setNewEmail] = useState("");
   const [availableTimings, setAvailableTimings] = useState([]);
-  const [dayOfWeek, setDayOfWeek] = useState("Sunday"); // Default: Sunday
+  const [dayOfWeek, setDayOfWeek] = useState("Sunday");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [specializations, setSpecializations] = useState("");
   const [isTimePassed, setIsTimePassed] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [appointments, setAppointments] = useState([]);
-  const [appointmentId, setAppointmentId] = useState(null); // Initialize appointmentId
+  const [appointmentId, setAppointmentId] = useState(null);
+  const [senderEmail, setSenderEmail] = useState(null);
 
+  const navigate = useNavigate()
   useEffect(() => {
     console.log("pro pic from state", profilePic);
     setPropic(profilePic);
@@ -91,7 +92,7 @@ const TeacherProfile = () => {
 
   const handleChangePhoto = () => {
     console.log("here6 ");
-    
+
     document.getElementById("profilePhotoInput").click();
   };
 
@@ -99,7 +100,6 @@ const TeacherProfile = () => {
     console.log("here7 ");
     e.preventDefault();
 
-    
     if (pdfFile) {
       const pdfFormData = new FormData();
       pdfFormData.append("pdfFile", pdfFile);
@@ -264,56 +264,84 @@ const TeacherProfile = () => {
   };
 
   useEffect(() => {
-    console.log("teacherId :::::"+teacherId)
+    console.log("teacherId :::::" + teacherId);
     const token = localStorage.getItem("token");
-    console.log('t-app')    
+    console.log("t-app");
     axios
       .get(`/teachers/teacherGetAppointments/${teacherId}`, {
         headers: {
           Authorization: token,
         },
-      })    .then((response) => {
+      })
+      .then((response) => {
         setAppointments(response.data);
-        console.log("app-response " + JSON.stringify(response.data));
-  
-        // Check appointment times and enable the "Join for Demo" button
+        // console.log("app-response " + JSON.stringify(response.data));       
         const currentTime = new Date();
-        const currentDayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][currentTime.getUTCDay()];
-  
+        const currentDayOfWeek = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ][currentTime.getUTCDay()];
+
         for (const appointment of response.data) {
           if (appointment.dayOfWeek === currentDayOfWeek) {
             // Extract hours and minutes from the appointment's startTime
-            const [hours, minutes] = appointment.startTime.split(':');
+            const [hours, minutes] = appointment.startTime.split(":");
             const appointmentTime = new Date();
             appointmentTime.setHours(parseInt(hours, 10));
             appointmentTime.setMinutes(parseInt(minutes, 10));
-  
-            console.log("appointmentTime: " + appointmentTime);
-            console.log("current "+currentTime)
-  
+
+            // console.log("appointmentTime: " + appointmentTime);
+            // console.log("current " + currentTime);
+
             if (currentTime >= appointmentTime) {
-              setIsButtonDisabled(false);              
-              setAppointmentId(appointment._id); 
-              break; 
+              setIsButtonDisabled(false);
+              setAppointmentId(appointment._id);
+              break;
             }
           }
         }
       });
-      axios.get(`/teachers/teacherGetNotifications/${teacherId}`, {
+    axios
+      .get(`/teachers/teacherGetNotifications/${teacherId}`, {
         headers: {
           Authorization: token,
         },
-        
-      }).then((response) => {
-      // Filter appointments with notifications
-      console.log("notres: "+JSON.stringify(response.data))
-          
-        })  
+      })
+      .then((response) => {
+        // console.log("notres: " + JSON.stringify(response.data));
+      });
   }, [teacherId]);
 
-  const handleJoinDemo = (appointmentId) => {
-    // Implement video call logic here
-    // You can start the video call for the selected appointment
+  const handleGetSenderEmail = async (notificationId) => {
+    try {
+      const token = localStorage.getItem("token");
+      console.log("notifc " + notificationId);
+      const response = await axios.get(
+        `/teachers/getSenderEmail/${notificationId}`,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setSenderEmail(response.data.email);
+      }
+    } catch (error) {
+      console.error("Error fetching sender's email", error);
+    }
+  };
+
+  const handleJoinDemo = (appointmentId,teacherId) => {
+    console.log("Starting video demo....");
+    console.log("Navigating to")
+    // console.log("Navigating to", `/videoRoom/${teacherId}/${appointmentId}`);
+      navigate(`/videoRoom/${teacherId}/${appointmentId}`);
   };
 
   return (
@@ -323,18 +351,34 @@ const TeacherProfile = () => {
         <div className="row">
           <TeacherSidebar />
           <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            
             <h2>Teacher Profile</h2>
             <div className="position-relative mb-3">
               <div className="position-absolute top-0 end-0">
-            <button
-                onClick={() => handleJoinDemo(appointmentId)}
-                disabled={isButtonDisabled}
-                className={`join-button ${isButtonDisabled ? "disabled" : ""}`}
-              >
-                Join for Demo
-              </button>
-            </div>
+                <button
+                  onClick={() => handleJoinDemo(appointmentId,teacherId)}
+                  disabled={isButtonDisabled}
+                  className={`join-button ${
+                    isButtonDisabled ? "disabled" : ""
+                  }`}
+                >
+                  Join for Demo
+                </button>
+                {/* {!isButtonDisabled && appointmentId && ( */}
+                {!isButtonDisabled && appointmentId && (
+                  <button
+                    onClick={() => handleGetSenderEmail(appointmentId)}
+                    // className="btn btn-primary get-email-button"
+                    className={`getEmail-button ${isButtonDisabled ? "disabled" : ""}`}
+                  >
+                    Get Email
+                  </button>
+                )}
+                {senderEmail && (
+                  <div className="mt-2">
+                    <strong>Sender's Email:</strong> {senderEmail}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="row">
               <div className="col-md-4 mb-4">
@@ -373,7 +417,7 @@ const TeacherProfile = () => {
 
               <div className="col-md-8">
                 <div className="btn-group mb-3" role="group">
-                  <label
+                  {/* <label
                     htmlFor="pdfFile"
                     className="btn btn-primary"
                     style={{ cursor: "pointer" }}
@@ -414,18 +458,18 @@ const TeacherProfile = () => {
                       onChange={handleInstagramReelChange}
                       style={{ display: "none" }}
                     />
-                  </label>
+                  </label> */}
                 </div>
                 <form onSubmit={handleSubmit}>
                   {/* Add file upload fields for additional files if needed */}
-                  <button type="submit" className="btn btn-primary">
+                  {/* <button type="submit" className="btn btn-primary">
                     Submit
-                  </button>
+                  </button> */}
                 </form>
               </div>
             </div>
 
-            <div className="form-group">
+            {/* <div className="form-group">
               <label>New Email:</label>
               <input
                 type="email"
@@ -433,8 +477,8 @@ const TeacherProfile = () => {
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
               />
-            </div>
-            <div className="form-group">
+            </div> */}
+            {/* <div className="form-group">
               <label>Specializations (comma-separated):</label>
               <input
                 type="text"
@@ -442,7 +486,7 @@ const TeacherProfile = () => {
                 value={specializations}
                 onChange={(e) => setSpecializations(e.target.value)}
               />
-            </div>
+            </div> */}
 
             <div className="availability-form">
               <h3>Add Available Timings</h3>
@@ -506,7 +550,7 @@ const TeacherProfile = () => {
                   <ul>
                     {availableTimings.map((timing, index) => (
                       <li key={index}>
-                        {getDayOfWeekName(timing.dayOfWeek)}: {timing.startTime}{" "}
+                        {getDayOfWeekName(timing.dayOfWeek)} {timing.startTime}{" "}
                         - {timing.endTime}
                         <button
                           onClick={() => handleRemoveAvailability(index)}

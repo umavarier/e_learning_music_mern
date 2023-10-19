@@ -240,6 +240,29 @@ const teacherUploadProfilePhoto = async (req, res) => {
     }
   };
 
+  const getSenderEmail = async(req, res) => {
+    try {
+      const notificationId = req.params.notificationId;
+      console.log("nid "+notificationId)
+      const appointment = await Appointment.findById(notificationId);
+  
+      if (!appointment) {
+        return res.status(404).json({ message: 'Notification not found' });
+      }
+  
+      const senderUserId = appointment.studentId;
+      const senderUser = await User.findById(senderUserId);
+  
+      if (!senderUser) {
+        return res.status(404).json({ message: 'Sender user not found' });
+      }
+      res.status(200).json({ email: senderUser.email });
+    } catch (error) {
+      console.error('Error fetching sender email:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
 module.exports = {
     TeacherGetAllUsers,
     teacherLogin,
@@ -249,4 +272,5 @@ module.exports = {
     addAvailability,
     getAppointments,
     getNotifications,
+    getSenderEmail,
 }

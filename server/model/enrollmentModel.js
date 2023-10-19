@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const enrollmentSchema = new mongoose.Schema({
   classPricing: [
     {
+      planNumber:Number,
+      planName:String,
       numberOfClasses: Number,
       price: Number,
     },

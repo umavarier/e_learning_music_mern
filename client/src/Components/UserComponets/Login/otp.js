@@ -62,7 +62,7 @@ const Otp = () => {
         </div>
         <form>
           <div className="otp-form_input">
-            <label htmlFor="otp">OTP</label>
+            <label className="otp-label" htmlFor="otp">OTP</label>
             <input
               type="text-light"
               name="otp"

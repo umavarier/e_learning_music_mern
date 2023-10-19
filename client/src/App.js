@@ -36,7 +36,7 @@ import Signup from "./Pages/UserPages/SignupPage";
 import TeacherHome from "./Pages/TeacherPages/TeacherHomepage";
 import ScheduleDemo from "./Components/CourseComponent/CourseDetails";
 import Pricing from "./Components/CourseComponent/Pricing";
-import VideoRoom from "./Components/CourseComponent/VideoRoom";
+import VideoRoom from "./Components/TeacherComponents/VideoRoom";
 import Payment from './Components/UserComponets/Payment/Payment'
 import Gallery from './Components/UserComponets/Gallery/Gallery'
 import TeacherAvailabilityPage from "./Components/TeacherComponents/TeacherAvailability/TeacherAvailability.js";
@@ -88,7 +88,7 @@ function App() {
         {/* <Route path="/courses/:courseId?userId=:userId" element={<CourseDetails />}/> */}
         <Route path="/select-course-teacher" element={<CourseTeacherSelection />} /> 
         {/* <Route path="/schedule-demo" element={<ScheduleDemo />} /> */}
-        <Route path="/videoRoom/:roomId" element={<VideoRoom />} />
+        <Route path="/videoRoom/:teacherId/:appointmentId" element={<VideoRoom />} />
         <Route path="/user:userId" element={<usergetUserDetails />} />
         <Route path = '/otp' element={<Otp/>} />
         {/* <Route path="/userLoginWithOTP" element={<UserLoginwithOTP />} /> */}
