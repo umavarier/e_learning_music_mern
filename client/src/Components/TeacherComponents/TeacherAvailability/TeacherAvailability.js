@@ -77,9 +77,9 @@ function TeacherAvailabilityPage() {
   return (
     <div className="time-container">
       <h2>Manage Availability</h2>
-      <form onSubmit={handleSubmit}>
+      <form className="av-form" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="dayOfWeek">Day of the week:</label>
+          <label className="av-label" htmlFor="dayOfWeek">Day of the week:</label>
           <select
             name="dayOfWeek"
             id="dayOfWeek"
@@ -118,7 +118,7 @@ function TeacherAvailabilityPage() {
         </div>
         <button type="submit">Add Availability</button>
       </form>
-      <table>
+      <table className="av-table">
         <thead>
           <tr>
             <th>Day of the Week</th>
@@ -134,7 +134,7 @@ function TeacherAvailabilityPage() {
               <td>{item.startTime}</td>
               <td>{item.endTime}</td>
               <td>
-                <button onClick={() => handleDelete(item._id)}>Delete</button>
+                <button className="av-button"onClick={() => handleDelete(item._id)}>Delete</button>
               </td>
             </tr>
           ))}

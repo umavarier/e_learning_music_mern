@@ -3,13 +3,20 @@ import TeacherHeader from "../Header/TeacherHeader";
 import TeacherSidebar from "../Sidebar/TeacherSidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { setTeacherProfilePicture } from "../../../Redux/teacherSlice";
-import {selectTeacherId, selectTeacherProfilePicture} from "../../../Redux/teacherSlice";
+import {
+  selectTeacherId,
+  selectTeacherProfilePicture,
+} from "../../../Redux/teacherSlice";
 import axios from "../../../utils/axios";
-import './teacherProfile.css';
+import "./teacherProfile.css";
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 
 const TeacherProfile = () => {
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const [profilePhotoURL, setProfilePhotoURL] = useState(null);
   const [propic, setPropic] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
@@ -29,58 +36,51 @@ const TeacherProfile = () => {
   const [appointmentId, setAppointmentId] = useState(null);
   const [senderEmail, setSenderEmail] = useState(null);
 
-  const navigate = useNavigate()
-  useEffect(() => {
-    console.log("pro pic from state", profilePic);
-    setPropic(profilePic);
-  });
+  const navigate = useNavigate();
 
-  console.log(propic);
+  // useEffect(() => {
+  //   setPropic(profilePic);
+  // });
+
   const handleProfilePhotoChange = (e) => {
-    console.log("here1 ");
+    console.log("h");
     const file = e.target.files[0];
+    console.log("file--> " + JSON.stringify(file));
+    // Assuming 'file' is an actual file
     setProfilePhoto(file);
     dispatch(setTeacherProfilePicture(URL.createObjectURL(file)));
   };
 
   const handlePdfFileChange = (e) => {
-    console.log("here2 ");
     const file = e.target.files[0];
     setPdfFile(file);
   };
 
   const handleVideoFileChange = (e) => {
-    console.log("here3 ");
     const file = e.target.files[0];
     setVideoFile(file);
   };
 
   const handleInstagramReelChange = (e) => {
-    console.log("here4 ");
     const file = e.target.files[0];
     setInstagramReel(file);
   };
 
   const handleProfilePhotoSubmit = async () => {
-    // console.log("teacherId "+teacherId)
     if (profilePhoto) {
-      console.log("here5 ");
       const formData = new FormData();
-      console.log("formdata " + formData);
       formData.append("profilePhoto", profilePhoto);
       formData.append("teacherId", teacherId);
 
-      // Make an API request to upload the profile photo
       axios
         .post("/teachers/teacherUploadProfilePhoto", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: ` ${Cookies.get("token")}`,
           },
         })
         .then((response) => {
-          console.log("axios with formdata", response.data);
           if (response.status === 200) {
-            // Profile photo uploaded successfully, you can display a success message
             console.log("Profile photo uploaded successfully");
           }
         })
@@ -91,13 +91,32 @@ const TeacherProfile = () => {
   };
 
   const handleChangePhoto = () => {
-    console.log("here6 ");
-
     document.getElementById("profilePhotoInput").click();
   };
 
+  useEffect(() => {
+    const accessToken = Cookies.get("token");
+    console.log("fetch");
+    const decodedToken = jwt_decode(accessToken);
+    const teacherId = decodedToken.id;
+    axios
+      .get(`/teachers/fetchProfilePhoto/${teacherId}`, {
+        headers: {
+          Authorization: ` ${Cookies.get("token")}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data.profilePhotoUrl) {
+          console.log("url? " + response.data.profilePhotoUrl);
+          setProfilePhoto(response.data.profilePhotoUrl);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching profile photo", error);
+      });
+  }, []);
+
   const handleSubmit = async (e) => {
-    console.log("here7 ");
     e.preventDefault();
 
     if (pdfFile) {
@@ -108,6 +127,7 @@ const TeacherProfile = () => {
         const pdfResponse = await axios.post("/teacherUploadPdf", pdfFormData, {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${Cookies.get("accessToken")}`,
           },
         });
 
@@ -119,7 +139,6 @@ const TeacherProfile = () => {
       }
     }
 
-    // Handle video file upload
     if (videoFile) {
       const videoFormData = new FormData();
       videoFormData.append("videoFile", videoFile);
@@ -131,6 +150,7 @@ const TeacherProfile = () => {
           {
             headers: {
               "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${Cookies.get("accessToken")}`,
             },
           }
         );
@@ -143,7 +163,6 @@ const TeacherProfile = () => {
       }
     }
 
-    // Handle Instagram Reel upload
     if (instagramReel) {
       const reelFormData = new FormData();
       reelFormData.append("instagramReel", instagramReel);
@@ -155,6 +174,7 @@ const TeacherProfile = () => {
           {
             headers: {
               "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${Cookies.get("accessToken")}`,
             },
           }
         );
@@ -167,15 +187,22 @@ const TeacherProfile = () => {
       }
     }
   };
+
   const handleEmailChange = () => {
     if (newEmail) {
       axios
-        .put(`/teachers/${teacherId}/changeEmail`, { newEmail })
+        .put(
+          `/teachers/${teacherId}/changeEmail`,
+          { newEmail },
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("accessToken")}`,
+            },
+          }
+        )
         .then((response) => {
           if (response.status === 200) {
             console.log("Email address updated successfully");
-            // Update the email address in the component state if needed
-            // setTeacherEmail(newEmail);
           }
         })
         .catch((error) => {
@@ -185,7 +212,6 @@ const TeacherProfile = () => {
   };
 
   const handleAddAvailability = () => {
-    // Add the new availability to the list
     const newAvailability = {
       dayOfWeek,
       startTime,
@@ -193,23 +219,19 @@ const TeacherProfile = () => {
     };
     setAvailableTimings([...availableTimings, newAvailability]);
 
-    // Clear the input fields
-    setDayOfWeek("Sunday"); // Reset to Sunday
+    setDayOfWeek("Sunday");
     setStartTime("");
     setEndTime("");
   };
 
   const handleRemoveAvailability = (index) => {
-    // Remove the availability at the given index
     const updatedTimings = [...availableTimings];
     updatedTimings.splice(index, 1);
     setAvailableTimings(updatedTimings);
   };
 
   const handleSubmitTimings = async () => {
-    console.log("submit");
     try {
-      const token = localStorage.getItem("token");
       const timingsData = availableTimings.map((timing) => {
         return {
           dayOfWeek: timing.dayOfWeek,
@@ -217,18 +239,40 @@ const TeacherProfile = () => {
           endTime: timing.endTime,
         };
       });
-      await axios.post("/teachers/addAvailability", {
-        teacherId,
-        availableTimings: timingsData,
-        token,
-      });
-
-      // Handle success or error
+      console.log("--teacherid--" + Cookies.get("token"));
+      const response = await axios.post(
+        "/teachers/addAvailability",
+        {
+          teacherId,
+          availableTimings: timingsData,
+        },
+        {
+          headers: {
+            Authorization: ` ${Cookies.get("token")}`,
+          },
+        }
+      );
+      console.log("status " + response.status);
       console.log("Available timings saved successfully.");
+      if (response.status === 201) {
+        toast.success("Available timing added successfully");
+        console.log("Available timings saved successfully.");
+        setAvailableTimings([]);
+      } if (response.status === 400) {
+        const errorMessage = response.data.message; // Check for the error message
+        console.log("error "+errorMessage)
+        if (errorMessage === 'Availability with the same day, start time, and end time already exists') {
+          toast.error(errorMessage);
+        } else {
+          toast.error('Entered time already exists!!');
+        }
+      } else if (response.status === 500) {
+        toast.error("Something went wrong!!");
+      }
     } catch (error) {
-      console.error("Error saving available timings", error);
-    }
+      toast.error("Error saving available timings", error);}
   };
+
   function getDayOfWeekName(dayOfWeek) {
     const daysOfWeek = [
       "Sunday",
@@ -241,20 +285,27 @@ const TeacherProfile = () => {
     ];
     return daysOfWeek[dayOfWeek] || "";
   }
+
   const handleSpecializationsChange = () => {
     if (specializations) {
       const specializationList = specializations
         .split(",")
         .map((s) => s.trim());
       axios
-        .put(`/teachers/${teacherId}/updateSpecializations`, {
-          specializations: specializationList,
-        })
+        .put(
+          `/teachers/${teacherId}/updateSpecializations`,
+          {
+            specializations: specializationList,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+            },
+          }
+        )
         .then((response) => {
           if (response.status === 200) {
             console.log("Specializations updated successfully");
-            // Update the specialization state if needed
-            // setTeacherSpecializations(specializationList);
           }
         })
         .catch((error) => {
@@ -264,18 +315,23 @@ const TeacherProfile = () => {
   };
 
   useEffect(() => {
-    console.log("teacherId :::::" + teacherId);
-    const token = localStorage.getItem("token");
-    console.log("t-app");
+    const accessToken = Cookies.get("token");
+
+    const decodedToken = jwt_decode(accessToken);
+    const teacherId = decodedToken.id;
+
+    console.log("teacherId: " + teacherId);
+    console.log("refreshed??  " + teacherId);
+
     axios
       .get(`/teachers/teacherGetAppointments/${teacherId}`, {
         headers: {
-          Authorization: token,
+          Authorization: `Bearer ${Cookies.get("token")}`,
         },
       })
       .then((response) => {
         setAppointments(response.data);
-        // console.log("app-response " + JSON.stringify(response.data));       
+
         const currentTime = new Date();
         const currentDayOfWeek = [
           "Sunday",
@@ -289,14 +345,10 @@ const TeacherProfile = () => {
 
         for (const appointment of response.data) {
           if (appointment.dayOfWeek === currentDayOfWeek) {
-            // Extract hours and minutes from the appointment's startTime
             const [hours, minutes] = appointment.startTime.split(":");
             const appointmentTime = new Date();
             appointmentTime.setHours(parseInt(hours, 10));
             appointmentTime.setMinutes(parseInt(minutes, 10));
-
-            // console.log("appointmentTime: " + appointmentTime);
-            // console.log("current " + currentTime);
 
             if (currentTime >= appointmentTime) {
               setIsButtonDisabled(false);
@@ -306,10 +358,11 @@ const TeacherProfile = () => {
           }
         }
       });
+
     axios
       .get(`/teachers/teacherGetNotifications/${teacherId}`, {
         headers: {
-          Authorization: token,
+          Authorization: `Bearer ${Cookies.get("token")}`,
         },
       })
       .then((response) => {
@@ -319,13 +372,11 @@ const TeacherProfile = () => {
 
   const handleGetSenderEmail = async (notificationId) => {
     try {
-      const token = localStorage.getItem("token");
-      console.log("notifc " + notificationId);
       const response = await axios.get(
         `/teachers/getSenderEmail/${notificationId}`,
         {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${Cookies.get("token")}`,
           },
         }
       );
@@ -337,11 +388,8 @@ const TeacherProfile = () => {
     }
   };
 
-  const handleJoinDemo = (appointmentId,teacherId) => {
-    console.log("Starting video demo....");
-    console.log("Navigating to")
-    // console.log("Navigating to", `/videoRoom/${teacherId}/${appointmentId}`);
-      navigate(`/videoRoom/${teacherId}/${appointmentId}`);
+  const handleJoinDemo = (appointmentId, teacherId) => {
+    navigate(`/videoRoom/${teacherId}/${appointmentId}`);
   };
 
   return (
@@ -355,7 +403,7 @@ const TeacherProfile = () => {
             <div className="position-relative mb-3">
               <div className="position-absolute top-0 end-0">
                 <button
-                  onClick={() => handleJoinDemo(appointmentId,teacherId)}
+                  onClick={() => handleJoinDemo(appointmentId, teacherId)}
                   disabled={isButtonDisabled}
                   className={`join-button ${
                     isButtonDisabled ? "disabled" : ""
@@ -368,7 +416,9 @@ const TeacherProfile = () => {
                   <button
                     onClick={() => handleGetSenderEmail(appointmentId)}
                     // className="btn btn-primary get-email-button"
-                    className={`getEmail-button ${isButtonDisabled ? "disabled" : ""}`}
+                    className={`getEmail-button ${
+                      isButtonDisabled ? "disabled" : ""
+                    }`}
                   >
                     Get Email
                   </button>
@@ -385,21 +435,25 @@ const TeacherProfile = () => {
                 <div className="profile-photo">
                   {profilePhoto ? (
                     <img
-                      src={URL.createObjectURL(profilePhoto)}
+                      src={
+                        profilePhotoURL
+                          ? profilePhotoURL
+                          : `http://localhost:4000/uploads/${profilePhoto}`
+                      }
                       alt="Profile"
-                      className="img-fluid rounded-circle" // Add the 'rounded-circle' class for a circular profile photo
-                      style={{ maxWidth: "200px", maxHeight: "200px" }} // Adjust the dimensions here
+                      className="img-fluid rounded-circle"
+                      style={{ maxWidth: "200px", maxHeight: "200px" }}
                     />
                   ) : (
                     <div className="placeholder">No Photo</div>
                   )}
                 </div>
+
                 <input
                   type="file"
                   accept="image/*"
                   id="profilePhotoInput"
                   onChange={handleProfilePhotoChange}
-                  style={{ display: "none" }}
                 />
                 <button
                   className="btn btn-primary mt-2"
@@ -414,79 +468,78 @@ const TeacherProfile = () => {
                   Upload Profile Photo
                 </button>
               </div>
-
               <div className="col-md-8">
                 <div className="btn-group mb-3" role="group">
                   {/* <label
-                    htmlFor="pdfFile"
-                    className="btn btn-primary"
-                    style={{ cursor: "pointer" }}
-                  >
-                    Upload PDF
-                    <input
-                      type="file"
-                      accept=".pdf"
-                      id="pdfFile"
-                      onChange={handlePdfFileChange}
-                      style={{ display: "none" }}
-                    />
-                  </label>
-                  <label
-                    htmlFor="videoFile"
-                    className="btn btn-primary"
-                    style={{ cursor: "pointer" }}
-                  >
-                    Upload Video
-                    <input
-                      type="file"
-                      accept="video/*"
-                      id="videoFile"
-                      onChange={handleVideoFileChange}
-                      style={{ display: "none" }}
-                    />
-                  </label>
-                  <label
-                    htmlFor="instagramReel"
-                    className="btn btn-primary"
-                    style={{ cursor: "pointer" }}
-                  >
-                    Upload Instagram Reel
-                    <input
-                      type="file"
-                      accept="video/*"
-                      id="instagramReel"
-                      onChange={handleInstagramReelChange}
-                      style={{ display: "none" }}
-                    />
-                  </label> */}
+                        htmlFor="pdfFile"
+                        className="btn btn-primary"
+                        style={{ cursor: "pointer" }}
+                      >
+                        Upload PDF
+                        <input
+                          type="file"
+                          accept=".pdf"
+                          id="pdfFile"
+                          onChange={handlePdfFileChange}
+                          style={{ display: "none" }}
+                        />
+                      </label>
+                      <label
+                        htmlFor="videoFile"
+                        className="btn btn-primary"
+                        style={{ cursor: "pointer" }}
+                      >
+                        Upload Video
+                        <input
+                          type="file"
+                          accept="video/*"
+                          id="videoFile"
+                          onChange={handleVideoFileChange}
+                          style={{ display: "none" }}
+                        />
+                      </label>
+                      <label
+                        htmlFor="instagramReel"
+                        className="btn btn-primary"
+                        style={{ cursor: "pointer" }}
+                      >
+                        Upload Instagram Reel
+                        <input
+                          type="file"
+                          accept="video/*"
+                          id="instagramReel"
+                          onChange={handleInstagramReelChange}
+                          style={{ display: "none" }}
+                        />
+                      </label> */}
                 </div>
                 <form onSubmit={handleSubmit}>
                   {/* Add file upload fields for additional files if needed */}
                   {/* <button type="submit" className="btn btn-primary">
-                    Submit
-                  </button> */}
+                        Submit
+                      </button> */}
                 </form>
               </div>
             </div>
 
             {/* <div className="form-group">
-              <label>New Email:</label>
-              <input
-                type="email"
-                className="form-control"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-              />
-            </div> */}
+                  <label>New Email:</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                  />
+                </div> */}
             {/* <div className="form-group">
-              <label>Specializations (comma-separated):</label>
-              <input
-                type="text"
-                className="form-control"
-                value={specializations}
-                onChange={(e) => setSpecializations(e.target.value)}
-              />
-            </div> */}
+                  <label>Specializations (comma-separated):</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={specializations}
+                    onChange={(e) => setSpecializations(e.target.value)}
+                  />
+                </div> */}
 
             <div className="availability-form">
               <h3>Add Available Timings</h3>
@@ -498,16 +551,6 @@ const TeacherProfile = () => {
                     value={dayOfWeek}
                     onChange={(e) => setDayOfWeek(e.target.value)}
                   >
-                    {/* Options for day of the week */}
-                    {/* <option value={0}>Sunday</option>
-                    <option value={1}>Monday</option>
-                    <option value={2}>Tuesday</option>
-                    <option value={3}>Wednesday</option>
-                    <option value={4}>Thursday</option>
-                    <option value={5}>Friday</option>
-                    <option value={6}>Saturday</option>
-                  </select> */}
-
                     <option value="">Select a Day</option>
                     <option value="Sunday">Sunday</option>
                     <option value="Monday">Monday</option>

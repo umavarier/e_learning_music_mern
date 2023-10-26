@@ -1,7 +1,11 @@
 import React from "react";
 // import { GoogleOAuthProvider , GoogleLogin } from '@react-oauth/google';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from 'react-toastify'; // Import ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; 
+
 import AdminDash from "./Components/AdminComponents/Dashboard/AdminDash";
+import AdminSignUp from './Components/AdminComponents/AdminSignUp/AdminSignUp';
 import RoleSelection from "./Components/UserComponets/RoleSelection/RoleSelection";
 import AdminaddUsers from "./Components/AdminComponents/Users/AdminaddUsers";
 import UpdateUser from "./Components/AdminComponents/Users/UpdateUser";
@@ -47,6 +51,7 @@ import Notifications from "./Components/UserComponets/Notification/Notifications
 function App() {
   return (
     <Router>
+      <ToastContainer />
       <Routes>
         {/* <Route exact path="/login" element={<Login />} /> */}
         <Route path="/loginwithotp" element={<Loginwithotp />} />
@@ -55,8 +60,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/CourseDetails" element={<CourseDetails />} />
 
-        <Route path="/admin" element={<AdminPage1 />} />
-
+        <Route path="/adminLogin" element={<AdminPage1 />} />
+        <Route path="/adminSignUp" element={<AdminSignUp />} />
         <Route path="/adminHome" element={<AdminDash />} />
         <Route path="/users" element={<Usermanagement />} />
         <Route path="/teachers" element={<AdminTeacherManagement />} />
@@ -96,7 +101,7 @@ function App() {
         <Route path="/payment" element={<Payment />} />
         <Route path="/gallery" element={< Gallery />}/>
         <Route path="/notifications" element={< Notifications />}/>
-
+    
 
       </Routes>
     </Router>

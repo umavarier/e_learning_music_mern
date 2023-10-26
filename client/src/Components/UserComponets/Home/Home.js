@@ -169,7 +169,7 @@ function Home() {
         <Carousel>
           <div className="row">
             {courses.map((course) => (
-              <div className="card mb-8 rounded-card" key={course._id}>
+              <div className=" rounded-card-c mb-8" key={course._id}>
                 <Link
                   to={`courses/${course._id}?userId=${userId.userId}`}
                   className="course-link"
@@ -200,7 +200,7 @@ function Home() {
           <div className="row">
             {teachers.map((teacher) => (
               <div className="col-md-2" key={teacher.id}>
-                {/* Display teacher information here */}
+               
                 <div className="teacher-card mb-4">
                   <div className="card-img-square">
                     <img
@@ -210,8 +210,9 @@ function Home() {
                     />
                   </div>
                   <div className="card-body">
-                    <h5 className="card-title">{teacher?.userName}</h5>
-                    {/* Add more teacher details as needed */}
+                    <h3 className="card-title">{teacher?.userName}</h3>
+                    <h5 className="card-title">{teacher?.credentials}</h5>
+                   
                   </div>
                 </div>
               </div>
@@ -252,7 +253,7 @@ function Home() {
 
       {/* Banner Image */}
     
-      <div className="container mt-5">
+      <div className="container m">
         <div className="banner-home-end">
         <div className="row">
           <div className="col-md-12">
@@ -261,7 +262,7 @@ function Home() {
                 src={img}
                 className="banner"
                 alt="..."
-                style={{ width: "100%", height: "auto" }}
+                style={{ width: "70%", height: "auto" }}
               />
             </div>
           </div>

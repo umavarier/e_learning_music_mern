@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "../../../utils/axios"; // Import axios
+import axios from "../../../utils/axios";
+import './teacherLogin.css'
 import Swal from "sweetalert2";
-import "./teacherLogin.css";
+import Cookies from "js-cookie"; // Import js-cookie library
 import { useDispatch } from "react-redux";
 import { fetchTeacherData } from "../../../Redux/teacherActions";
-import setTeacherName from "../../../Redux/teacherSlice";
 import {
   setTeacher,
   setTeacherProfilePicture,
@@ -15,7 +15,6 @@ function TeacherLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
@@ -28,7 +27,6 @@ function TeacherLogin() {
         email,
         password,
       };
-      console.log("body   " + body.email);
 
       try {
         const response = await axios.post(
@@ -39,21 +37,12 @@ function TeacherLogin() {
           }
         );
 
-        console.log("response.data   " + response.data.token);
-        localStorage.setItem("token", response.data.token);
-        console.log("response  " + response.status);
-        if (response.data.teacher.isBlock) {
-          Swal.fire(
-            "Error",
-            "Teacher is blocked. Contact administrator.",
-            "error"
-          );
-        } else if (response.status === 200) {
-          Swal.fire("Good job!", "Teacher Login Success!", "success");
-          localStorage.setItem("token", response.data.token);
-          console.log("data from login ", response.data);
-          console.log("propic from db" ,response.data.teacher.profilePhoto)
-          //   dispatch(fetchTeacherData());
+        if (response.status === 200) {
+          // Save tokens in cookies
+          Cookies.set("token", response.data.token);
+          Cookies.set("refreshToken", response.data.refreshToken);
+
+          // Dispatch user data to Redux store
           dispatch(
             setTeacher({
               id: response.data.teacher._id,
@@ -62,12 +51,11 @@ function TeacherLogin() {
           );
           dispatch(
             setTeacherProfilePicture({
-              
               profilePicture: response.data.teacher.profilePhoto,
             })
           );
 
-          // Redirect to the teacher home page
+          Swal.fire("Good job!", "Teacher Login Success!", "success");
           navigate("/teacherhome");
         } else {
           Swal.fire({
@@ -75,7 +63,6 @@ function TeacherLogin() {
             title: "Oops..",
             text: "Invalid credentials!",
           });
-          console.log("Invalid credentials");
         }
       } catch (err) {
         console.error(err);

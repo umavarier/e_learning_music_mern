@@ -7,14 +7,14 @@
     margin: 20px; /* Add some margin to create space around the card */
   }
   
-  form {
+  .av-form {
     display: flex;
     flex-direction: column;
-    max-width: 300px; /* Adjust the maximum width as needed */
+    max-width: 300px; 
     margin: 0 auto;
   }
   
-  label {
+  .av-label {
     margin-bottom: 5px;
     font-weight: bold;
   }
@@ -28,26 +28,25 @@
     border-radius: 5px;
   }
   
-  button[type="submit"] {
-    background-color: #980c60; /* Button background color */
-    color: #fff; /* Text color for the button */
+  .av-button[type="submit"] {
+    background-color: #051dfd; /* Text color for the button */
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
   
-  button[type="submit"]:hover {
-    background-color: #b3006e; /* Change color on hover */
+  .av-button[type="submit"]:hover {
+    background-color: #2109fd; 
   }
   
-  table {
+  .av-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
   }
   
-  table, th, td {
+  .av-table, th, td {
     border: 1px solid #ccc;
   }
   

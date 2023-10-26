@@ -160,6 +160,7 @@ function Header() {
 
   useEffect(() => {
     if (isLoggedIn) {
+      console.log("not-user "+userId)
       axios.get(`/getNotifications/${userId}`).then((response) => {
         setUserNotifications(response.data);
         console.log("usernot:"+JSON.stringify(response))

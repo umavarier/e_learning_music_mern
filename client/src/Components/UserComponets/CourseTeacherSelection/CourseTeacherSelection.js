@@ -6,12 +6,14 @@ import Header from "../Home/Header";
 import "./CourseTeacherSelection.css";
 import { useDispatch, useSelector } from "react-redux";
 import { addNotification } from "../../../Redux/notificationSlice";
+import io from "socket.io-client";
 
 const CourseTeacherSelection = () => {
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState("");
+  const [selectedTeacherId, setSelectedTeacherId] = useState("");
   const [teacherTimings, setTeacherTimings] = useState([]);
   const [selectedTiming, setSelectedTiming] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
@@ -101,6 +103,7 @@ const CourseTeacherSelection = () => {
       });
   };
 
+  const socket = io("http://localhost:4000");
   const handleConfirmBooking = () => {
     const userToken = localStorage.getItem("userdbtoken");
     console.log("tokenfrombooking: " + userToken);
@@ -125,32 +128,39 @@ const CourseTeacherSelection = () => {
           );
           // console.log("responseAppid " + JSON.stringify(response.data));
           // fetchAppointmentTimingStatus(response.data.appointmentId);
+          console.log("teacherSocket :"+selectedTeacher)
           const isTimePassed = 
           currentTime >= new Date(selectedTimingData.startTime);
           setIsButtonDisabled(isTimePassed);
+          const socket = io("http://localhost:4000"); // Replace with your server URL
+          // Send a notification to the selected teacher
+          socket.emit("notification", {
+            to: selectedTeacher, // Teacher's socket ID
+            message: `Booking confirmed for ${selectedTimingData.dayOfWeek}, ${selectedTimingData.startTime} - ${selectedTimingData.endTime}`,
         })
+      })
         .catch((error) => {
           console.error("Error booking", error);
         });
     }
 
-    const notificationData = {
-      sender: selectedTeacher,
-      receiver: userId,
-      message: `you have a freedemo at ${selectedTimingData.startTime}`,
-      token: userToken,
-    };
-    console.log("sentnot" + notificationData);
-    dispatch(addNotification(notificationData));
+    // const notificationData = {
+    //   sender: selectedTeacher,
+    //   receiver: userId,
+    //   message: `you have a freedemo at ${selectedTimingData.startTime}`,
+    //   token: userToken,
+    // };
+    // console.log("sentnot" + notificationData);
+    // dispatch(addNotification(notificationData));
 
-    axios
-      .post("/sendNotifications", notificationData)
-      .then((response) => {
-        console.log("Notification sent successfully");
-      })
-      .catch((error) => {
-        console.error("Error sending notification", error);
-      });
+    // axios
+    //   .post("/sendNotifications", notificationData)
+    //   .then((response) => {
+    //     console.log("Notification sent successfully");
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error sending notification", error);
+    //   });
   };
 
   useEffect(() => {

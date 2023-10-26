@@ -16,7 +16,7 @@ function AdminDash() {
           <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div
               style={{
-                backgroundColor: '#AF84CEEB', // Set the background color to white
+                 // Set the background color to white
                 minHeight: '100vh',
                 color: 'black', // Set text color to black
               }}

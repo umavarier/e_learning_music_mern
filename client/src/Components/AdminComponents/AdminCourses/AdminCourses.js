@@ -1,82 +1,147 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import axios from '../../../utils/axios';
-import AdminHeader from '../Header/AdminHeader';
-import AdminSidebar from '../Header/AdminSidebar';
+import React, { useState, useEffect, Fragment } from "react";
+import axios from "../../../utils/axios";
+import AdminHeader from "../Header/AdminHeader";
+import AdminSidebar from "../Header/AdminSidebar";
+import { toast } from "react-toastify";
+import { IconButton } from "@mui/material";
+import {
+  Modal,
+  Button,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  Paper,
+} from "@mui/material";
+import { Edit, Delete } from "@mui/icons-material";
 
 function AdminCourseManagement() {
+  const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);
+  const [isEditCourseModalOpen, setEditCourseModalOpen] = useState(false);
+  const [courses, setCourses] = useState([]);
   const [course, setCourse] = useState({
-    name: '',
-    // instructorIds: [], // Admin selects instructors from a list
-    duration: '',
-    level: '',
-    description: '',
-    image: '',
-    // price: 0,
-    // startDate: '',
-    // endDate: '',
-    // enrollments: 0,
-    // ratings: [],
-    // pricing: [],
-    // syllabus: [],
+    name: "",
+    duration: "",
+    level: "",
+    description: "",
+    image: "",
   });
 
-  const [instructors, setInstructors] = useState([]);
-  const [selectedInstructors, setSelectedInstructors] = useState([]);
+  const [editCourse, setEditCourse] = useState(null);
 
-  // useEffect(() => {
-  //   // Fetch the list of instructors from the server
-  //   axios.get('/teachers') // Adjust the API endpoint to fetch instructors
-  //     .then((response) => {
-  //       setInstructors(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching instructors:', error);
-  //     });
-  // }, []);
+  const openAddCourseModal = () => {
+    setAddCourseModalOpen(true);
+  };
+
+  const closeAddCourseModal = () => {
+    setAddCourseModalOpen(false);
+  };
+
+  const openEditCourseModal = (course) => {
+    console.log("courseedt " + course);
+    setEditCourse(course);
+    setEditCourseModalOpen(true);
+  };
+
+  const closeEditCourseModal = () => {
+    setEditCourse(null);
+    setEditCourseModalOpen(false);
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditCourse({ ...editCourse, [name]: value });
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCourse({ ...course, [name]: value });
   };
 
-  const handleInstructorChange = (e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
-    setSelectedInstructors(selectedOptions);
-    setCourse({ ...course, instructorIds: selectedOptions });
-  };
-
   const handleImageChange = (e) => {
     const imageFile = e.target.files[0];
     setCourse({ ...course, image: imageFile });
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    axios.post('/courses/addCourse', course)
-      .then((response) => {
-        console.log('Course added successfully:', response.data);
-        setCourse({
-          name: '',
-          // instructorIds: [],
-          duration: '',
-          level: '',
-          description: '',
-          image: '',
-          // price: 0,
-          // startDate: '',
-          // endDate: '',
-          // enrollments: 0,
-          // ratings: [],
-          // pricing: [],
-          // syllabus: [],
-        });
-        setSelectedInstructors([]);
+  const handleDelete = (courseId) => {
+    axios
+      .delete(`/adminDeleteCourse/${courseId}`)
+      .then(() => {
+        console.log("Course deleted successfully.");
+        toast.success("Course deleted successfully");
+        setCourses(courses.filter((course) => course._id !== courseId));
       })
       .catch((error) => {
-        console.error('Error adding course:', error);
+        console.error("Error deleting course:", error);
+      });
+  };
+  const handleEdit = (course) => {
+    console.log("handleedit " + course);
+    openEditCourseModal(course);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post("/courses/addCourse", course)
+      .then((response) => {
+        toast.success("course added successfully", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        console.log("Course added successfully:", response.data);
+        setCourse({
+          name: "",
+          duration: "",
+          level: "",
+          description: "",
+          image: "",
+        });
+
+        setCourses([...courses, response.data.course]);
+        closeAddCourseModal();
+      })
+      .catch((error) => {
+        console.error("Error adding course:", error);
       });
   };
 
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .put(`/adminEditCourse/${editCourse._id}`, editCourse)
+      .then((response) => {
+        toast.success("Course edited siccessfully ");
+        console.log("Course edited successfully:", response.data);
+
+        setCourses(
+          courses.map((course) =>
+            course._id === response.data.course._id
+              ? response.data.course
+              : course
+          )
+        );
+        closeEditCourseModal();
+      })
+      .catch((error) => {
+        console.error("Error editing course:", error);
+      });
+  };
+
+  useEffect(() => {
+    axios
+      .get("/adminGetCourseList")
+      .then((response) => {
+        const coursesData = response.data.courses || [];
+        // console.log("coursedata "+JSON.stringify(coursesData))
+        setCourses(coursesData);
+      })
+      .catch((error) => {
+        console.error("Error fetching courses:", error);
+      });
+  }, []);
   return (
     <Fragment>
       <AdminHeader />
@@ -84,74 +149,134 @@ function AdminCourseManagement() {
         <div className="row">
           <AdminSidebar />
           <div className="col">
-            <h2>Add New Course</h2>
-            <form onSubmit={handleSubmit} className="add-course-form">
-              <div className="form-group">
-                <label>Course Name:</label>
-                <input type="text" name="name" className="form-control" value={course.name} onChange={handleInputChange} />
-              </div>
-              {/* <div className="form-group">
-                <label>Instructors:</label>
-                <select
-                  name="instructorIds"
-                  className="form-control"
-                  value={selectedInstructors}
-                  onChange={handleInstructorChange}
-                  multiple
-                >
-                  {instructors.map((instructor) => (
-                    <option key={instructor._id} value={instructor._id}>
-                      {instructor.userName}
-                    </option>
+            <h2>Course Management</h2>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={openAddCourseModal}
+            >
+              Add New Course
+            </Button>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Duration</TableCell>
+                    <TableCell>Level</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {courses.map((course) => (
+                    <TableRow key={course?._id}>
+                      <TableCell>{course?.name}</TableCell>
+                      <TableCell>{course?.duration}</TableCell>
+                      <TableCell>{course?.level}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleEdit(course)}
+                        >
+                          <Edit />
+                        </IconButton>
+                        <IconButton
+                          color="secondary"
+                          onClick={() => handleDelete(course._id)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </select>
-              </div> */}
-              <div className="form-group">
-                <label>Duration:</label>
-                <input type="text" name="duration" className="form-control" value={course.duration} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Level:</label>
-                <input type="text" name="level" className="form-control" value={course.level} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Description:</label>
-                <textarea name="description" className="form-control" value={course.description} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>Image:</label>
-                <input
-                  type="file"
-                  name="image"
-                  className="form-control"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-              </div>
-              {/* <div className="form-group">
-                <label>Price:</label>
-                <input type="number" name="price" className="form-control" value={course.price} onChange={handleInputChange} />
-              </div> */}
-              {/* <div className="form-group">
-                <label>Start Date:</label>
-                <input type="date" name="startDate" className="form-control" value={course.startDate} onChange={handleInputChange} />
-              </div>
-              <div className="form-group">
-                <label>End Date:</label>
-                <input type="date" name="endDate" className="form-control" value={course.endDate} onChange={handleInputChange} />
-              </div> */}
-              {/* <div className="form-group">
-                <label>Enrollments:</label>
-                <input type="number" name="enrollments" className="form-control" value={course.enrollments} onChange={handleInputChange} />
-              </div> */}
-              {/* Add input fields for ratings and syllabus here */}
-              <button type="submit" className="btn btn-primary">Add Course</button>
-            </form>
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
         </div>
       </div>
+      {/* Add Course Modal */}
+      <Modal open={isAddCourseModalOpen} onClose={closeAddCourseModal}>
+        <Paper style={{ width: "50%", margin: "0 auto", padding: "20px" }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Add New Course
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Course Name"
+              name="name"
+              value={course.name}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              inputProps={{ style: { color: "black" } }}
+            />
+            <TextField
+              label="Duration in hours"
+              name="duration"
+              value={course.duration}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              inputProps={{ style: { color: "black" } }}
+            />
+            <TextField
+              label="Level"
+              name="level"
+              value={course.level}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              inputProps={{ style: { color: "black" } }}
+            />
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Add Course
+            </Button>
+          </form>
+        </Paper>
+      </Modal>
+
+      {/* Edit Course Modal */}
+      <Modal open={isEditCourseModalOpen} onClose={closeEditCourseModal}>
+        <Paper style={{ width: "50%", margin: "0 auto", padding: "20px" }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Edit Course
+          </Typography>
+          <form onSubmit={handleEditSubmit}>
+            <TextField
+              label="Course Name"
+              name="name"
+              value={editCourse?.name}
+              onChange={handleEditInputChange}
+              fullWidth
+              margin="normal"
+              inputProps={{ style: { color: "black" } }}
+            />
+            <TextField
+              label="Duration"
+              name="duration"
+              value={editCourse?.duration}
+              onChange={handleEditInputChange}
+              fullWidth
+              margin="normal"
+              inputProps={{ style: { color: "black" } }}
+            />
+            <TextField
+              label="Level"
+              name="level"
+              value={editCourse?.level}
+              onChange={handleEditInputChange}
+              fullWidth
+              margin="normal"
+              inputProps={{ style: { color: "black" } }}
+            />
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Save Changes
+            </Button>
+          </form>
+        </Paper>
+      </Modal>
     </Fragment>
   );
 }
-
 export default AdminCourseManagement;

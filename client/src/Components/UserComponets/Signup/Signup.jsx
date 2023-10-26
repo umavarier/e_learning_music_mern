@@ -1,9 +1,22 @@
-import React, { useState,useEffect } from 'react';
-import axios from '../../../utils/axios'; // Import axios
+import React, { useState, useEffect } from 'react';
+import axios from '../../../utils/axios';
 import Swal from 'sweetalert2';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Signup.css';
-import {useNavigate} from 'react-router-dom'
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import {
+  Grid,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Checkbox,
+  Avatar,
+  FormControlLabel,
+  Input,
+} from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 function Signup() {
   const [userName, setUserName] = useState('');
@@ -12,11 +25,10 @@ function Signup() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isTeacher, setIsTeacher] = useState(false);
   const [teacherDescription, setTeacherDescription] = useState('');
-  const [teacherCertificate, setTeacherCertificate] = useState('');
-  const [teacherCredentials, setTeacherCredentials] = useState('');
   const [selectedCourses, setSelectedCourses] = useState([]);
-  const [availableCourses, setAvailableCourses] = useState([]);
-
+  const [certificate, setCertificate] = useState();
+  const [teacherCredentials, setTeacherCredentials] = useState('');
+  const [availableCourses,setAvailableCourses] = useState('')
 
   const navigate = useNavigate();
 
@@ -34,30 +46,40 @@ function Signup() {
         isTeacher,
         courses: selectedCourses,
         teacherDescription: isTeacher ? teacherDescription : '',
-        teacherCertificate: isTeacher ? teacherCertificate : '',
+        certificate: isTeacher ? certificate : '',
         teacherCredentials: isTeacher ? teacherCredentials : '',
       };
+      
 
       try {
         const response = await axios.post("http://localhost:4000/signup", body, {
           headers: { 'Content-Type': 'application/json' },
         });
-
+      
         if (response.data.status === 'ok') {
-          Swal.fire('Good job!', 'Signup Success!', 'success');
-          console.log(response.data);
-          navigate('/roleSelection')
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops..',
-            text: 'User Already Registered!',
+          toast.success('Signup Success!', {
+            position: "top-right",
+            autoClose: 3000,
           });
-          console.log('some error');
+          console.log(response.data);
+          navigate('/roleSelection');
+        } else if (response.data.status === 'error' && response.data.message === 'User already exists') {
+          toast.error('User Already Registered!', {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        } else {
+          toast.error('Internal server error', {
+            position: "top-right",
+            autoClose: 3000,
+          });
         }
       } catch (err) {
         console.error(err);
-        Swal.fire('Error', 'Internal server error', 'error');
+        toast.error('Internal server error', {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
     }
   };
@@ -65,8 +87,9 @@ function Signup() {
   const handleTeacherSignup = () => {
     setIsTeacher(!isTeacher);
   };
+
   useEffect(() => {
-    axios.get('/getCourseForSignup')                                                                                                        
+    axios.get('/getCourseForSignup')
       .then((response) => {
         setAvailableCourses(response.data);
       })
@@ -77,153 +100,148 @@ function Signup() {
 
   const handleCourseChange = (courseId) => {
     const isSelected = selectedCourses.includes(courseId);
-  
+
     if (isSelected) {
       setSelectedCourses(selectedCourses.filter((id) => id !== courseId));
     } else {
       setSelectedCourses([...selectedCourses, courseId]);
     }
   };
-  
+
   const renderTeacherFields = () => {
     if (isTeacher) {
       return (
-        <div>
-          <label className="label1" htmlFor="teacherDescription">
-            Teacher Description
-          </label>
-          <input
-            className="input1"
-            type="text"
-            placeholder="Teacher Description"
+        
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" gutterBottom>
+            Teacher Information
+          </Typography>
+          <TextField
+            label="Teacher Description"
+            variant="outlined"
+            fullWidth
             value={teacherDescription}
             onChange={(e) => setTeacherDescription(e.target.value)}
-            id="teacherDescription"
           />
-          {/* <label className="label1" htmlFor="teacherCertificate">
-            Teacher Certificate
-          </label>
-          <input
-            className="input1"
-            type="text"
-            placeholder="Teacher Certificate"
-            value={teacherCertificate}
-            onChange={(e) => setTeacherCertificate(e.target.value)}
-            id="teacherCertificate"
-          /> */}
-          <label className="label1" htmlFor="courses">
-          Courses You Can Teach
-        </label>
-        {availableCourses.map((course) => (
-          <div key={course._id}>
-            <label>
-              <input
-                type="checkbox"
-                value={course._id}
-                checked={selectedCourses.includes(course._id)}
-                onChange={() => handleCourseChange(course._id)}
+          <FormControlLabel
+          label="I can teach the following courses"
+            control={
+              <Checkbox
+                checked={selectedCourses.length > 0}
+                onChange={() => handleTeacherSignup}
               />
-              {course.name}
-            </label>
-          </div>
-        ))}
-          <label className="label1" htmlFor="teacherCredentials">
-            Teacher Credentials
-          </label>
-          <input
-            className="input1"
-            type="text"
-            placeholder="Teacher Credentials"
+            }
+            
+          />
+          {availableCourses.map((course) => (
+            <FormControlLabel
+              key={course._id}
+              control={
+                <Checkbox
+                  checked={selectedCourses.includes(course._id)}
+                  onChange={() => handleCourseChange(course._id)}
+                />
+              }
+              label={course.name}
+            />
+          ))}
+          {/* <Input
+            type="file"
+            name="certificate"
+            id="certificate"
+            accept=".pdf"
+            onChange={(e) => setCertificate(e.target.files[0])}
+            
+          />
+          <Typography variant="body2">
+            Upload your teaching certificate (PDF)
+          </Typography> */}
+          <TextField
+            label="Teacher Credentials"
+            variant="outlined"
+            fullWidth
             value={teacherCredentials}
             onChange={(e) => setTeacherCredentials(e.target.value)}
-            id="teacherCredentials"
           />
-        </div>
+        </Grid>
       );
     } else {
       return null;
     }
   };
 
-
   return (
-    <div style={{ backgroundColor: '#0b0c2a', minHeight: '100vh' }}>
-      <div className="signInpage">
-        <div className="background">
-          <div className="shape"></div>
-          <div className="shape"></div>
-        </div>
-        <form className="signupForm" onSubmit={(e) => handleSubmit(e)}>
-          <h3 className="tag1">Signup</h3>
-          <label className="label1" htmlFor="username">
-            User Name
-          </label>
-          <input
-            className="input1"
-            type="text"
-            placeholder="User Name"
+    <>
+    <Grid container component="main" sx={{ height: '100vh' }}>
+      <Grid item xs={false} sm={12} md={12} component={Paper} elevation={6} square>
+        <div sx={{ margin: 'auto', maxWidth: 400, padding: 4 }}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography variant="h6" align="center">Signup</Typography>
+          <form onSubmit={handleSubmit}>
+          <TextField
+            label="User Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
-            id="username"
+            autoFocus
+            inputProps={{ style: { color: 'black' } }}
           />
-          <label className="label1" htmlFor="phonenumber">
-            Phone Number
-          </label>
-          <input
-            className="input1"
-            type="text"
-            placeholder="Phone Number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            id="phonenumber"
-          />
-          <label className="label1" htmlFor="email">
-            Email
-          </label>
-          <input
-            className="input1"
-            type="text"
-            placeholder="Email"
+          <TextField
+            label="Email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            id="email"
+            autoFocus
+            inputProps={{ style: { color: 'black' } }}
           />
-          <label className="label1" htmlFor="password">
-            Password
-          </label>
-          <input
-            className="input1"
+          <TextField
+            label="Password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             type="password"
-            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            id="password"
           />
-
-          <div>
-            <label>
-              <input
-                type="checkbox"
+          <TextField
+            label="Phone Number"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            inputProps={{ style: { color: 'black' } }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
                 checked={isTeacher}
                 onChange={handleTeacherSignup}
               />
-              Signup as a Teacher
-            </label>
-          </div>
-
+            }
+            label="Signup as a Teacher"
+          />
           {renderTeacherFields()}
-
-          <button className="loginButton" type="submit">
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            color="primary"
+            sx={{ mt: 2 }}
+          >
             Signup
-          </button>
-          <div className="social">
-            <div className="go">
-              <i className="fab fa-google"></i> <Link to={'/roleSelection'}>Login</Link>
-            </div>
-          </div>
+          </Button>
         </form>
-      </div>
-    </div>
+        </div>
+      </Grid>
+    </Grid>
+    </>
   );
 }
 
