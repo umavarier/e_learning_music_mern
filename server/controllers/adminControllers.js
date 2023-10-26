@@ -3,19 +3,99 @@ const User = require("../model/userModel");
 const Teacher = require("../model/teacherModel");
 const jwt = require("jsonwebtoken");
 const Enrollment = require('../model/enrollmentModel')
+const Course = require('../model/courseModel')
+const Admin = require('../model/adminModel');
+const bcrypt = require("bcrypt");
 
-const adminLoginn = async (req, res) => {
+const adminSignUp = async (req, res) => {
+  const { username, email, password } = req.body;
+
   try {
-    let adminData = req.body;
-    let adminEmail = "admin@gmail.com";
-    let password = "admin123";
-    if (adminEmail == adminData.email && password == adminData.password) {
-      res.json({ status: "ok", admin: true });
-    } else {
-      res.json({ status: "not Ok", error: "admin details invalid" });
+    const existingAdmin = await Admin.findOne({ email });
+
+    if (existingAdmin) {
+      return res.status(400).json({ error: 'Admin already exists' });
     }
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const admin = new Admin({ username, email, password:hashedPassword });
+    await admin.save();
+    res.status(201).json({ status: 'ok', message: 'Admin registered successfully' });
   } catch (err) {
-    res.json({ status: "error", error: "oops catch error" });
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// const adminLoginn = async (req, res) => {
+//   try {
+//     // let adminData = req.body;
+//     // let adminEmail = "admin@gmail.com";
+//     // let password = "admin123";
+//     // if (adminEmail == adminData.email && password == adminData.password) {
+//     //   res.json({ status: "ok", admin: true });
+//     // } else {
+//     //   res.json({ status: "not Ok", error: "admin details invalid" });
+//     // }
+//   } catch (err) {
+//     res.json({ status: "error", error: "oops catch error" });
+//   }
+// };
+const JWT_SECRET = 'your-secret-key';
+const adminLoginn = async (req, res) => {
+
+  const { email, password } = req.body;
+
+  try {
+    // Check if a teacher with the provided email exists
+    const admin = await Admin.findOne({ email });
+    console.log("admin? "+admin)
+    if (!admin) {
+      return res.status(404).json({ error: 'Admin not found' });
+    }
+   
+
+    // Verify the provided password
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+   
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid password' });
+    }
+
+    // Generate an access token
+    const accessToken = jwt.sign(
+      { id: admin._id, userName: admin.username, email: admin.email },
+      'secret123',
+      {
+        expiresIn: '1d',
+      }
+    );
+
+    // Generate a refresh token
+    const refreshToken = jwt.sign(
+      { id:admin._id, userName: admin.username },
+      'refreshSecret123',
+      {
+        expiresIn: '7d', // Set the expiration time for refresh tokens
+      }
+    );
+    
+
+    // Send the access token and refresh token in the response as cookies
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
+    });
+
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
+    });
+
+    res.status(200).json({ status: "ok", token: accessToken, admin });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -154,6 +234,20 @@ const adminGetTeachers = async (req, res) => {
   }
 };
 
+const adminGetCourseList = async (req, res) => {
+  try {
+    let courses = await Course.find();
+    if (courses) {
+      res.json({ status: 200, courses: courses });
+    } else {
+      res.json({ status: 200, courses: [] }); 
+    }
+  } catch (err) {
+      res.json({status:"error", error: "course not found"})
+      console.log(err)
+  }
+} 
+
 const adminBlockTeacher = async (req, res) => {
   const { teacherId } = req.params;
 
@@ -164,11 +258,8 @@ const adminBlockTeacher = async (req, res) => {
     if (!teacher) {
       return res.status(404).json({ message: "Teacher not found" });
     }
-
-    // Toggle the isBlock status
     teacher.isBlock = !teacher.isBlock;
 
-    // Save the updated teacher
     await teacher.save();
 
     res.json({
@@ -213,8 +304,42 @@ const updateEnrollmentPricing = async (req, res) => {
   }
 };
 
+const adminEditCourse = async(req, res) => {
+  try {
+    const courseId = req.params.id;
+    const updatedCourse = req.body; // The updated course data
+    const course = await Course.findByIdAndUpdate(courseId, updatedCourse, { new: true });
+
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    return res.status(200).json({ course });
+  } catch (error) {
+    console.error('Error updating course:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const adminDeleteCourse = async(req, res) => {
+  try {
+    const courseId = req.params.id;
+    const course = await Course.findByIdAndRemove(courseId);
+
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    return res.status(204).json(); 
+  } catch (error) {
+    console.error('Error deleting course:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 
 module.exports = {
+  adminSignUp,
   adminLoginn,
   getAllUsers,
   deleteUsers,
@@ -226,4 +351,7 @@ module.exports = {
   adminBlockTeacher,
   getEnrollmentPricing,
   updateEnrollmentPricing,
+  adminGetCourseList,
+  adminEditCourse,
+  adminDeleteCourse,
 };

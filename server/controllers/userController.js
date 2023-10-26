@@ -9,6 +9,7 @@ const Payment = require("../model/paymentModel")
 const userotp = require("../model/userOtp");
 const nodemailer = require("nodemailer");
 
+
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
@@ -584,7 +585,7 @@ const bookDemo = async (req, res) => {
 const getNotifications = async (req, res) => {
   console.log("getnot");
   const userId = req.body;
-  console.log("msguser: " + req.body._id);
+  console.log("msguser: " + JSON.stringify(req.body));
   try {
     const notifications = await Notification.find({ sender: userId }).sort({
       createdAt: -1,

@@ -11,6 +11,15 @@ const profilePhotoStorage = multer.diskStorage({
     cb(null, `profile-${Date.now()}${ext}`);
   },
 });
+const certificateStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './public/certificates'); 
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `certificate-${Date.now()}${ext}`);
+  },
+});
 
 // Multer storage configuration for PDF
 const pdfStorage = multer.diskStorage({
@@ -54,6 +63,7 @@ const uploadProfilePhoto = multer({ storage: profilePhotoStorage });
 const uploadPdf = multer({ storage: pdfStorage });
 const uploadVideo = multer({ storage: videoStorage });
 const uploadReel = multer({ storage: reelStorage });
+const uploadCertificate = multer({ storage: certificateStorage });
 
 module.exports = {
   uploadProfilePhoto,
@@ -61,4 +71,5 @@ module.exports = {
   uploadVideo,
   uploadReel,
   logRequestMiddleware,
+  uploadCertificate,
 };

@@ -11,9 +11,8 @@ const Notification = require('../model/notificationModel');
 
 
 const teacherLogin = async (req, res) => {
-  console.log("test")
+  console.log("teacherlog")
   const { email, password } = req.body;
-  console.log("body   "+req.body)
 
   try {
     // Check if a teacher with the provided email exists
@@ -22,30 +21,52 @@ const teacherLogin = async (req, res) => {
       return res.status(404).json({ error: 'Teacher not found' });
     }
     if (teacher.isBlock) {
-      console.log("is blocked??" +teacher.isBlock)
-      return res.status(403).json({ error: 'Teacher is blocked' });     
+      return res.status(403).json({ error: 'Teacher is blocked' });
     }
 
     // Verify the provided password
     const isPasswordValid = await bcrypt.compare(password, teacher.password);
-
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid password' });
     }
 
-    // Generate a token for authentication
-    const token = jwt.sign({ id: teacher._id, userName: teacher.userName, role:teacher.role }, 'secret123', {
-      expiresIn: '1d', 
+    // Generate an access token
+    const accessToken = jwt.sign(
+      { id: teacher._id, userName: teacher.userName, role: teacher.role },
+      'secret123',
+      {
+        expiresIn: '1d',
+      }
+    );
+
+    // Generate a refresh token
+    const refreshToken = jwt.sign(
+      { id: teacher._id, userName: teacher.userName, role: teacher.role },
+      'refreshSecret123',
+      {
+        expiresIn: '7d', // Set the expiration time for refresh tokens
+      }
+    );
+
+    // Send the access token and refresh token in the response as cookies
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
     });
 
-    // Send the token in the response
-    console.log("Teacher  "+teacher)
-    res.status(200).json({ token, teacher });
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
+    });
+
+    res.status(200).json({ token: accessToken, teacher });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
 
 const teacherData = async (req, res) => {
   console.log("hello")
@@ -174,17 +195,89 @@ const teacherUploadProfilePhoto = async (req, res) => {
     }
   };
 
+  // const addAvailability = async (req, res) => {
+  //   try {
+  //     const { teacherId, availableTimings } = req.body;
+  
+  //     if (!Array.isArray(availableTimings) || availableTimings.length === 0) {
+  //       return res.status(400).json({ message: 'Invalid availableTimings data' });
+  //     }
+  
+  //     const savedAvailabilities = [];
+  //     for (const timing of availableTimings) {
+  //       const { dayOfWeek, startTime, endTime } = timing;
+  
+  //       // Create a new availability
+  //       const newAvailability = new Availability({
+  //         teacher: teacherId,
+  //         dayOfWeek,
+  //         startTime,
+  //         endTime,
+  //       });
+  
+  //       const savedAvailability = await newAvailability.save();
+  //       savedAvailabilities.push(savedAvailability);
+  //     }
+  
+  //     // Update the teacher's availableTimings array
+  //     const teacher = await Teacher.findByIdAndUpdate(
+  //       teacherId,
+  //       { $push: { availableTimings: { $each: availableTimings } } },
+  //       { new: true }
+  //     );
+  
+  //     res.status(201).json(savedAvailabilities);
+  //   } catch (error) {
+  //     console.error('Error adding availability:', error);
+  //     res.status(500).json({ message: 'Internal Server Error' });
+  //   }
+  // };
   const addAvailability = async (req, res) => {
+    console.log("addavail")
     try {
       const { teacherId, availableTimings } = req.body;
+      const teacherFromToken = req.teacher; 
+  
+      console.log("t-token "+req.teacher)
+      console.log("teacher  "+teacherId)
+      // Check if the teacherId from the token matches the one in the request, if needed
+      if (teacherFromToken.id !== teacherId) {
+        return res.status(403).json({ message: 'Unauthorized' });
+      }
   
       if (!Array.isArray(availableTimings) || availableTimings.length === 0) {
         return res.status(400).json({ message: 'Invalid availableTimings data' });
       }
   
+      // Function to check if the availability already exists
+      const checkAvailabilityExists = async (dayOfWeek, startTime, endTime) => {
+        const existingAvailability = await Availability.findOne({
+          teacher: teacherId,
+          dayOfWeek,
+          startTime,
+          endTime,
+        });
+        return !!existingAvailability;
+      };
+  
       const savedAvailabilities = [];
+  
       for (const timing of availableTimings) {
         const { dayOfWeek, startTime, endTime } = timing;
+  
+        // Check if the availability already exists
+        const availabilityExists = await checkAvailabilityExists(
+          dayOfWeek,
+          startTime,
+          endTime
+        );
+  
+        console.log("availabilityExists "+availabilityExists)
+        if (availabilityExists) {
+          return res.status(400).json({
+            message: 'Availability with the same day, start time, and end time already exists',
+          });
+        }
   
         // Create a new availability
         const newAvailability = new Availability({
@@ -197,11 +290,17 @@ const teacherUploadProfilePhoto = async (req, res) => {
         const savedAvailability = await newAvailability.save();
         savedAvailabilities.push(savedAvailability);
       }
+
+      // await Availability.deleteMany({
+      //   teacher: teacherId,
+      //   endTime: { $lte: new Date() },
+      // });
+  
   
       // Update the teacher's availableTimings array
       const teacher = await Teacher.findByIdAndUpdate(
         teacherId,
-        { $push: { availableTimings: { $each: availableTimings } } },
+        { $push: { availableTimings: { $each: savedAvailabilities } } },
         { new: true }
       );
   
@@ -212,9 +311,11 @@ const teacherUploadProfilePhoto = async (req, res) => {
     }
   };
 
+  
   const getAppointments = async(req, res) => {
     console.log("tg-a")
     try {
+      console.log("params--"+req.params.teacherId)
       const { teacherId } = req.params;
   
       const appointments = await Appointment.find({ teacherId });
@@ -263,6 +364,28 @@ const teacherUploadProfilePhoto = async (req, res) => {
     }
   }
 
+  const fetchProfilePhoto = async(req, res) => {
+    try {
+     
+      const teacherId = req.params.teacherId;
+      const teacher = await Teacher.findById(teacherId);
+  
+      if (!teacher) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
+      const profileData = {
+        profilePhotoUrl: teacher.profilePhoto, 
+      };
+      console.log("pro---"+JSON.stringify(profileData))
+      res.status(200).json(profileData);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+
+
 module.exports = {
     TeacherGetAllUsers,
     teacherLogin,
@@ -273,4 +396,5 @@ module.exports = {
     getAppointments,
     getNotifications,
     getSenderEmail,
+    fetchProfilePhoto,
 }

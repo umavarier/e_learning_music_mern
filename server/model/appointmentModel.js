@@ -3,29 +3,29 @@ const mongoose = require('mongoose');
 const appointmentSchema = new mongoose.Schema({
   studentId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Reference to the User model for students
+    ref: 'User',
     required: true,
   },
   teacherId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Teacher', // Reference to the User model for teachers
+    ref: 'Teacher', 
     required: true,
   },
   courseId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Course', // Reference to the Course model
+    ref: 'Course', 
     required: true,
   },
   dayOfWeek: {
-    type: String, // You can specify the appropriate data type for dayOfWeek
+    type: String,
     required: true,
   },
   startTime: {
-    type: String, // Assuming startTime is a string in "HH:mm" format
+    type: String, 
     required: true,
   },
   endTime: {
-    type: String, // Assuming endTime is a string in "HH:mm" format
+    type: String,
     required: true,
   },
 });
