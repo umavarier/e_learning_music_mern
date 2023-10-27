@@ -384,6 +384,30 @@ const teacherUploadProfilePhoto = async (req, res) => {
     }
   }
 
+  const saveVideoUrl = async(req,res) => {
+    try {
+      const { teacherId } = req.params;
+      const { videoUrl } = req.body;
+
+      console.log("vdoe-tid "+teacherId)
+      console.log("vdoUrl "+videoUrl)
+  
+      // Find the teacher by ID and update the videos array
+      const teacher = await Teacher.findById(teacherId);
+      if (!teacher) {
+        return res.status(404).json({ message: "Teacher not found" });
+      }
+  
+      teacher.videos.push({ url: videoUrl });
+      await teacher.save();
+  
+      res.status(200).json({ message: "Video URL saved successfully" });
+    } catch (error) {
+      console.error("Error saving video URL", error);
+      res.status(500).json({ message: "Error saving video URL" });
+    }
+  }
+
 
 
 module.exports = {
@@ -397,4 +421,5 @@ module.exports = {
     getNotifications,
     getSenderEmail,
     fetchProfilePhoto,
+    saveVideoUrl,
 }

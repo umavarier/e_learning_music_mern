@@ -48,6 +48,12 @@ const teacherSchema =  new mongoose.Schema({
     {
         type: String,
     },
+    videos: [
+        {
+          url: String, 
+        },
+      ],
+    
     courses: 
     [
         {
