@@ -5,7 +5,7 @@ const usernameSlice=createSlice({
     name:'userImage',
     initialState: initialState,
     reducers:{
-        changeImage:(state,action)=>{
+        changeImg:(state,action)=>{
             return action.payload
         }
     },
@@ -16,5 +16,5 @@ const usernameSlice=createSlice({
     }
 })
 
-export const {changeImage} = usernameSlice.actions;
+export const {changeImg, logout} = usernameSlice.actions;
 export default usernameSlice.reducer;

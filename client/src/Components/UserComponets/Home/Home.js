@@ -10,13 +10,16 @@ import banner2 from "./banner2.avif";
 import img from "./banner1.png";
 import Header from "./Header";
 import Pricing from "../../CourseComponent/Pricing"
+import jwt_decode from "jwt-decode";
 // import Notifications from "../Notification/Notifications";
 
 function Home() {
-  const userId = useSelector((state) => state.user);
+  // const userId = useSelector((state) => state.user);
+
   const notifications = useSelector(
     (state) => state.notifications?.notifications
   );
+  const [userId,setUserId] = useState(null);
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [profilePhoto, setProfilePhoto] = useState([]);
@@ -30,12 +33,21 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch pricing data from the backend API
+    const token = localStorage.getItem("userdbtoken");
+    if (token) {
+      const decodedToken = jwt_decode(token);
+      if (decodedToken) {
+        setUserId(decodedToken._id);
+        console.log("dcdtkn--" + decodedToken._id);
+      }
+    }
+  }, []);
+  useEffect(() => {    
     axios
       .get("/getPricing")
       .then((response) => {
         setPricingData(response.data[0]?.classPricing || []);
-        console.log("pricingdata " + JSON.stringify(response.data));
+        // console.log("pricingdata " + JSON.stringify(response.data));
       })
       .catch((error) => {
         console.error("Error fetching pricing data:", error);
@@ -45,19 +57,9 @@ function Home() {
     navigate(`/payment/${pricingData}`);
   };
 
-  console.log("notify: " + notifications);
-  console.log(userId.userId + "     userId    ");
-  useEffect(() => {
-    axios
-      .get(`/userGetAppointmentTime/${userId.userId}/`)
-      .then((response) => {
-        setUserAppointments(response.data);
-        setAppointmentId(response.data.appointmentId);
-        setTeacherId(response.data.teacherId)
-      })
-      .catch((error) => {
-        console.error("Error fetching user's appointments:", error);
-      });
+  // console.log("notify: " + notifications);
+  console.log(userId + "     userId    ");
+  useEffect(() => {    
     axios
       .get("/viewCourses")
       .then((response) => {
@@ -68,6 +70,21 @@ function Home() {
       });
   }, []);
 
+  useEffect(() => {
+    console.log("fetchid "+userId)
+    if(userId){
+    axios
+      .get(`/userGetAppointmentTime/${userId}`)
+      .then((response) => {
+        setUserAppointments(response.data);
+        setAppointmentId(response.data.appointmentId);
+        setTeacherId(response.data.teacherId)
+      })
+      .catch((error) => {
+        console.error("Error fetching user's appointments:", error);
+      });
+    }
+  },[])
   useEffect(() => {
     axios
       .get("/viewTeachers")
@@ -171,7 +188,7 @@ function Home() {
             {courses.map((course) => (
               <div className=" rounded-card-c mb-8" key={course._id}>
                 <Link
-                  to={`courses/${course._id}?userId=${userId.userId}`}
+                  to={`courses/${course._id}?userId=${userId}`}
                   className="course-link"
                 >
                   <div className="card-img-circle">

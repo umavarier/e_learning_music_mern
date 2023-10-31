@@ -36,6 +36,8 @@ import Login from "./Pages/UserPages/LoginPage";
 import Loginwithotp  from "./Components/UserComponets/Login/loginwithotp";
 import Otp from "./Components/UserComponets/Login/otp";
 import ProfilePage from "./Pages/UserPages/ProfilePage";
+import TeacherSpec from "./Components/TeacherComponents/TeacherSpec/TeacherSpec"
+
 import Signup from "./Pages/UserPages/SignupPage";
 import TeacherHome from "./Pages/TeacherPages/TeacherHomepage";
 import ScheduleDemo from "./Components/CourseComponent/CourseDetails";
@@ -47,6 +49,7 @@ import TeacherAvailabilityPage from "./Components/TeacherComponents/TeacherAvail
 import CourseTeacherSelection from "./Components/UserComponets/CourseTeacherSelection/CourseTeacherSelection";
 import AdminCourseManagement from "./Components/AdminComponents/AdminCourses/AdminCourses";
 import Notifications from "./Components/UserComponets/Notification/Notifications";
+import EnrolledCourses from "./Components/UserComponets/Profile/EnrolledCourse";
 
 function App() {
   return (
@@ -56,9 +59,10 @@ function App() {
         {/* <Route exact path="/login" element={<Login />} /> */}
         <Route path="/loginwithotp" element={<Loginwithotp />} />
         <Route path="/" element={<Home />} />
-        <Route path="/Profile" element={<ProfilePage />} />
+        <Route path="/Profile" element={<ProfilePage />} />  
         <Route path="/signup" element={<Signup />} />
         <Route path="/CourseDetails" element={<CourseDetails />} />
+        <Route path="/EnrolledCourses" element={<EnrolledCourses/>} />
 
         <Route path="/adminLogin" element={<AdminPage1 />} />
         <Route path="/adminSignUp" element={<AdminSignUp />} />
@@ -83,6 +87,7 @@ function App() {
         <Route path="/teacherViewCourse" element={<TeacherViewCourse />} />
         <Route path="/teacherProfile" element={<TeacherProfile/>} />
         <Route path="/teacherUploadProfilePhoto" element={<TeacherUploadProfilePhoto/>} />
+        <Route path="/teacherSpec" element={<TeacherSpec/>} />
         {/* <Route path="/teacherAvailability" element={<TeacherAvailabilityPage/>} /> */}
 
 

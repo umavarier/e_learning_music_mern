@@ -2,61 +2,58 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { imageUpload, verifyUserToken } from "../../../utils/Constants";
-import { changeImage } from "../../../Redux/userimageReducer";
-// import { changeUsername } from '../../../Redux/userSlice';
-import { setUser } from "../../../Redux/userSlice";
+import { changeImage } from "../../../Redux/userSlice";
+import { changeUsername } from "../../../Redux/userSlice";
+// import { setUser } from "../../../Redux/userSlice";
 import axios from "../../../utils/axios";
 import Header from "../Home/Header";
 import Swal from "sweetalert2";
+import Modal from "react-modal";
+import jwt_decode from "jwt-decode";
+import EnrolledCourses from "./EnrolledCourse";
+import PaymentHistoryModal from "./PaymentHistoryModal";
+import ProgressCard from "./ProgressCard";
+
+
 import "./Profile.css";
 
 function Profile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [name, setName] = useState("");
-  const [email, setemail] = useState("");
-  const [image, setImage] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState("");
   const [courses, setCourses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isPaymentHistoryModalOpen, setIsPaymentHistoryModalOpen] =
+    useState(false);
+  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [purchasedCourse, setPurchasedCourse] = useState([]);
+  const [totalHours] = useState(20); 
+  const [videoCallCount, setVideoCallCount] = useState(0);
 
-  const userImage = useSelector((state) => state.user.userImage);
-  const userToken = useSelector((state) => state.user.userToken);
-  console.log("image from redux store : "+ userImage)
+  // const userImage = useSelector((state) => state.userImage);
+
+  // console.log("image from redux store : " + userImage);
 
   useEffect(() => {
-    const Token = userToken;
-
-    if (!Token) {
-      navigate("/");
-    } else {
-      axios
-        .post("/verifyUserToken", {
-          Token: Token,
-        })
-        .then((res) => {
-          const userData = res.data.user;
-          console.log("userData " + res.data.user.userName);
-        
-      if (userData) {
-        setName(userData.userName);
-        setemail(userData.email);
-        setImage(userData.image);
-        dispatch(changeImage(userData.image));
+    const userToken = localStorage.getItem("userdbtoken");
+    if (userToken) {
+      const decodedToken = jwt_decode(userToken);
+      console.log("decod " + JSON.stringify(decodedToken));
+      if (decodedToken) {
+        setUserId(decodedToken._id);
+        setUserName(decodedToken.userName);
+        setEmail(decodedToken.email);
+        // setProfilePhoto(decodedToken.image);
+        // dispatch(changeImage(decodedToken.image));
       }
-    });
-      axios
-        .get("/viewCourses")
-        .then((res) => {
-          setCourses(res.data); // Assuming courses are stored in state
-        })
-        .catch((err) => {
-          console.error("Error fetching courses:", err);
-        });
     }
-  }, [navigate, dispatch]);
-  
+  }, []);
+
   const addImage = async () => {
-     const { value: file } = await Swal.fire({
+    const { value: file } = await Swal.fire({
       title: "Select image",
       input: "file",
 
@@ -65,7 +62,7 @@ function Profile() {
         "aria-label": "Upload your profile picture",
       },
     });
-    console.log("file "+file)
+    console.log("file " + file);
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -88,15 +85,13 @@ function Profile() {
       reader.readAsDataURL(file);
     }
     function uploadimg(file) {
-      console.log("image update")
-      const Token = userToken
+      const Token = localStorage.getItem("userdbtoken");
       let formData = new FormData();
       formData.append("image", file);
       axios
-        .post(`${imageUpload}/${Token}`, formData)
+        .post(`${imageUpload}/${userId}?token=${Token}`, formData)
         .then((res) => {
-          setImage(res.data.image);
-          console.log("res.data "+res.data)
+          setProfilePhoto(res.data.image);
           dispatch(changeImage(res.data.image));
         })
         .catch((err) => {
@@ -104,99 +99,133 @@ function Profile() {
         });
     }
   };
+  console.log("pro " + profilePhoto);
   const enrollInCourse = (courseId) => {};
   const handleSearch = (e) => {
     if (e.target && e.target.value) {
       setSearchTerm(e.target.value);
     }
   };
-  const filteredCourses = courses.filter((course) => {
-    const courseTitle = course.title || ""; // Ensure course.title is defined
-    const searchTermLowerCase = searchTerm.toLowerCase();
-    return courseTitle.toLowerCase().includes(searchTermLowerCase);
-  });
 
-  return (
-    <div>
-      <Header />
-      <div className="container mt-5">
-        <div className="row">
-          {/* Main Content */}
-          <div className="col-md-5">
-            <div className="card border-2 rounded shadow-sm">
-              <div className="card-body">
-                <h4 className="mb-4">Profile Settings</h4>
-                <div className="form-group">
-                  <label className="labels">Name</label>
-                  <input className="form-control" value={name} />
-                </div>
-                <div className="form-group">
-                  <label className="labels">Email</label>
-                  <input className="form-control" value={email} />
-                </div>
+  useEffect(() => {
+    const token = localStorage.getItem("userdbtoken");
 
-                <br />
-              </div>
-            </div>
+    const decodedToken = jwt_decode(token);
+    const userId = decodedToken._id;
+    axios
+      .get(`/fetchUserProfilePhoto/${userId}`, {})
+      .then((response) => {
+        if (response.status === 200 && response.data.profilePhotoUrl) {
+          console.log("url? " + response.data.profilePhotoUrl);
+          setProfilePhoto(response.data.profilePhotoUrl);
+          dispatch(changeImage(response.data.profilePhoto));
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching profile photo", error);
+      });
+  }, [userId]);
+
+  // const filteredCourses = courses.filter((course) => {
+  //   const courseTitle = course.title || ""; // Ensure course.title is defined
+  //   const searchTermLowerCase = searchTerm.toLowerCase();
+  //   return courseTitle.toLowerCase().includes(searchTermLowerCase);
+  // });
+
+  useEffect(() => {
+    const storedPaymentHistory = localStorage.getItem('paymentHistory');
+    if (storedPaymentHistory) {
+      setPaymentHistory(JSON.parse(storedPaymentHistory));
+    } else {
+      axios.get(`/getPaymentHistory/${userId}`)
+        .then((response) => {
+          const data = response.data;
+          setPaymentHistory(data);
+          localStorage.setItem('paymentHistory', JSON.stringify(data));
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, []);
+  
+  const openPaymentHistoryModal = () => {
+    setIsPaymentHistoryModalOpen(true);
+  };
+
+  const closePaymentHistoryModal = () => {
+    setIsPaymentHistoryModalOpen(false);
+  };
+  console.log("ph" +paymentHistory)
+console.log("pc" +purchasedCourse)
+
+return (
+  <div>
+    <Header />
+    <div className="row">
+      <div className="col-md-2">
+        {/* Left Sidebar */}
+        <div className="card border-4 rounded shadow-sm">
+          <div className="card-body text-center">
+            <img
+              className="rounded-circle mt-3"
+              width={250}
+              src={`http://localhost:4000/uploads/${profilePhoto}`}
+              alt="profile photo"
+            />
+            <h5 className="mt-3 font-weight-bold">{userName}</h5>
+            <p className="text-muted">{email}</p>
+            <button
+              onClick={addImage}
+              type="button"
+              className="btn btn-primary"
+            >
+              Update Image
+            </button>
           </div>
-          {/* Sidebar */}
-          <div className="col-md-3">
-            <div className="card border-2 rounded shadow-sm">
-              <div className="card-body text-center">
-                <img
-                  className="rounded-circle mt-3"
-                  width={150}
-                  src={userImage}
-                  alt="profile photo"
-                />
-                <h5 className="mt-3 font-weight-bold">{name}</h5>
-                <p className="text-muted">{email}</p>
-                <button
-                  onClick={addImage}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  Update Image
-                </button>
+          <div className="card border-2 rounded shadow-sm">
+            <div className="card-body">
+              <h4 className="mb-4">Profile Settings</h4>
+              <div className="form-group">
+                <label className="labels">Name</label>
+                <input className="form-control" value={userName} />
+              </div>
+              <div className="form-group">
+                <label className="labels">Email</label>
+                <input className="form-control" value={email} />
               </div>
             </div>
-          </div>
-
-          <div className="col-md-4">
-            <div className="card border-2 rounded shadow-sm">
-              <div className="card-body">
-                <h4 className="mb-4">Available Courses</h4>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search courses"
-                    onChange={(e) => handleSearch(e.target.value)}
-                  />
-                </div>
-                <ul className="list-group">
-                  {courses.map((course) => (
-                    <li className="list-group-item" key={course.id}>
-                      <h5>{course.title}</h5>
-                      <p> {course.name}</p>
-                      {/* <p>Instructor: {course.instructor}</p>
-                      <p>Price: ${course.price}</p> */}
-                      {/* <button
-                        onClick={() => enrollInCourse(course.id)}
-                        className="btn btn-primary"
-                      >
-                        Enroll
-                      </button> */}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <br />
           </div>
         </div>
       </div>
+      
+      <div className="enroll-card col-md-10">
+        {/* Right Content */}
+        <div className="row">
+          <div className="col-md-12">
+            <EnrolledCourses />
+          </div>
+          <div className="col-md-12">
+            <div className="card rounded shadow-sm">
+              <ProgressCard totalHours={totalHours} videoCallCount={videoCallCount} />
+            </div>
+          </div>
+        </div>
+        <button onClick={openPaymentHistoryModal} className="btn btn-primary">
+          Payment History
+        </button>
+        <PaymentHistoryModal
+          isOpen={isPaymentHistoryModalOpen}
+          onRequestClose={closePaymentHistoryModal}
+          paymentHistory={paymentHistory}
+          purchasedCourse={purchasedCourse}
+        />
+      </div>
     </div>
-  );
+  </div>
+);
+
 }
 
 export default Profile;

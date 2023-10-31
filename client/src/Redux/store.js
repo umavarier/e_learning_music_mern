@@ -1,5 +1,5 @@
 import {configureStore} from '@reduxjs/toolkit';
-// import userimageReducer from './userimageReducer';
+import userimageReducer from './userimageReducer';
 // import usernameReducer from './usernameReducer';
 import userReducer from './userSlice';
 import teacherReducer from './teacherSlice'
@@ -9,7 +9,7 @@ import notificationReducer from './notificationSlice'
 const store=configureStore({
     reducer : {
         // username : usernameReducer,
-        // userImage : userimageReducer,
+        userImg : userimageReducer,
         user : userReducer,
         teacher:teacherReducer,
         course:courseReducer,

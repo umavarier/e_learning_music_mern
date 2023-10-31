@@ -1,80 +1,90 @@
 /* TeacherLogin.css */
-
+/* body{
+  background: linear-gradient(to bottom, #f8f8f9, #a2b3dc);
+} */
 .teacher-login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background:url('../../../../public/images/checkout.jpeg'); 
-    background-size: cover;
-    background-position: center;
-  }
-  
-  .teacher-login-form {
-    background: #B0DBF1;
-    backdrop-filter: blur(5px);
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    width: 100%;
-    color: #fff;
-  }
-  
-  .teacher-login-form h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  .teacher-login-form label {
-    display: block;
-    font-size: 18px;
-    margin-top: 20px;
-    color:#000;
-  }
-  
-  .teacher-login-form input[type="text"],
-  .teacher-login-form input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    font-size: 16px;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    border-radius: 5px;
-    color: #000;
-    outline: none;
-  }
-  
-  .teacher-login-form button[type="submit"] {
-    width: 100%;
-    margin-top: 20px;
-    padding: 10px;
-    background: #2196F3;
-    color: #000;
-    border: none;
-    border-radius: 5px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .teacher-login-form button[type="submit"]:hover {
-    background: #0d6efd;
-  }
-  
-  .teacher-login-form p {
-    margin-top: 20px;
-    font-size: 16px;
-  }
-  
-  .teacher-login-form a {
-    color: #2196F3;
-    text-decoration: none;
-  }
-  
-  .teacher-login-form a:hover {
-    text-decoration: underline;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background:  linear-gradient(to bottom, #f8f8f9, #9abff4);
+  background-size: cover;
+  background-position: center;
+}
+
+.teacher-login-form {
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+  border: 1px solid #000; /* Add border */
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+  color: #000; /* Text color changed to black */
+}
+
+.teacher-login-logo {
+  text-align: center;
+  margin-bottom: 20px; /* Space for logo image */
+}
+
+.teacher-login-logo img {
+  max-width: 200px; /* Adjust the size of your logo */
+}
+
+.teacher-login-form h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.teacher-login-form label {
+  display: block;
+  font-size: 18px;
+  margin-top: 20px;
+  color: #000;
+}
+
+.teacher-login-form input[type="text"],
+.teacher-login-form input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid #000; /* Add border */
+  border-radius: 5px;
+  color: #000;
+  outline: none;
+}
+
+.teacher-login-form button[type="submit"] {
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px;
+  background: #2196F3;
+  color: #fff; /* Text color changed to white */
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.teacher-login-form button[type="submit"]:hover {
+  background: #0d6efd;
+}
+
+.teacher-login-form p {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.teacher-login-form a {
+  color: #2196F3;
+  text-decoration: none;
+}
+
+.teacher-login-form a:hover {
+  text-decoration: underline;
+}

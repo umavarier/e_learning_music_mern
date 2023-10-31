@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import Cookies from "js-cookie"; // Import js-cookie library
 import { useDispatch } from "react-redux";
 import { fetchTeacherData } from "../../../Redux/teacherActions";
+import LOGO from "../../UserComponets/Home/logo-black.png"
 import {
   setTeacher,
   setTeacherProfilePicture,
@@ -74,6 +75,7 @@ function TeacherLogin() {
   return (
     <div className="teacher-login-container">
       <form className="teacher-login-form" onSubmit={(e) => handleSubmit(e)}>
+      <img src={LOGO} alt="Logo" className="teacher-login-logo" style={{ width: "80px" }} />
         <h2 className="text text-dark">Teacher Login</h2>
         <label htmlFor="email">Email</label>
         <input

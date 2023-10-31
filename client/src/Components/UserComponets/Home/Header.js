@@ -1,59 +1,78 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  Avatar,
-} from "@mui/material";
-
-import NotificationsIcon from "@mui/icons-material/Notifications"; // Add this import
-import Notifications from "../Notification/Notifications";
-
 import { useDispatch, useSelector } from "react-redux";
-// import { change } from "../../../Redux/usernameReducer";
-// import { changeImage } from "../../../Redux/userimageReducer";
-import { changeImage } from "../../../Redux/userSlice";
-import { changeUsername } from "../../../Redux/userSlice";
-import { setUser } from "../../../Redux/userSlice";
-// import { verifyUserToken } from "../../../utils/Constants";
-import MenuIcon from "@mui/icons-material/Menu";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import { Link, useNavigate } from "react-router-dom";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Popover from "@mui/material/Popover";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import jwt_decode from "jwt-decode";
 import logo from "./LOGO.png";
 import axios from "../../../utils/axios";
+import { logout } from "../../../Redux/userimageReducer";
+import { changeImage } from "../../../Redux/userSlice";
 
-function Header() {
-  const userToken = useSelector((state) => state.user.userToken);
-  const userId = useSelector((state) => state.user.userId);
-  const username = useSelector((state) => state.user.username);
-  const userImage = useSelector((state) => state.user.userImage);
-  const notifications = useSelector((state) => state.notifications?.notifications);
-
+const Header = () => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [userId, setUserId] = useState(null);
+  const [userName, setUserName] = useState(null);
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const userProfilePicture = useSelector((state) => state.user.userImage);
+  const [courses, setCourses] = useState([]);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElInstruments, setAnchorElInstruments] = useState(null);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [courses, setCourses] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [anchorElUser, setAnchorElUser] = useState(null);
-  const [anchorElInstruments, setAnchorElInstruments] = useState(null);
-  const [userNotifications, setUserNotifications] = useState([]);
-  const [anchorElNotifications, setAnchorElNotifications] = useState(null);
+
+  
 
 
-  console.log("userToken header  " + userToken);
 
-  const handleUserMenuOpen = (event) => {
-    setAnchorElUser(event.currentTarget);
+  useEffect(() => {
+    const token = localStorage.getItem("userdbtoken");
+    if (token) {
+      const decodedToken = jwt_decode(token);
+      if (decodedToken) {
+        setUserId(decodedToken._id);
+        setUserName(decodedToken.userName);
+        // Set the profile photo based on the token's information
+        // setProfilePhoto(decodedToken.profilePhoto);
+        // dispatch(changeImage(decodedToken.profilePhoto));
+      }
+    }
+  
+  axios
+  .get(`/fetchUserProfilePhoto/${userId}`)
+  .then((response) => {
+    if (response.status === 200 && response.data.profilePhotoUrl) {
+      // Use the profile photo from the backend
+      setProfilePhoto(response.data.profilePhotoUrl);
+      dispatch(changeImage(response.data.profilePhotoUrl));
+
+      // Save the profile photo to local storage for future use
+      // localStorage.setItem("profilePhoto", response.data.profilePhotoUrl);
+    }
+  })
+  .catch((error) => {
+    // Fallback to the locally stored profile photo if fetching from the backend fails
+    
+      setProfilePhoto("");
+      
+    
+  });
+});
+ 
+  const handleProfileClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleUserMenuClose = () => {
-    setAnchorElUser(null);
+  const handleProfileClose = () => {
+    setAnchorEl(null);
   };
 
   const handleInstrumentsMenuOpen = (event) => {
@@ -63,89 +82,6 @@ function Header() {
   const handleInstrumentsMenuClose = () => {
     setAnchorElInstruments(null);
   };
-
-  const handleLogoutUser = () => {
-    localStorage.clear();
-    dispatch({ type: "logout" });
-    setIsLoggedIn(false);
-    navigate("/");
-    handleUserMenuClose();
-  };
-
-  // useEffect(() => {
-  //   const Token = localStorage.getItem('token');
-
-  //   if (!Token) {
-  //     setIsLoggedIn(false);
-  //     navigate('/');
-  //   } else {
-  //     const body = JSON.stringify({ Token });
-  //     axios.post('/verifyUserToken', body, { headers: { 'Content-Type': 'application/json' } }).then((res) => {
-  //       console.log({ data: res });
-  //       dispatch(change(res.data.user?.userName));
-  //       dispatch(changeImage(res.data.user.image));
-  //       // dispatch(setUser({ userId: res.data.user._id }));
-  //       setIsLoggedIn(true);
-  //     });
-  //   }
-  // }, [dispatch]);
-
- 
-  console.log("Username from Redux store:", username);
-
-  const handleNotificationsMenuOpen = (event) => {
-    setAnchorElNotifications(event.currentTarget);
-  };
-
-  const handleNotificationsMenuClose = () => {
-    setAnchorElNotifications(null);
-  };
-  
-
-  useEffect(() => {
-    const Token = userToken;
-    console.log("Tokenotpuser   " + Token);
-    if (!Token) {
-      setIsLoggedIn(false);
-      navigate("/");
-    } else {
-      axios
-        .post("/verifyUserToken", {
-          Token: Token,
-          username: username,
-          userId: userId,
-        })
-        .then((res) => {
-          const userData = res.data.user;
-          console.log("userData " + res.data.user.userName);
-
-          if (userData) {
-            // User is authenticated, update the state with user data
-            dispatch(changeUsername(userData.userName));
-            dispatch(
-              setUser({
-                userName: userData.userName,
-                userId: userData._id,
-                userToken: Token,
-              })
-            );
-            dispatch(changeImage(userData.image));
-            console.log("logged in");
-            setIsLoggedIn(true);
-          } else {
-            // Token verification failed, handle as needed
-            setIsLoggedIn(false);
-            navigate("/");
-          }
-        })
-        .catch((error) => {
-          // Handle errors from the request
-          console.error("Error verifying user token:", error);
-        });
-    }
-  }, [dispatch, userToken, userId, username]);
-
-
 
   useEffect(() => {
     axios
@@ -158,15 +94,17 @@ function Header() {
       });
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      console.log("not-user "+userId)
-      axios.get(`/getNotifications/${userId}`).then((response) => {
-        setUserNotifications(response.data);
-        console.log("usernot:"+JSON.stringify(response))
-      });
-    }
-  }, [isLoggedIn, userId]);
+  const handleLogout = () => {
+    localStorage.removeItem("userdbtoken");
+    dispatch(
+      changeImage(
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+      )
+    );
+    setUserId(null);
+    setUserName(null);
+    navigate("/");
+  };
 
   return (
     <AppBar position="static">
@@ -174,21 +112,59 @@ function Header() {
         <Link to="/" style={{ textDecoration: "none", color: "white" }}>
           <img src={logo} alt="Logo" style={{ width: "80px" }} />
         </Link>
-        {/* <Typography variant="h6" style={{ flexGrow: 1 }}>
-          <Link to="/" style={{ textDecoration: "none", color: "white" }}>
-            Home
-          </Link>
+        {/* <Typography variant="h6" style={{ flex: 1 }}>
+          Your App
         </Typography> */}
+
         <Button
           aria-controls="instruments-menu"
           aria-haspopup="true"
           onClick={handleInstrumentsMenuOpen}
           color="inherit"
-          style={{ width: "350px", background: "transparent", border: "none",  fontSize: "20px"  }}
+          style={{
+            width: "350px",
+            background: "transparent",
+            border: "none",
+            fontSize: "20px",
+          }}
         >
-          Instruments
+          COURSES
         </Button>
-        <Button color="inherit" style={{ width: "250px" , background: "transparent", border: "none" , fontSize: "20px"}}>
+        <Popover
+          open={Boolean(anchorElInstruments)}
+          anchorEl={anchorElInstruments}
+          onClose={handleInstrumentsMenuClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+        >
+          <List>
+            {courses.map((course) => (
+              <ListItem key={course._id}>
+                <Link
+                  to={`/courses/${course._id}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <Button color="inherit">{course.name}</Button>
+                </Link>
+              </ListItem>
+            ))}
+          </List>
+        </Popover>
+        <Button
+          color="inherit"
+          style={{
+            width: "250px",
+            background: "transparent",
+            border: "none",
+            fontSize: "20px",
+          }}
+        >
           <Link
             to="/pricing"
             style={{
@@ -200,8 +176,16 @@ function Header() {
             Pricing
           </Link>
         </Button>
-        
-        <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none" , fontSize: "20px" }}>
+
+        <Button
+          color="inherit"
+          style={{
+            width: "250px",
+            background: "transparent",
+            border: "none",
+            fontSize: "20px",
+          }}
+        >
           <Link
             to="/gallery"
             style={{
@@ -213,99 +197,59 @@ function Header() {
             Gallery
           </Link>
         </Button>
-        {isLoggedIn ? (
-          <div>
-            <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none", fontSize: "20px"  }}>
-          <Link
-            to="/profile"
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-              margin: "0 10px",
-              background: "transparent",
-              fontSize: "20px"
-            }}
-          >
-            My Profile
-          </Link>
-        </Button>
-            <Button
-              aria-controls="user-menu"
-              aria-haspopup="true"
-              onClick={handleUserMenuOpen}
-              color="inherit"
-              style={{ width: "250px" }}
-            >
-              <Avatar alt="User Logo" src={userImage} />
-              <Typography variant="body1" style={{ marginLeft: "10px", color: "white" , fontSize: "20px" ,background: "transparent"}}>
-                {username}
-              </Typography>
-            </Button>
-            
-            <IconButton
-              color="inherit"
-              onClick={handleNotificationsMenuOpen}
-            >
-              <NotificationsIcon />
-            </IconButton>
-            <Menu
-              id="notifications-menu"
-              anchorEl={anchorElNotifications}
-              keepMounted
-              open={Boolean(anchorElNotifications)}
-              onClose={handleNotificationsMenuClose}
-            >
-              <Notifications notifications={userNotifications} />
-            </Menu>
+        <div style={{ flex: 1 }}></div>
 
-            <Menu
-              id="user-menu"
-              anchorEl={anchorElUser}
-              keepMounted
-              open={Boolean(anchorElUser)}
-              onClose={handleUserMenuClose}
+        {userId ? (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Typography variant="h6" style={{ marginRight: "10px" }}>
+              {userName}
+            </Typography>
+            <IconButton
+              onClick={handleProfileClick}
+              color="inherit"
+              edge="end"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
             >
-              <MenuItem onClick={handleLogoutUser}>
-                <ListItemIcon>
-                  <ExitToAppIcon />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </MenuItem>
-            </Menu>
-          </div>
-        ) : (
-          <div>
-            <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none", fontSize: "20px"  }} onClick={() => navigate("/loginwithotp")}>
-              Login
-            </Button>
-            {/* <Button color="inherit" style={{ width: "250px", background: "transparent", border: "none", fontSize: "20px"  }} onClick={() => navigate("/signup")}>
-              Register
-            </Button> */}
-          </div>
-        )}
-        <div>
-          <Menu
-            id="instruments-menu"
-            anchorEl={anchorElInstruments}
-            keepMounted
-            open={Boolean(anchorElInstruments)}
-            onClose={handleInstrumentsMenuClose}
-          >
-            {courses.map((course) => (
-              <MenuItem key={course._id} onClick={handleInstrumentsMenuClose}>
+              {userProfilePicture ? (
+                <img
+                  src={`http://localhost:4000/uploads/${profilePhoto}`}
+                  alt="User Profile"
+                  style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                />
+              ) : (
+                <AccountCircleIcon />
+              )}
+            </IconButton>
+            <Popover
+              open={Boolean(anchorEl)}
+              anchorEl={anchorEl}
+              onClose={handleProfileClose}
+            >
+              <List>
                 <Link
-                  to={`/courses/${course._id}`}
+                  to="/Profile"
                   style={{ textDecoration: "none", color: "inherit" }}
                 >
-                  {course.name}
+                  <Button color="inherit">My Profile</Button>
                 </Link>
-              </MenuItem>
-            ))}
-          </Menu>
-        </div>
+                <ListItem>
+                  <Button color="inherit" onClick={handleLogout}>
+                    Logout
+                  </Button>
+                </ListItem>
+              </List>
+            </Popover>
+          </div>
+        ) : (
+          <Button color="inherit" onClick={() => navigate("/loginwithotp")}>
+            Login
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );
-}
+};
 
 export default Header;

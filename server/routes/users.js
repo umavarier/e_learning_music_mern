@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo,getNotifications,sendNotifications, checkAppointmentTiming, userGetAppointmentTime} = require('../controllers/userController');
+const multerConfig = require('../util/multerConfig');
+const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo,getNotifications,sendNotifications, checkAppointmentTiming, userGetAppointmentTime, fetchUserProfilePhoto, getEnrolledCourses, getPaymentHistory} = require('../controllers/userController');
 const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher, getEnrollmentPricing, updateEnrollmentPricing, adminGetCourseList, adminEditCourse, adminDeleteCourse } = require('../controllers/adminControllers');
 
 const {TeacherGetAllUsers, } = require('../controllers/TeacherController')
@@ -32,7 +33,8 @@ router.get('/getallusers',getAllUsers)
 router.delete('/deleteUser/:id',deleteUsers)        
 router.get('/admineditUser/:id',getUserDetails)
 router.put('/updateUser/:id',updateUsers);
-router.post('/updateImage/:id',uploadSingleFile,userImageUpdate)
+router.post('/updateImage/:id',multerConfig.logRequestMiddleware, multerConfig.uploadProfilePhoto.single('image'),userImageUpdate)
+router.get('/fetchUserProfilePhoto/:userId',fetchUserProfilePhoto)
 router.get('/searchUser/:userkey',adminSearchUser)
 router.post('/adminAddTeacher',adminAddTeacher)
 router.get('/adminGetTeachers',adminGetTeachers)
@@ -65,5 +67,7 @@ router.get('/getPricing', getPricing)
 router.post('/process-payment', processPayment)
 router.get('/getCourseForSignup',getCourseForSignup)
 router.get('/check-appointment-timing/:appointmentId',checkAppointmentTiming)
-router.get('/userGetAppointmentTime/:userID',userGetAppointmentTime)
+router.get('/userGetAppointmentTime/:userId',userGetAppointmentTime)
+router.get('/enrolled-courses/:id',getEnrolledCourses)
+router.get('/getPaymentHistory/:id',getPaymentHistory);
 module.exports = router;

@@ -21,17 +21,17 @@
   }
   
   /* Container and card background colors */
-  .card {
-    background-color: #02055a;
-    color: #fff;
-    border: 2px solid #253da1;
-    border-radius: 0.25rem;
-  }
+  /* .card { */
+    /* background-color: #02055a; */
+    /* color: #fff; */
+    /* border: 2px solid #253da1; */
+    /* border-radius: 50%;
+  } */
   
   /* List group item background color */
   .list-group-item {
-    background-color: #80dbf1;
-    border-color: #80dbf1;
+    /* background-color: #80dbf1; */
+    /* border-color: #80dbf1; */
   }
   
   /* Form control and input text color */

@@ -1,0 +1,77 @@
+/* Add this CSS to your stylesheet or as inline styles in your component */
+
+/* Styles for the modal overlay */
+.ReactModal__Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Styles for the modal content */
+  .ReactModal__Content {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    padding: 20px;
+    background-color: #fff; /* White background */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 600px; /* Adjust the maximum width as needed */
+    width: 100%;
+  }
+  
+  /* Style for the close button */
+  .ReactModal__Content button {
+    margin-top: 10px;
+    background-color: #007bff; /* Blue color for the button */
+    color: #fff; /* Text color */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .ReactModal__Content button:hover {
+    background-color: #0056b3; /* Darker blue color on hover */
+  }
+  
+  /* Style for the table */
+  .ReactModal__Content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  /* Style for table headers */
+  .ReactModal__Content th {
+    background-color: #007bff; /* Blue background for header cells */
+    color: #fff; /* Text color in header cells */
+  }
+  
+  /* Style for table data cells */
+  .ReactModal__Content td, .ReactModal__Content th {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd; /* Border for cells */
+  }
+  
+  /* Style for alternating row colors */
+  .ReactModal__Content tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light gray background for even rows */
+  }
+  
+  /* Style for the unordered list */
+  .ReactModal__Content ul {
+    list-style: disc;
+    margin-left: 20px;
+  }
+  

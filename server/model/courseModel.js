@@ -47,7 +47,7 @@ const courseSchema = new mongoose.Schema({
   ],
 });
 
-// Create a Course model using the schema
+
 const Course = mongoose.model('Course', courseSchema);
 
 module.exports = Course;

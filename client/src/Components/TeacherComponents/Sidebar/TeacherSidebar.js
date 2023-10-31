@@ -1,25 +1,42 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-import './Sidebar.css'
+import "./Sidebar.css";
 
 function TeacherSidebar() {
   const teacherId = useSelector((state) => state.teacher.id);
   return (
-    <nav id="sidebar" className="col-md-3 col-lg-2 d-md-block bg sidebar" style={{ borderRight: '1px solid #ccc', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+    <nav id="sidebar" className="col-md-3 col-lg-2 d-md-block bg sidebar">
       <div className="position-sticky">
         <ul className="nav flex-column">
           <li className="nav-item">
             <Link
-              to={'/teacherhome'}
+              to={"/teacherhome"}
               className="nav-link black-text"
               style={{
-                marginTop: '50px',
-                border: '1px solid #ccc',
-                borderRadius: '5px',
-                backgroundColor: 'white',
-                color: 'black',
+                marginTop: "50px",
+
+                borderRadius: "5px",
+                backgroundColor: "white",
+
+                fontSize: "20px",
+              }}
+            ></Link>
+          </li>
+
+          <li className="nav-item">
+            <Link
+              to={"/teacherhome"}
+              className="nav-link black-text"
+              style={{
+                marginTop: "50px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                backgroundColor: "white",
+                color: "black",
+                fontSize: "20px",
+                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
               }}
             >
               Teacher Dashboard
@@ -27,76 +44,55 @@ function TeacherSidebar() {
           </li>
           <li className="nav-item">
             <Link
-              to={'/TeacherGetAllUsers'}
+              to={"/TeacherGetAllUsers"}
               className="nav-link black-text"
               style={{
-                marginTop: '50px',
-                border: '1px solid #ccc',
-                borderRadius: '5px',
-                backgroundColor: 'white',
-                color: 'black',
+                marginTop: "50px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                backgroundColor: "white",
+                color: "black",
+                fontSize: "20px",
+                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
               }}
             >
               Students
             </Link>
           </li>
           <li className="nav-item">
-            {/* <Link
-              to={`/teachers/teacherViewCourse?teacherId=${teacherId}`}
-              className="nav-link black-text"
-              style={{
-                marginTop: '50px',
-                border: '1px solid #ccc',
-                borderRadius: '5px',
-                backgroundColor: 'white',
-                color: 'black',
-              }}
-            >
-              View Courses
-            </Link> */}
-            {/* <Link
-              to={'/addCourse'}
-              className="nav-link black-text"
-              style={{
-                marginTop: '50px',
-                border: '1px solid #ccc',
-                borderRadius: '5px',
-                backgroundColor: 'white',
-                color: 'black',
-              }}
-            >
-              Add Courses 
-            </Link> */}
             <Link
-              to={'/teacherProfile'}
+              to={"/TeacherSpec"}
               className="nav-link black-text"
               style={{
-                marginTop: '50px',
-                border: '1px solid #ccc',
-                borderRadius: '5px',
-                backgroundColor: 'white',
-                color: 'black',
+                marginTop: "50px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                backgroundColor: "white",
+                color: "black",
+                fontSize: "20px",
+                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
               }}
             >
-              View Profile 
+              Your Courses
             </Link>
           </li>
-          {/* <li className="nav-item">
+          <li className="nav-item">
             <Link
-              to={'/teacher-profile'}
+              to={"/teacherProfile"}
               className="nav-link black-text"
               style={{
-                marginTop: '50px',
-                border: '1px solid #ccc',
-                borderRadius: '5px',
-                backgroundColor: 'white',
-                color: 'black',
+                marginTop: "50px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                backgroundColor: "white",
+                color: "black",
+                fontSize: "20px",
+                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
               }}
             >
-              Profile
+              View Profile
             </Link>
-          </li> */}
-          {/*  more sidebar options for teachers  */}
+          </li>
         </ul>
       </div>
     </nav>

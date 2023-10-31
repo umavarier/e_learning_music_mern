@@ -145,6 +145,7 @@ import jwtDecode from 'jwt-decode';
 import io from "socket.io-client";
 import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import LOGO from '../../UserComponets/Home/LOGO.png'
 
 const TeacherName = styled(Typography)(({ theme }) => ({
   marginRight: theme.spacing(1),
@@ -160,6 +161,7 @@ const AvatarWrapper = styled('div')(({ theme }) => ({
 const LogoutButtonWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
+  color:"white"
 }));
 
 function TeacherHeader() {
@@ -224,9 +226,9 @@ function TeacherHeader() {
 
   return (
     <div>
-      <AppBar position="static" color="default">
+      <AppBar position="static" >
         <Toolbar>
-          {/* Brand */}
+        <img src={LOGO} alt="Logo" className="teacher-login-logo" style={{ width: "80px" }} />
           <Link to="/teacherHome" style={{ color: 'black', textDecoration: 'none' }}>
             <Typography variant="h6" color="inherit">
               TEACHER DASHBOARD
@@ -280,10 +282,10 @@ function TeacherHeader() {
             </Menu>
 
             {/* Logout button */}
-            <Button variant="outlined" color="secondary" onClick={handleLogout}>
+            <Button variant="outlined" color="secondary" onClick={handleLogout} style={{ color: 'black', backgroundColor: 'white' }}>
              Logout
             </Button>
-          </LogoutButtonWrapper>
+          </LogoutButtonWrapper >
         </Toolbar>
       </AppBar>
     </div>

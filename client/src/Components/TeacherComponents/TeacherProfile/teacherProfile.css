@@ -19,17 +19,17 @@
 
 /* Container and card background colors */
 .card {
-  background-color: #02055a;
+  background-color: #fff;
   color: #fff;
   border: 2px solid #253da1;
   border-radius: 0.25rem;
 }
 
 /* List group item background color */
-.list-group-item {
+/* .list-group-item {
   background-color: #80dbf1;
   border-color: #80dbf1;
-}
+} */
 
 /* Form control and input text color */
 .form-control {

@@ -40,6 +40,7 @@ const Otp = () => {
             userName: response.data.userName,
             userId: response.data?.userId,
             userToken: response.data.userToken,
+            
           })
         );
         toast.success(response.data.message);

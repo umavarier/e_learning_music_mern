@@ -9,7 +9,6 @@ const Payment = require("../model/paymentModel")
 const userotp = require("../model/userOtp");
 const nodemailer = require("nodemailer");
 
-
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
@@ -286,6 +285,7 @@ const userLoginwithOtp = async (req, res) => {
         message: "User Login Succesfully Done",
         userId: preuser._id,
         userName: preuser.userName,
+        email:preuser.email,
         userToken: token,
       });
     } else {
@@ -300,7 +300,7 @@ const verifyUserToken = async (req, res) => {
   try {
     const token =
       req.body.Token || req.query.Token || req.headers["x-access-token"];
-    // console.log("verify " + token);
+    
 
     if (!token) {
       return res
@@ -377,20 +377,18 @@ const usergetUserDetails = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-
 const upload = multer({ storage: multer });
 const userImageUpdate = async (req, res) => {
   try {
-    let Token = req.params.id;
+    const token = req.query.token; // Access the token from the query parameter
 
-    let token2 = JSON.parse(Token);
-    console.log(token2);
-    const decodedToken = jwt.verify(token2, "secret123");
-    console.log(decodedToken);
-    const user = await User.findOne({ _id: decodedToken.id });
+    const decodedToken = jwt.verify(token, "secret123"); // Verify the token
+
+    const user = await User.findOne({ _id: decodedToken._id });   
+
     if (user) {
       // Check if there are uploaded files
-      if (!req.files || !req.files.image) {
+      if (!req.file) {
         return res
           .status(400)
           .json({ status: "error", message: "No image uploaded" });
@@ -401,12 +399,15 @@ const userImageUpdate = async (req, res) => {
         { _id: decodedToken.id },
         {
           $set: {
-            image: req.files.image[0].filename,
+            image: req.file.filename, 
           },
         }
       );
-
-      const image = `http://localhost:4000/uploads/${req.files.image[0].filename}`;
+      user.image = req.file.filename;
+      await user.save();
+      
+      // const image = `http://localhost:4000/uploads/${req.file.filename}`;
+      const image = req.file.filename;
       return res
         .status(200)
         .json({ message: "Image updated successfully", image });
@@ -418,7 +419,26 @@ const userImageUpdate = async (req, res) => {
   }
 };
 
+
 module.exports = { userImageUpdate, upload };
+
+const fetchUserProfilePhoto = async (req,res) => {
+  try {     
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+    const profileData = {
+      profilePhotoUrl: user.image, 
+    };    
+    res.status(200).json(profileData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 
 const viewTeachers = async (req, res) => {
   try {
@@ -461,12 +481,14 @@ const getPricing = async (req, res) => {
 
 const processPayment = async (req, res) => {
   console.log("processPayment")
-  const { amount, paymentMethod, userId } = req.body;
-  // console.log("req.body"+JSON.stringify(req.body))
+  const { amount, paymentMethod, userId, purchasedCourse,teacherId } = req.body;
+  console.log("req.body"+JSON.stringify(req.body))
   const payment = new Payment({
     amount,
     paymentMethod,
     userId,
+    purchasedCourse,  
+    teacherId,
   });
   await payment.save();
   console.log("payment "+payment)
@@ -515,6 +537,8 @@ const userGetTeachers = async (req, res) => {
       .json({ error: "An error occurred while fetching teachers." });
   }
 };
+
+
 
 const userGetTeachersTiming = async (req, res) => {
   try {
@@ -648,9 +672,8 @@ const checkAppointmentTiming = async (req, res) => {
 };
 
 const userGetAppointmentTime = async (req, res) => {
-  console.log("ugat");
 
-  const userId = req.params.userID;
+  const userId = req.params.userId;
   console.log("userAppId  ", userId);
   try {
     const currentTime = new Date();
@@ -680,8 +703,7 @@ const userGetAppointmentTime = async (req, res) => {
     console.log("userAppointments " + userAppointments);
     if (userAppointments.length === 0) {
       return res
-        .status(404)
-        .json({ message: "No matching appointments found." });
+      return res.status(200).json([]);
     }
 
     res.status(200).json(userAppointments);
@@ -691,6 +713,56 @@ const userGetAppointmentTime = async (req, res) => {
   }
 };
 
+const getEnrolledCourses = async(req, res) => {
+  const userId = req.params.id;
+  try{
+  const user = await User.findById(userId).populate("enrolledCourses");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const enrolledCourses = user.enrolledCourses;
+
+    res.status(200).json(enrolledCourses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const getPaymentHistory =  async (req,res) => {
+  try {
+    const userId = req.params.id;
+
+    // Find payments for the specified userId using the Payment model
+    const payments = await Payment.find({ userId });
+
+    if (!payments) {
+      return res.status(404).json({ message: "No payment details found." });
+    }
+
+    const paymentDetails = [];
+
+    for (const payment of payments) {
+      // Assuming purchasedCourseId is an array of course IDs
+      const purchasedCourseIds = payment.purchasedCourse;
+
+      const courseNames = await Course.find({ _id: { $in: purchasedCourseIds } });
+
+      paymentDetails.push({
+        payment,
+        courseNames,
+      });
+    }
+
+    res.status(200).json(paymentDetails);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
 module.exports = {
   userSignup,
   userLogin,
@@ -698,6 +770,7 @@ module.exports = {
   userotpsend,
   verifyUserToken,
   userImageUpdate,
+  fetchUserProfilePhoto,
   viewTeachers,
   getCourseDetails,
   usergetUserDetails,
@@ -713,4 +786,6 @@ module.exports = {
   sendNotifications,
   checkAppointmentTiming,
   userGetAppointmentTime,
+  getEnrolledCourses,
+  getPaymentHistory,
 };

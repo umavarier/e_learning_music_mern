@@ -28,10 +28,12 @@ function TeacherUsermanagement() {
   }, [users]); // Add users as a dependency to this useEffect
 
   return (
+    <>
+    <Header />
     <div style={{ backgroundColor: '#ffff', minHeight: '100vh', display: 'flex' }}>
       <Sidebar />
       <div style={{ flex: 1 }}>
-        <Header />
+        
       <input
         className="form-control mb-3 w-25 searchadmin"
         name="query"
@@ -60,6 +62,7 @@ function TeacherUsermanagement() {
       </table>
     </div>
     </div>
+    </>
   );
 }
 
