@@ -464,20 +464,24 @@ const getEnrolledStudentsByCourse = async (req, res) => {
     const students = await User.find({
       enrolledCourses: { $elemMatch: { course: courseId } },
     })
-      .select('userName email enrolledCourses')
+      .select('userName email enrolledCourses enrolledCourseTiming')
       .populate('enrolledCourses.course', 'name') 
-      .populate('enrolledCourses.instructorId', 'userName'); 
-
+      .populate('enrolledCourses.instructorId', 'userName')
+      .populate('enrolledCoursesTiming.day', 'day')
+      .populate('enrolledCoursesTiming.time', 'time')
+    console.log("cccccccc  "+JSON.stringify(students))
     if (!students || students.length === 0) {
       return res.status(200).json({ message: 'No students enrolled in this course' || [] });
     }
-
+    
     // Extract student details
     const studentDetails = students.map((student) => {
       return {
+        _id:student._id,
         name: student.userName,
         email: student.email,
         enrolledCourses: student.enrolledCourses, 
+        enrolledCoursesTiming: student.enrolledCoursesTiming
       };
     });
 
@@ -502,7 +506,61 @@ const fetchTeacherNamesForCourse = async (req, res) => {
       .json({ error: "An error occurred while fetching teachers." });
   }
 }
+const addCourseTimingOfStudent = async (req,res) => {
+  const studentId  = req.params.studentId;
+  console.log("req.body "+JSON.stringify(req.body))
+  const { courseId, instructorId, day, time } = req.body;
+  console.log("stu----"+studentId)
+  console.log(JSON.stringify(req.body))
 
+  try {
+    const user = await User.findOne({ _id: studentId});
+
+    if (!user) {  
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    user.enrolledCoursesTiming.push({
+      course: courseId,
+      instructorId,
+      day,
+      time, 
+    });
+
+    
+    await user.save();
+
+    res.status(200).json({ message: 'Course timing added successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to add course timing' });
+  }
+}
+
+const getCourseTimings = async (req, res) => {
+  try {
+    const studentId = req.params.studentId;
+    console.log(studentId)
+    const courseId = req.params.courseId;
+    
+    const user = await User.findById(studentId);
+    if (!user) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+    const courseTiming = user.enrolledCoursesTiming.find((timing) =>
+      timing.course.equals(courseId)
+    );
+    console.log("gct"+JSON.stringify(courseTiming))
+
+    if (courseTiming) {
+      res.json(courseTiming);
+    } else {
+      res.status(404).json({ error: 'Course timing not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching course timing:', error);
+    res.status(500).json({ error: 'Failed to fetch course timing' });
+  }
+};
 
 module.exports = {
   TeacherGetAllUsers,
@@ -520,4 +578,6 @@ module.exports = {
   getTeacherSpec,
   getEnrolledStudentsByCourse,
   fetchTeacherNamesForCourse,
+  addCourseTimingOfStudent,
+  getCourseTimings,
 };
