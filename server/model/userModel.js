@@ -31,7 +31,13 @@ const User= new mongoose.Schema({
           instructorId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Teacher', 
-          },          
+          },    
+          day: {
+            type: String,
+          },
+          time: {
+            type: String,
+          },      
         },
       ],
     enrolledCoursesTiming: [

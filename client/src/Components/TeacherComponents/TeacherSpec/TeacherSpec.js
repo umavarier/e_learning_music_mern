@@ -4,37 +4,36 @@ import { MdAdd, MdEdit, MdDelete } from "react-icons/md";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import Header from "../Header/TeacherHeader";
+import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../Sidebar/TeacherSidebar";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-
 import { Carousel } from "react-responsive-carousel";
 import { ToastContainer, toast } from "react-toastify";
+import { setStudentUserId } from '../../../Redux/studentSlice'; 
 
 function TeacherCourses() {
+
+  const dispatch = useDispatch(); 
   const [courses, setCourses] = useState([]);
   const [studentDetails, setStudentDetails] = useState([]);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [courseName, setCourseName] = useState(null);
-  const [courseTimings, setCourseTimings] = useState([]);
-  //   const [course, setCourse] = useState(null);
-  const [teacherIdTkn, setTeacherIdTkn] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDay, setSelectedDay] = useState([]);
-  const [selectedTime, setSelectedTime] = useState([]);
+  const [selectedDay, setSelectedDay] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
   const [day, setDay] = useState("");
   const [time, setTime] = useState("");
-  const [courseWeek, setCourseWeek] = useState("");
-  //   const [studentDetails, setStudentDetails] = useState([]);
+  const [selectedStudentIdForTiming, setSelectedStudentIdForTiming] =
+    useState(null);
+    // const selectedStudentId = useSelector(state => state.student.studentUserId);
 
   useEffect(() => {
-    const accessToken = Cookies.get("token");
-    console.log("fetch");
+    const accessToken = localStorage.getItem("userdbtoken");
     const decodedToken = jwt_decode(accessToken);
-    const teacherId = decodedToken.id;
-    setTeacherIdTkn(teacherId);
+    const teacherId = decodedToken._id;
 
     axios
       .get(`/teachers/getTeacherSpec/${teacherId}`, {
@@ -53,20 +52,6 @@ function TeacherCourses() {
         console.error("Error fetching teacher courses", error);
       });
   }, []);
-
-  useEffect(() => {
-    const getCourseName = (courseId) => {
-      const selectedCourse = courses.find((course) => course._id === courseId);
-      if (selectedCourse) {
-        setCourseName(selectedCourse.name);
-      }
-    };
-
-    if (selectedCourseId) {
-      getCourseName(selectedCourseId);
-    }
-  }, [selectedCourseId, courses]);
-
   const handleCourseClick = async (courseId) => {
     try {
       const response = await axios.get(
@@ -74,69 +59,43 @@ function TeacherCourses() {
       );
 
       if (response.data && response.data.length > 0) {
-        console.log("stud---" + response.data[0]._id);
-        setSelectedStudentId(response.data[0]._id);
+        dispatch(setStudentUserId(response.data._id));
+        setSelectedStudentId(response.data._id);
         setStudentDetails(response.data);
         setSelectedCourseId(courseId);
+        console.log("studentdetails   " + JSON.stringify(response.data));
+        const course = courses.find((c) => c._id === courseId);
+        if (course) {
+          setCourseName(course.name);
+        }
       } else {
-        // toast.error("No students enrolled in this course.");
+        toast.error("No students enrolled in this course.");
       }
     } catch (error) {
       console.error("Error fetching student details:", error);
       toast.error("Failed to fetch student details.");
     }
-  };
+  }; //working
 
-  const fetchCourseTimings = async (courseId) => {
-    try {
-      const response = await axios.get(
-        `/teachers/getCourseTimings/${courseId}/${selectedStudentId}`
-      );
-      console.log("fetch-respons " + JSON.stringify(response.data));
-
-      if (response.data) {
-        console.log("respo " + JSON.stringify(response.data));
-
-        const newStudentDetails = studentDetails.map((student) => {
-          console.log("sssss" + JSON.stringify(studentDetails));
-          if (student._id === selectedStudentId) {
-            return {
-              ...student,
-              selectedDay: response.data[0].day,
-              selectedTime: response.data[0].time,
-            };
-          }
-          return student;
-        });
-
-        updateStudentDetails(newStudentDetails);
-      }
-    } catch (error) {
-      console.error("Error fetching course timings:", error);
-    }
-  };
-
-  const addCourseTiming = async () => {
-    console.log("clicked");
+  const addCourseTiming = (studentId) => {
+    setSelectedStudentIdForTiming(studentId);
     setIsModalOpen(true);
-    console.log(isModalOpen);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Send the data to the backend using Axios
-    const accessToken = Cookies.get("token");
-    const decodedToken = jwt_decode(accessToken);
-    const teacherId = decodedToken.id;
-
     try {
-      const studentId = selectedStudentId;
+      const studentId = selectedStudentIdForTiming;
+      const courseId = selectedCourseId;
+
+      console.log("day   " + day);
+      console.log("time---" + time);
+      console.log("student    " + studentId);
+      console.log("course   " + courseId);
       const response = await axios.post(
-        `/teachers/addCourseTimingOfStudent/${studentId}`,
+        `/teachers/addCourseTimingOfStudent/${studentId}/${courseId}`,
         {
-          courseId: selectedCourseId,
-          instructorId: teacherId,
           day,
           time,
         }
@@ -145,9 +104,8 @@ function TeacherCourses() {
       if (response.status === 200) {
         toast.success("Timing added successfully");
         setIsModalOpen(false);
-
-        // Refresh course timings
-        fetchCourseTimings(selectedCourseId, studentId);
+        // Refresh course timings for the selected course
+        fetchCourseTimings(courseId, studentId);
       }
     } catch (error) {
       console.error("Error adding course timing:", error);
@@ -155,27 +113,21 @@ function TeacherCourses() {
     }
   };
 
-  // Initial fetch of course timings
-  if (selectedCourseId && selectedStudentId) {
-    fetchCourseTimings(selectedCourseId, selectedStudentId);
-  }
-  // Function to edit a course timing
-  const editCourseTiming = (timingId) => {
-    // Implement this function to edit the timing with the specified timingId
-    // You can open a modal or a form pre-filled with the timing details for editing.
-    // After editing, make sure to update the state.
+  const fetchCourseTimings = async (courseId, studentId) => {
+    try {
+      const response = await axios.get(
+        `/teachers/getCourseTimings/${courseId}/${studentId}`
+      );
+
+      if (response.data && response.data.length > 0) {
+        setSelectedDay(response.data.day);
+        setSelectedTime(response.data.time);
+      }
+    } catch (error) {
+      console.error("Error fetching course timings:", error);
+    }
   };
 
-  // Function to delete a course timing
-  const deleteCourseTiming = (timingId) => {
-    // Implement this function to delete the timing with the specified timingId
-    // After deleting, make sure to update the state.
-  };
-  console.log("courseTimings " + JSON.stringify(courseTimings));
-
-  const updateStudentDetails = (newStudentDetails) => {
-    setStudentDetails(newStudentDetails);
-  };
   return (
     <>
       <Header />
@@ -197,11 +149,14 @@ function TeacherCourses() {
               showThumbs={false}
               showArrows={true}
               emulateTouch={true}
-              centerMode={true} // Enable center mode
+              centerMode={true}
               centerSlidePercentage={100 / 3}
             >
               {courses.map((course, index) => (
-                <div key={course._id}>
+                <div
+                  key={course._id}
+                  onClick={() => handleCourseClick(course._id)}
+                >
                   <div
                     style={{
                       padding: "10px",
@@ -218,7 +173,6 @@ function TeacherCourses() {
                           : "#f7f0d4",
                       width: "400px",
                     }}
-                    onClick={() => handleCourseClick(course._id)}
                   >
                     <h3
                       className="course-name-card"
@@ -227,115 +181,77 @@ function TeacherCourses() {
                       {course.name}
                     </h3>
                     <p>{course.duration} Hrs</p>
-                    {/* Display other course information */}
+                    <p>{course.level} Level</p>
                   </div>
                 </div>
               ))}
             </Carousel>
-            {selectedCourseId && (
+            
+            {studentDetails && studentDetails.length > 0 ?(
               <div>
-                <h2>Student Details for Course : {courseName}</h2>
-                {studentDetails && studentDetails.enrolledCoursesTiming ? (
-                    
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Student Name</th>
-                        <th>Email</th>
-                        <th>Enrolled Course</th>
-                        <th>Instructor</th>
-                        <th>Course Timings</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {studentDetails.map((student, index) => (
-                        <tr key={index}>
-                          <td>{student.name}</td>
-                          <td>{student.email}</td>
-                          <td>
-                            {student.enrolledCourses.map(
-                              (enrolledCourse, courseIndex) => (
-                                <div key={courseIndex}>
-                                  {enrolledCourse.course?.name}
-                                </div>
-                              )
-                            )}
-                          </td>
-                          <td>
-                            {student.enrolledCourses.map(
-                              (enrolledCourse, courseIndex) => (
-                                <div key={courseIndex}>
-                                  {enrolledCourse.instructorId?.userName}
-                                </div>
-                              )
-                            )}
-                          </td>
-                          <td>
-                            {student.enrolledCoursesTiming.length > 0 ? (
-                              <div>
-                                {`${student.enrolledCoursesTiming[0].day} - ${student.enrolledCoursesTiming[0].time}`}
-                                {teacherIdTkn ===
-                                  student.enrolledCourses[0].instructorId
-                                    ._id && (
-                                  <div>
-                                    <MdEdit
-                                      style={{
-                                        fontSize: "20px",
-                                        cursor: "pointer",
-                                        color: "blue",
-                                      }}
-                                      onClick={() =>
-                                        editCourseTiming(
-                                          student.enrolledCoursesTiming[0]
-                                            .timingId
-                                        )
-                                      }
-                                    />
-                                    <MdDelete
-                                      style={{
-                                        fontSize: "30px",
-                                        cursor: "pointer",
-                                        color: "red",
-                                        border: "2px",
-                                        borderColor: "black",
-                                      }}
-                                      onClick={() =>
-                                        deleteCourseTiming(
-                                          student.enrolledCoursesTiming[0]
-                                            .timingId
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                )}
+              <h2>Student Details for Course : {courseName}</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Email</th>
+                    <th>Course Timings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {studentDetails.map((student, index) => (
+                    <tr key={index}>
+                      <td>{student.name}</td>
+                      <td>{student.email}</td>
+                      <td>
+                        {student.enrolledCourses
+                          .filter(
+                            (course) => course.course === selectedCourseId
+                          )
+                          .map((course, courseIndex) =>
+                            course.day && course.time ? (
+                              <div key={courseIndex}>
+                                {course.day} - {course.time}
                               </div>
                             ) : (
                               <div>
                                 <p>No course timings available</p>
-                                {teacherIdTkn ===
-                                  student.enrolledCourses[0].instructorId
-                                    ._id && (
-                                  <MdAdd
-                                    style={{
-                                      fontSize: "35px",
-                                      cursor: "pointer",
-                                      color: "green",
-                                    }}
-                                    onClick={addCourseTiming}
-                                  />
-                                )}
+                                <MdAdd
+                                  style={{
+                                    fontSize: "35px",
+                                    cursor: "pointer",
+                                    color: "green",
+                                  }}
+                                  onClick={() => addCourseTiming(student._id)}
+                                />
                               </div>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p>No enrolled students in this course.</p>
-                )}
+                            )
+                          )}
+                        {/* {student.enrolledCourses.filter(
+                          (course) => course.course === selectedCourseId
+                        ).length === 0 ? (
+                          <div>
+                            <p>No course timings available</p>
+                            <MdAdd
+                              style={{
+                                fontSize: "35px",
+                                cursor: "pointer",
+                                color: "green",
+                              }}
+                              onClick={() => addCourseTiming(student._id)}
+                            />
+                          </div>
+                        ) : null} */}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
               </div>
+            ) : (
+              <p className="text-dark" style ={{fontSize: "30px" , marginTop : "50px"}}>No enrolled students !! Select one course</p>
             )}
+            
 
             {isModalOpen && (
               <div
@@ -400,6 +316,7 @@ function TeacherCourses() {
                   </form>
                 </div>
               </div>
+              
             )}
           </main>
         </div>

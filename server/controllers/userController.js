@@ -5,7 +5,7 @@ const Teacher = require("../model/teacherModel");
 const Enrollment = require("../model/enrollmentModel");
 const Appointment = require("../model/appointmentModel");
 const Notification = require("../model/notificationModel");
-const Payment = require("../model/paymentModel")
+const Payment = require("../model/paymentModel");
 const userotp = require("../model/userOtp");
 const nodemailer = require("nodemailer");
 
@@ -285,7 +285,7 @@ const userLoginwithOtp = async (req, res) => {
         message: "User Login Succesfully Done",
         userId: preuser._id,
         userName: preuser.userName,
-        email:preuser.email,
+        email: preuser.email,
         userToken: token,
       });
     } else {
@@ -300,7 +300,6 @@ const verifyUserToken = async (req, res) => {
   try {
     const token =
       req.body.Token || req.query.Token || req.headers["x-access-token"];
-    
 
     if (!token) {
       return res
@@ -384,7 +383,7 @@ const userImageUpdate = async (req, res) => {
 
     const decodedToken = jwt.verify(token, "secret123"); // Verify the token
 
-    const user = await User.findOne({ _id: decodedToken._id });   
+    const user = await User.findOne({ _id: decodedToken._id });
 
     if (user) {
       // Check if there are uploaded files
@@ -399,13 +398,13 @@ const userImageUpdate = async (req, res) => {
         { _id: decodedToken.id },
         {
           $set: {
-            image: req.file.filename, 
+            image: req.file.filename,
           },
         }
       );
       user.image = req.file.filename;
       await user.save();
-      
+
       // const image = `http://localhost:4000/uploads/${req.file.filename}`;
       const image = req.file.filename;
       return res
@@ -419,26 +418,24 @@ const userImageUpdate = async (req, res) => {
   }
 };
 
-
 module.exports = { userImageUpdate, upload };
 
-const fetchUserProfilePhoto = async (req,res) => {
-  try {     
+const fetchUserProfilePhoto = async (req, res) => {
+  try {
     const userId = req.params.userId;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "Teacher not found" });
     }
     const profileData = {
-      profilePhotoUrl: user.image, 
-    };    
+      profilePhotoUrl: user.image,
+    };
     res.status(200).json(profileData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
-}
-
+};
 
 const viewTeachers = async (req, res) => {
   try {
@@ -480,18 +477,19 @@ const getPricing = async (req, res) => {
 };
 
 const processPayment = async (req, res) => {
-  console.log("processPayment")
-  const { amount, paymentMethod, userId, purchasedCourse,teacherId } = req.body;
-  console.log("req.body"+JSON.stringify(req.body))
+  console.log("processPayment");
+  const { amount, paymentMethod, userId, purchasedCourse, teacherId } =
+    req.body;
+  console.log("req.body" + JSON.stringify(req.body));
   const payment = new Payment({
     amount,
     paymentMethod,
     userId,
-    purchasedCourse,  
+    purchasedCourse,
     teacherId,
   });
   await payment.save();
-  console.log("payment "+payment)
+  console.log("payment " + payment);
   res.json({ success: true, message: "Payment processed successfully" });
 };
 
@@ -537,8 +535,6 @@ const userGetTeachers = async (req, res) => {
       .json({ error: "An error occurred while fetching teachers." });
   }
 };
-
-
 
 const userGetTeachersTiming = async (req, res) => {
   try {
@@ -672,7 +668,6 @@ const checkAppointmentTiming = async (req, res) => {
 };
 
 const userGetAppointmentTime = async (req, res) => {
-
   const userId = req.params.userId;
   console.log("userAppId  ", userId);
   try {
@@ -698,11 +693,10 @@ const userGetAppointmentTime = async (req, res) => {
         $gte: `${currentTime.getHours()}:${currentTime.getMinutes()}`,
       },
     });
-    
 
     console.log("userAppointments " + userAppointments);
     if (userAppointments.length === 0) {
-      return res
+      return res;
       return res.status(200).json([]);
     }
 
@@ -712,26 +706,52 @@ const userGetAppointmentTime = async (req, res) => {
     res.status(500).json({ error: "Error fetching appointments" });
   }
 };
-
-const getEnrolledCourses = async(req, res) => {
+const getEnrolledCourses = async (req, res) => {
   const userId = req.params.id;
-  try{
-  const user = await User.findById(userId).populate("enrolledCourses");
+  try {
+    const user = await User.findById(userId)
+      .populate({
+        path: "enrolledCourses.course",
+        model: "Course",
+        select: "name duration level _id",
+      })
+      .populate({
+        path: "enrolledCourses.instructorId",
+        model: "Teacher",
+        select: "userName _id",
+      });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(200).json({ message: "User not found" || []});
     }
 
-    const enrolledCourses = user.enrolledCourses;
+    const enrolledCourses = user.enrolledCourses.map((enrolledCourse) => {
+      if (enrolledCourse.course && enrolledCourse.instructorId) {
+        return {
+          course: {
+            _id: enrolledCourse.course._id,
+            name: enrolledCourse.course.name,
+            duration: enrolledCourse.course.duration,
+            level: enrolledCourse.course.level,
+          },
+          instructorName: enrolledCourse.instructorId.userName, 
+          time: enrolledCourse.time,
+          day: enrolledCourse.day
+        };
+      }
+      return {};
+    });
 
     res.status(200).json(enrolledCourses);
   } catch (error) {
-    console.error(error);
+    console.error(error); 
     res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
-const getPaymentHistory =  async (req,res) => {
+// module.exports = getEnrolledCourses;
+
+const getPaymentHistory = async (req, res) => {
   try {
     const userId = req.params.id;
 
@@ -748,7 +768,9 @@ const getPaymentHistory =  async (req,res) => {
       // Assuming purchasedCourseId is an array of course IDs
       const purchasedCourseIds = payment.purchasedCourse;
 
-      const courseNames = await Course.find({ _id: { $in: purchasedCourseIds } });
+      const courseNames = await Course.find({
+        _id: { $in: purchasedCourseIds },
+      });
 
       paymentDetails.push({
         payment,
@@ -761,7 +783,7 @@ const getPaymentHistory =  async (req,res) => {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
-}
+};
 
 module.exports = {
   userSignup,

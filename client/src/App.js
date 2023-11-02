@@ -50,6 +50,8 @@ import CourseTeacherSelection from "./Components/UserComponets/CourseTeacherSele
 import AdminCourseManagement from "./Components/AdminComponents/AdminCourses/AdminCourses";
 import Notifications from "./Components/UserComponets/Notification/Notifications";
 import EnrolledCourses from "./Components/UserComponets/Profile/EnrolledCourse";
+import TeacherChat from "./Components/TeacherComponents/TeacherChat/TeacherChat";
+import StudentChat from "./Components/UserComponets/StudentChat/StudentChat";
 
 function App() {
   return (
@@ -63,6 +65,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/CourseDetails" element={<CourseDetails />} />
         <Route path="/EnrolledCourses" element={<EnrolledCourses/>} />
+        <Route path="/StudentChat" element={<StudentChat/>} />
 
         <Route path="/adminLogin" element={<AdminPage1 />} />
         <Route path="/adminSignUp" element={<AdminSignUp />} />
@@ -87,8 +90,10 @@ function App() {
         <Route path="/teacherViewCourse" element={<TeacherViewCourse />} />
         <Route path="/teacherProfile" element={<TeacherProfile/>} />
         <Route path="/teacherUploadProfilePhoto" element={<TeacherUploadProfilePhoto/>} />
-        <Route path="/teacherSpec" element={<TeacherSpec/>} />
         {/* <Route path="/teacherAvailability" element={<TeacherAvailabilityPage/>} /> */}
+        <Route path="/teacherSpec" element={<TeacherSpec/>} />
+        <Route path="/teacherChat" element={<TeacherChat/>} />
+
 
 
         <Route path="/addCourse" element={<AddCourse />} />

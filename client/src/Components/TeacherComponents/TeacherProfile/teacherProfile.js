@@ -129,74 +129,7 @@ const TeacherProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // if (pdfFile) {
-    //   const pdfFormData = new FormData();
-    //   pdfFormData.append("pdfFile", pdfFile);
-
-    //   try {
-    //     const pdfResponse = await axios.post("/teacherUploadPdf", pdfFormData, {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //         Authorization: `Bearer ${Cookies.get("accessToken")}`,
-    //       },
-    //     });
-
-    //     if (pdfResponse.status === 200) {
-    //       console.log("PDF uploaded successfully");
-    //     }
-    //   } catch (error) {
-    //     console.error("Error uploading PDF", error);
-    //   }
-    // }
-
-    // if (videoFile) {
-    //   const videoFormData = new FormData();
-    //   videoFormData.append("videoFile", videoFile);
-
-    //   try {
-    //     const videoResponse = await axios.post(
-    //       "/teacherUploadVideo",
-    //       videoFormData,
-    //       {
-    //         headers: {
-    //           "Content-Type": "multipart/form-data",
-    //           Authorization: `Bearer ${Cookies.get("accessToken")}`,
-    //         },
-    //       }
-    //     );
-
-    //     if (videoResponse.status === 200) {
-    //       console.log("Video uploaded successfully");
-    //     }
-    //   } catch (error) {
-    //     console.error("Error uploading video", error);
-    //   }
-    // }
-
-    //   if (instagramReel) {
-    //     const reelFormData = new FormData();
-    //     reelFormData.append("instagramReel", instagramReel);
-
-    //     try {
-    //       const reelResponse = await axios.post(
-    //         "/teacherUploadReel",
-    //         reelFormData,
-    //         {
-    //           headers: {
-    //             "Content-Type": "multipart/form-data",
-    //             Authorization: `Bearer ${Cookies.get("accessToken")}`,
-    //           },
-    //         }
-    //       );
-
-    //       if (reelResponse.status === 200) {
-    //         console.log("Instagram Reel uploaded successfully");
-    //       }
-    //     } catch (error) {
-    //       console.error("Error uploading Instagram Reel", error);
-    //     }
-    //   }
+    
   };
 
   const handleEmailChange = () => {

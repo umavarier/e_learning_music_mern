@@ -96,7 +96,6 @@ const enrollUser = async (req, res) => {
     }
 
     await user.save();
-
     res.json({ success: true, message: 'Enrollment successful' });
   } catch (error) {
     console.error(error);

@@ -13,6 +13,7 @@ import jwt_decode from "jwt-decode";
 import EnrolledCourses from "./EnrolledCourse";
 import PaymentHistoryModal from "./PaymentHistoryModal";
 import ProgressCard from "./ProgressCard";
+import Chat from '../StudentChat/StudentChat'
 
 
 import "./Profile.css";
@@ -200,21 +201,23 @@ return (
         </div>
       </div>
       
-      <div className="enroll-card col-md-10">
+      <div className="enroll-card col-md-8">
+      <button onClick={openPaymentHistoryModal} className="btn btn-primary" style={{margin : "40px", backgroundColor : "#0c62f7" , borderRadius: "5%", borderColor:"#000"}}>
+          Payment History
+        </button>
+      
         {/* Right Content */}
         <div className="row">
-          <div className="col-md-12">
+          <div className="enroll-column col-md-12" >
             <EnrolledCourses />
           </div>
           <div className="col-md-12">
             <div className="card rounded shadow-sm">
-              <ProgressCard totalHours={totalHours} videoCallCount={videoCallCount} />
+              {/* <ProgressCard totalHours={totalHours} videoCallCount={videoCallCount} /> */}
             </div>
           </div>
         </div>
-        <button onClick={openPaymentHistoryModal} className="btn btn-primary">
-          Payment History
-        </button>
+       
         <PaymentHistoryModal
           isOpen={isPaymentHistoryModalOpen}
           onRequestClose={closePaymentHistoryModal}
@@ -223,8 +226,11 @@ return (
         />
       </div>
     </div>
+    <div>
+      <Chat />
+    </div>
   </div>
-);
+);  
 
 }
 

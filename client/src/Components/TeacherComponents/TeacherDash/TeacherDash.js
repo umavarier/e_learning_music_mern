@@ -3,9 +3,12 @@ import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import TeacherHeader from '../Header/TeacherHeader'; // Assuming you have a TeacherHeader component
 // import './TeacherDash.css'; // Create a separate CSS file for styling
-import TeacherSidebar from '../Sidebar/TeacherSidebar'; // Use the TeacherSidebar component
+import TeacherSidebar from '../Sidebar/TeacherSidebar'; 
+import TeacherChat from '../TeacherChat/TeacherChat'; 
 
 function TeacherDash() {
+
+  
   return (
     <Fragment>
       <TeacherHeader />
@@ -25,6 +28,8 @@ function TeacherDash() {
                     <div className="card-body">
                       <h2 className="mb-4">TEACHER DASHBOARD</h2>
                       {/* <Link to="/teacherAvailability">Manage Availability</Link> */}
+                      <TeacherChat />
+
                     </div>
                   </div>
                 </div>

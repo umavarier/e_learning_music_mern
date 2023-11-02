@@ -105,7 +105,7 @@ const Pricing = () => {
                 className="get-started-button"
                 onClick={() => handleGetStartedClick(pricingPlan)}
               >
-                Get Started
+                Enroll Now
               </button>
             </div>
           ))}

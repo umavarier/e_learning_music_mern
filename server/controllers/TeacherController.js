@@ -456,39 +456,29 @@ const getEnrolledStudentsByCourse = async (req, res) => {
   const courseId = req.params.courseId;
   try {
     const course = await Course.findById(courseId);
-
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     const students = await User.find({
       enrolledCourses: { $elemMatch: { course: courseId } },
-    })
-      .select('userName email enrolledCourses enrolledCourseTiming')
-      .populate('enrolledCourses.course', 'name') 
-      .populate('enrolledCourses.instructorId', 'userName')
-      .populate('enrolledCoursesTiming.day', 'day')
-      .populate('enrolledCoursesTiming.time', 'time')
-    console.log("cccccccc  "+JSON.stringify(students))
+    }).select("userName email enrolledCourses");
+
     if (!students || students.length === 0) {
-      return res.status(200).json({ message: 'No students enrolled in this course' || [] });
+      return res.status(200).json({ message: "No students enrolled in this course" });
     }
-    
-    // Extract student details
-    const studentDetails = students.map((student) => {
-      return {
-        _id:student._id,
-        name: student.userName,
-        email: student.email,
-        enrolledCourses: student.enrolledCourses, 
-        enrolledCoursesTiming: student.enrolledCoursesTiming
-      };
-    });
+
+    const studentDetails = students.map((student) => ({
+      _id: student._id,
+      name: student.userName,
+      email: student.email,
+      enrolledCourses: student.enrolledCourses,
+    }));
 
     res.status(200).json(studentDetails);
   } catch (error) {
-    console.error('Error fetching student details:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error fetching student details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -506,59 +496,62 @@ const fetchTeacherNamesForCourse = async (req, res) => {
       .json({ error: "An error occurred while fetching teachers." });
   }
 }
-const addCourseTimingOfStudent = async (req,res) => {
-  const studentId  = req.params.studentId;
-  console.log("req.body "+JSON.stringify(req.body))
-  const { courseId, instructorId, day, time } = req.body;
-  console.log("stu----"+studentId)
-  console.log(JSON.stringify(req.body))
+const addCourseTimingOfStudent = async (req, res) => {
+  const studentId = req.params.studentId;
+  const courseId = req.params.courseId;
+  const { day, time } = req.body;
 
   try {
-    const user = await User.findOne({ _id: studentId});
-
-    if (!user) {  
-      return res.status(404).json({ error: 'User not found' });
+    const user = await User.findOne({ _id: studentId });
+    console.log("enrolduser---"+user)
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    user.enrolledCoursesTiming.push({
-      course: courseId,
-      instructorId,
-      day,
-      time, 
-    });
+    // Find the course with the matching courseId in the enrolledCourses
+    const course = user.enrolledCourses.find(
+      (enrolledCourse) => enrolledCourse.course.toString() === courseId
+    );
 
-    
+    if (!course) {
+      return res.status(404).json({ error: "Course not found in enrolled courses" });
+    }
+
+    // Update the day and time for the selected course
+    course.day = day;
+    course.time = time;
+
     await user.save();
 
-    res.status(200).json({ message: 'Course timing added successfully' });
+    res.status(200).json({ message: "Course timing added/updated successfully" });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to add course timing' });
+    res.status(500).json({ error: "Failed to add/update course timing" });
   }
-}
+};
+
 
 const getCourseTimings = async (req, res) => {
+  const studentId = req.params.studentId;
+  const courseId = req.params.courseId;
+
   try {
-    const studentId = req.params.studentId;
-    console.log(studentId)
-    const courseId = req.params.courseId;
-    
     const user = await User.findById(studentId);
     if (!user) {
-      return res.status(404).json({ error: 'Student not found' });
+      return res.status(404).json({ error: "Student not found" });
     }
-    const courseTiming = user.enrolledCoursesTiming.find((timing) =>
-      timing.course.equals(courseId)
+
+    const courseTiming = user.enrolledCourses.find(
+      (timing) => timing.course.equals(courseId)
     );
-    console.log("gct"+JSON.stringify(courseTiming))
 
     if (courseTiming) {
       res.json(courseTiming);
     } else {
-      res.status(404).json({ error: 'Course timing not found' });
+      res.status(404).json({ error: "Course timing not found" });
     }
   } catch (error) {
-    console.error('Error fetching course timing:', error);
-    res.status(500).json({ error: 'Failed to fetch course timing' });
+    console.error("Error fetching course timing:", error);
+    res.status(500).json({ error: "Failed to fetch course timing" });
   }
 };
 

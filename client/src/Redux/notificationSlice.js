@@ -2,19 +2,17 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const notificationSlice = createSlice({
   name: 'notifications',
-  initialState: [],
+  initialState: { notifications: [] }, // Set initial state as an object with a 'notifications' property
   reducers: {
     addNotification: (state, action) => {
-      state.push(action.payload);
+      state.notifications.push(action.payload);
     },
     removeNotification: (state, action) => {
-      // You can implement the logic to remove a notification by its ID or other criteria here
       const notificationId = action.payload;
-      return state.filter((notification) => notification.id !== notificationId);
+      state.notifications = state.notifications.filter((notification) => notification.id !== notificationId);
     },
     clearNotifications: (state) => {
-      // This action clears all notifications
-      return [];
+      state.notifications = [];
     },
   },
 });

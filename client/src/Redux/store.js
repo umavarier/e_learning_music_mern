@@ -5,6 +5,7 @@ import userReducer from './userSlice';
 import teacherReducer from './teacherSlice'
 import courseReducer from './courseSlice'
 import notificationReducer from './notificationSlice'
+import studentReducer from './studentSlice';
 
 const store=configureStore({
     reducer : {
@@ -14,6 +15,7 @@ const store=configureStore({
         teacher:teacherReducer,
         course:courseReducer,
         notification:notificationReducer,
+        student: studentReducer,
     },
 })
 

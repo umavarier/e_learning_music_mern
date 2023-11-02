@@ -43,7 +43,7 @@ function TeacherSidebar() {
             </Link>
           </li>
           <li className="nav-item">
-            <Link
+            {/* <Link
               to={"/TeacherGetAllUsers"}
               className="nav-link black-text"
               style={{
@@ -57,7 +57,7 @@ function TeacherSidebar() {
               }}
             >
               Students
-            </Link>
+            </Link> */}
           </li>
           <li className="nav-item">
             <Link

@@ -38,7 +38,7 @@ const PaymentHistoryModal = ({ isOpen, onRequestClose, paymentHistory }) => {
           ))}
         </tbody>
       </table>
-      <button onClick={onRequestClose}>Close Modal</button>
+      <button onClick={onRequestClose}>Close</button>
     </Modal>
   );
 };

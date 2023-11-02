@@ -24,7 +24,7 @@ router.get('/getTeacherVideos/:teacherId', authenticateTeacher, getTeacherVideos
 router.get('/getTeacherSpec/:teacherId',authenticateTeacher,getTeacherSpec)
 router.get('/getEnrolledStudentsByCourse/:courseId',getEnrolledStudentsByCourse)
 router.get('/fetchTeacherNamesForCourse/:courseId',fetchTeacherNamesForCourse)
-router.post('/addCourseTimingOfStudent/:studentId',addCourseTimingOfStudent)
+router.post('/addCourseTimingOfStudent/:studentId/:courseId',addCourseTimingOfStudent)
 router.get('/getCourseTimings/:courseId/:studentId',getCourseTimings)
 
 module.exports = router;

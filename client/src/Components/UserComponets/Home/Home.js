@@ -53,8 +53,8 @@ function Home() {
         console.error("Error fetching pricing data:", error);
       });
   }, []);
-  const handleGetStartedClick = () => {
-    navigate(`/payment/${pricingData}`);
+  const handleGetStartedClick = (pricingPlan) => {
+    navigate(`/payment`,{ state: { pricingPlan } });
   };
 
   // console.log("notify: " + notifications);
@@ -97,6 +97,7 @@ function Home() {
         console.error("Error fetching teachers:", error);
       });
   }, []);
+  
 
   const isAppointmentTimePassed = (appointment) => {
     const currentTime = new Date();
@@ -120,6 +121,8 @@ function Home() {
     console.log("startTime: " + appointmentStartTime);
     console.log("endTime: " + appointmentEndTime);
     console.log("currentTime: " + currentTime);
+
+   
 
     return (
       currentTime >= appointmentStartTime && currentTime <= appointmentEndTime
@@ -182,11 +185,11 @@ function Home() {
 
       {/* Courses */}
       <div className="home-course-container mt-6">
-        <h1 className="text-dark">Our Courses</h1>
+        <h1 className="text-dark text-center">Our Courses</h1>
         <Carousel>
           <div className="row">
             {courses.map((course) => (
-              <div className=" rounded-card-c mb-8" key={course._id}>
+              <div className=" rounded-card-c mb-8" style={{margib:"30px"}} key={course._id}>
                 <Link
                   to={`courses/${course._id}?userId=${userId}`}
                   className="course-link"
@@ -195,8 +198,8 @@ function Home() {
                     <i className={`fas ${course.icon} fa-5x text-primary`}></i>
                   </div>
                   <div className="card-body text-center">
-                    <h5 className="card-title">{course?.name}</h5>
-                    <p className="card-text">{course.description}</p>
+                    <h5 className="card-title" style={{fontSize : "30px"}}>{course?.name}</h5>
+                    {/* <p className="card-text">{course.description}</p> */}
                     {/* <p className="card-text">Instructor: {course.instructor?.userName}</p> */}
                     {/* Add more course details as needed */}
                   </div>
@@ -212,14 +215,14 @@ function Home() {
 
       {/* Teachers */}
       <div className="teacher-container mt-6">
-        <h1 className="text-dark">Our Teachers</h1>
+        <h1 className="text-dark text-center">Our Teachers</h1>
         <Carousel>
           <div className="row">
             {teachers.map((teacher) => (
               <div className="col-md-2" key={teacher.id}>
                
-                <div className="teacher-card mb-4">
-                  <div className="card-img-square">
+                <div className="teacher-card mb-4" >
+                  <div className="card-img-square" >
                     <img
                       src={`http://localhost:4000/uploads/${teacher.profilePhoto}`}
                       className="card-img-top"
@@ -227,7 +230,7 @@ function Home() {
                     />
                   </div>
                   <div className="card-body">
-                    <h3 className="card-title">{teacher?.userName}</h3>
+                    <h3 className="card-title text-center">{teacher?.userName}</h3>
                     <h5 className="card-title">{teacher?.credentials}</h5>
                    
                   </div>
@@ -261,7 +264,7 @@ function Home() {
                 className="get-started-button"
                 onClick={() => handleGetStartedClick(pricingPlan)}
               >
-                Get Started
+                Enroll Now
               </button>
             </div>
           ))}
@@ -270,16 +273,16 @@ function Home() {
 
       {/* Banner Image */}
     
-      <div className="container m">
+      <div className="container-m">
         <div className="banner-home-end">
         <div className="row">
-          <div className="col-md-12">
+          <div className="col-md-6">
             <div className="banner1">
               <img
                 src={img}
                 className="banner"
                 alt="..."
-                style={{ width: "70%", height: "auto" }}
+                // style={{ width: "70%", height: "auto" }}
               />
             </div>
           </div>

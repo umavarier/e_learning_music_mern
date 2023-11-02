@@ -6,7 +6,9 @@ import "./CourseDetails.css";
 import TimeSelectionModal from "../UserComponets/TimeSelection/timeSelectionModal";
 import img from "./guitar.jpeg";
 import Header from "../UserComponets/Home/Header"
-import moment from 'moment'
+import moment from 'moment';
+import { Link } from "react-router-dom";
+import Pricing from "./Pricing";
 
 function CourseDetails() {
   const { courseId } = useParams();
@@ -285,6 +287,10 @@ function CourseDetails() {
       isTimePickerDisabled={isTimePickerDisabled}
       />
       )}
+    </div>
+    <div>
+    
+    <Pricing />
     </div>
     
     </>

@@ -15,6 +15,13 @@ import logo from "./LOGO.png";
 import axios from "../../../utils/axios";
 import { logout } from "../../../Redux/userimageReducer";
 import { changeImage } from "../../../Redux/userSlice";
+import Badge from "@mui/material/Badge";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import io from "socket.io-client";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { styled } from '@mui/system';
+
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -25,26 +32,51 @@ const Header = () => {
   const [courses, setCourses] = useState([]);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElInstruments, setAnchorElInstruments] = useState(null);
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   
+useEffect(() => {
+  const token = localStorage.getItem("userdbtoken");
 
-
-
-  useEffect(() => {
-    const token = localStorage.getItem("userdbtoken");
+  const fetchData = async () => {
     if (token) {
       const decodedToken = jwt_decode(token);
       if (decodedToken) {
         setUserId(decodedToken._id);
         setUserName(decodedToken.userName);
-        // Set the profile photo based on the token's information
-        // setProfilePhoto(decodedToken.profilePhoto);
-        // dispatch(changeImage(decodedToken.profilePhoto));
+        const socket = io("http://localhost:4000");
+        socket.on("notification", (notification) => {
+          setNotifications((prevNotifications) => [...prevNotifications, notification]);
+        });
+        // Clean up the socket connection when the component unmounts
+        return () => {
+          socket.disconnect();
+        };
+
+        // Fetch the user's profile photo
+        try {
+          const response = await axios.get(`/fetchUserProfilePhoto/${decodedToken._id}`);
+          if (response.status === 200 && response.data.profilePhotoUrl) {
+            setProfilePhoto(response.data.profilePhotoUrl);
+            dispatch(changeImage(response.data.profilePhotoUrl));
+          } else {
+            setProfilePhoto("");
+          }
+        } catch (error) {
+          console.error("Error fetching profile photo:", error);
+          setProfilePhoto("");
+        }
       }
     }
+  };
+
+  fetchData();
+}, []);
   
   axios
   .get(`/fetchUserProfilePhoto/${userId}`)
@@ -55,17 +87,21 @@ const Header = () => {
       dispatch(changeImage(response.data.profilePhotoUrl));
 
       // Save the profile photo to local storage for future use
-      // localStorage.setItem("profilePhoto", response.data.profilePhotoUrl);
+      localStorage.setItem("profilePhoto", response.data.profilePhotoUrl);
     }
+    
   })
   .catch((error) => {
     // Fallback to the locally stored profile photo if fetching from the backend fails
-    
-      setProfilePhoto("");
-      
-    
+    const locallyStoredPhoto = localStorage.getItem("profilePhoto");
+    if (locallyStoredPhoto) {
+      setProfilePhoto(locallyStoredPhoto);
+      dispatch(changeImage(locallyStoredPhoto));
+    }
+    else{
+      setProfilePhoto( "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
+    }
   });
-});
  
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -83,6 +119,21 @@ const Header = () => {
     setAnchorElInstruments(null);
   };
 
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleNotificationClick = (event) => {
+    setNotificationAnchorEl(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setNotificationAnchorEl(null);
+  };
   useEffect(() => {
     axios
       .get("/viewCourses")
@@ -96,6 +147,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("userdbtoken");
+    localStorage.removeItem("profilePhoto")
     dispatch(
       changeImage(
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
@@ -103,6 +155,7 @@ const Header = () => {
     );
     setUserId(null);
     setUserName(null);
+    setProfilePhoto("")
     navigate("/");
   };
 
@@ -177,7 +230,7 @@ const Header = () => {
           </Link>
         </Button>
 
-        <Button
+        {/* <Button
           color="inherit"
           style={{
             width: "250px",
@@ -196,11 +249,17 @@ const Header = () => {
           >
             Gallery
           </Link>
-        </Button>
+        </Button> */}
         <div style={{ flex: 1 }}></div>
 
         {userId ? (
           <div style={{ display: "flex", alignItems: "center" }}>
+             <IconButton color="inherit" onClick={handleNotificationClick}>
+              <Badge badgeContent={notifications.length} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+
             <Typography variant="h6" style={{ marginRight: "10px" }}>
               {userName}
             </Typography>
@@ -234,6 +293,27 @@ const Header = () => {
                 >
                   <Button color="inherit">My Profile</Button>
                 </Link>
+                <Menu
+              anchorEl={notificationAnchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              id="profile-menu"
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(notificationAnchorEl)}
+              onClose={handleNotificationClose}
+            >
+              {notifications.map((notification, index) => (
+                <MenuItem key={index}>
+                  {notification.message}
+                </MenuItem>
+              ))}
+            </Menu>
                 <ListItem>
                   <Button color="inherit" onClick={handleLogout}>
                     Logout
