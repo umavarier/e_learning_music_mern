@@ -5,8 +5,9 @@ import { FaSignInAlt } from "react-icons/fa";
 import { LoginPost } from "../../../utils/Constants";
 import { useDispatch } from "react-redux";
 import "./Login.css";
-import logo from "../Home/LOGO.png";
+import logo from "../../AdminComponents/Header/LOGO.png";
 import Swal from "sweetalert2";
+
 
 function Login() {
   const [email, setEmail] = useState("");

@@ -18,6 +18,25 @@ function TeacherLogin() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const checkProfilePicture = async () => {
+    try {
+      const accessToken = Cookies.get("token");
+      const response = await axios.get("/teachers/checkTeacherProfilePicture", {
+        headers: {
+          Authorization: ` ${accessToken}`,
+        },
+      });
+
+      if (response.data.hasProfilePicture) {
+        navigate("/teacherhome");
+      } else {
+        navigate("/teacherProfilePictureUpload");
+      }
+    } catch (error) {
+      console.error("Error checking profile picture:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -37,12 +56,12 @@ function TeacherLogin() {
             headers: { "Content-Type": "application/json" },
           }
         );
-
+      
         if (response.status === 200) {
           // Save tokens in cookies
           Cookies.set("token", response.data.token);
           Cookies.set("refreshToken", response.data.refreshToken);
-
+      
           // Dispatch user data to Redux store
           dispatch(
             setTeacher({
@@ -55,19 +74,27 @@ function TeacherLogin() {
               profilePicture: response.data.teacher.profilePhoto,
             })
           );
-
+      
           Swal.fire("Good job!", "Teacher Login Success!", "success");
-          navigate("/teacherhome");
+          checkProfilePicture();
+        } else if (response.status === 401) {
+          Swal.fire("Error", "Cannot login, admin approval pending", "error");
+        } else if (response.status === 401) {
+          Swal.fire("Error", "Invalid password", "error");
+        } else if (response.status === 403) {
+          Swal.fire("Error", "Teacher blocked", "error");
+        } else if (response.status === 404) {
+          Swal.fire("Error", "Teacher not found", "error");
         } else {
-          Swal.fire({
-            icon: "error",
-            title: "Oops..",
-            text: "Invalid credentials!",
-          });
+          Swal.fire("Error", "An error occurred. Please try again later.", "error");
         }
       } catch (err) {
         console.error(err);
-        Swal.fire("Error", "Teacher not found", "error");
+        if (err.response && err.response.status === 401) {
+          Swal.fire("Error", "Admin approval pending", "error");
+        } else {
+          Swal.fire("Error", "An error occurred. Please try again later.", "error");
+        }
       }
     }
   };
@@ -96,7 +123,7 @@ function TeacherLogin() {
         <button type="submit">Login</button>
         <p>
           Don't have an account?{" "}
-          <Link to="/register">Sign up as a Teacher</Link>
+          <Link to="/signup">Sign up as a Teacher</Link>
         </p>
       </form>
     </div>

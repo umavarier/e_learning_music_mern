@@ -92,7 +92,7 @@ function TeacherHeader() {
     navigate('/teacherLogin');
   };
 
-  // Select teacher name and profile picture from Redux
+  
   const teacherName = useSelector(selectTeacherName);
   const profilePicture = useSelector(selectTeacherProfilePicture);
 

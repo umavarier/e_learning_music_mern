@@ -6,10 +6,11 @@ const { uploadSingleFile } = require('../util/multer1');
 const {verifyToken} = require('../midleware/verifyToken')
 const {authenticateTeacher} = require('../midleware/authTeacher')
 // const teacherController = require('../controllers/TeacherController');
-const {teacherLogin, teacherData, teacherUploadProfilePhoto, addAvailability,getAppointments, getNotifications, getSenderEmail,fetchProfilePhoto,saveVideoUrl,getTeacherVideos, getTeacherSpec, getEnrolledStudentsByCourse, fetchTeacherNamesForCourse, addCourseTimingOfStudent, getCourseTimings} = require('../controllers/TeacherController')
+const {teacherLogin, teacherData, teacherUploadProfilePhoto, addAvailability,getAppointments, getNotifications, getSenderEmail,fetchProfilePhoto,saveVideoUrl,getTeacherVideos, getTeacherSpec, getEnrolledStudentsByCourse, fetchTeacherNamesForCourse, addCourseTimingOfStudent, getCourseTimings, checkTeacherProfilePicture} = require('../controllers/TeacherController')
 const {teacherViewCourse} = require('../controllers/TeacherController')
 
 router.post('/teacherLogin', teacherLogin);
+router.get('/checkTeacherProfilePicture',authenticateTeacher,checkTeacherProfilePicture)
 router.get('/teacher-data',authenticateTeacher, teacherData);
 router.get('/teacherViewCourse', teacherViewCourse);
 router.post('/Course',)

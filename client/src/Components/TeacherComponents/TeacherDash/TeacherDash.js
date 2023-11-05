@@ -1,20 +1,52 @@
-import React, { Fragment } from 'react';
-// import Footer from '../Footer/Footer';
-import { Link } from 'react-router-dom';
-import TeacherHeader from '../Header/TeacherHeader'; // Assuming you have a TeacherHeader component
-// import './TeacherDash.css'; // Create a separate CSS file for styling
-import TeacherSidebar from '../Sidebar/TeacherSidebar'; 
-import TeacherChat from '../TeacherChat/TeacherChat'; 
+import React, { Fragment, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import TeacherHeader from "../Header/TeacherHeader";
+import TeacherSidebar from "../Sidebar/TeacherSidebar";
+import TeacherChat from "../TeacherChat/TeacherChat";
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
+import TeacherProfilePictureUpload from "../Header/TeacherProfilePictureUpload";
+import axios from "../../../utils/axios";
+import { selectTeacherProfilePicture } from '../../../Redux/teacherSlice';
 
 function TeacherDash() {
+  const navigate = useNavigate();
+  const [hasProfilePicture, setHasProfilePicture] = useState(false);
+  const profilePicture = useSelector(selectTeacherProfilePicture);
+  const [showProfileUploadModal, setShowProfileUploadModal] = useState(false);
 
-  
+
+  const accessToken = Cookies.get("token")
+  const decodedToken = jwt_decode(accessToken);
+  const teacherId = decodedToken._id;
+
+  useEffect(() => {
+    const checkProfilePicture = async () => {
+      try {
+        const accessToken = Cookies.get("token")
+        const decodedToken = jwt_decode(accessToken);
+        const teacherId = decodedToken._id;
+        const response = await axios.get("/teachers/checkTeacherProfilePicture", {
+          headers: {
+            Authorization: ` ${accessToken}`,
+          },
+        });
+        setHasProfilePicture(response.data.hasProfilePicture);
+      } catch (error) {
+        console.error("Error checking profile picture:", error);
+      }
+    };
+
+    checkProfilePicture();
+  }, []);
+
   return (
     <Fragment>
       <TeacherHeader />
       <div className="container-fluid">
         <div className="row">
-          <TeacherSidebar /> {/* Use the TeacherSidebar component */}
+          <TeacherSidebar />
           <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div
               style={{
@@ -26,10 +58,20 @@ function TeacherDash() {
                 <div className="row">
                   <div className="container-fluid">
                     <div className="card-body">
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        {/* {profilePicture ? ( // Check if the profile picture is available
+                          <img
+                            src={profilePicture} // Display the profile picture URL
+                            alt="Profile Picture"
+                            style={{ width: '100px', height: '100px', borderRadius: '50%' }}
+                          />
+                        ) : (
+                          // If profile picture is not available, show the modal
+                          showProfileUploadModal && <TeacherProfilePictureUpload />
+                        )} */}
+                      </div>
                       <h2 className="mb-4">TEACHER DASHBOARD</h2>
-                      {/* <Link to="/teacherAvailability">Manage Availability</Link> */}
                       <TeacherChat />
-
                     </div>
                   </div>
                 </div>
@@ -38,7 +80,6 @@ function TeacherDash() {
           </main>
         </div>
       </div>
-      {/* <Footer /> */}
     </Fragment>
   );
 }

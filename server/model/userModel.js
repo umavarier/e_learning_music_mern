@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const SECRECT_KEY = "abcdefghijklmnop"
 
 
-const User= new mongoose.Schema({
+const userSchema= new mongoose.Schema({
     userName:
     {
         type:String,
@@ -103,7 +103,7 @@ const User= new mongoose.Schema({
     collection:'users'
 })
 
-User.methods.generateAuthtoken = async function(){
+userSchema.methods.generateAuthtoken = async function(){
     try {
         console.log("generated")
         let newtoken = jwt.sign({_id:this._id , userName : this.userName, image:this.image, email:this.email},"secret123",{
@@ -114,10 +114,11 @@ User.methods.generateAuthtoken = async function(){
         await this.save();
         return newtoken;
     } catch (error) {
-        res.status(400).json(error)
+        // res.status(400).json(error)
+        throw error;
     }
 }
 
-const model=mongoose.model('UserData',User);
+const User=mongoose.model('User',userSchema);
 
-module.exports=model
+module.exports=User;

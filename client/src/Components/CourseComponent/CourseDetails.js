@@ -290,7 +290,7 @@ function CourseDetails() {
     </div>
     <div>
     
-    <Pricing />
+    {/* <Pricing /> */}
     </div>
     
     </>

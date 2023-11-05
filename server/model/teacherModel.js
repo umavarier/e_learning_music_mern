@@ -27,6 +27,15 @@ const teacherSchema =  new mongoose.Schema({
         required : true,
         default : false
     },
+    isTeacherApproved: {
+      type: Boolean,
+      required : true,
+      default : false
+    },
+    isTeacherRejected: {
+      type : Boolean,
+      default : false,
+    },
     specializations: [
         {
             type: String,

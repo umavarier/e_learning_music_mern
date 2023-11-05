@@ -58,10 +58,10 @@ const userSignup = async (req, res) => {
       password,
       phoneNumber,
       isTeacher,
-      description,
-      headline,
-      certificate,
       courses,
+      certificate,
+      description,
+      credentials,   
     } = req.body;
 
     // Check if the user already exists
@@ -92,10 +92,10 @@ const userSignup = async (req, res) => {
         password: hashedPassword,
         role: 1,
         isTeacher,
-        description,
-        headline,
-        certificate,
         courses,
+        description,       
+        certificate,
+        
       });
 
       await teacher.save();

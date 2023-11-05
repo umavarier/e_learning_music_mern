@@ -3,7 +3,7 @@ var router = express.Router();
 
 const multerConfig = require('../util/multerConfig');
 const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo,getNotifications,sendNotifications, checkAppointmentTiming, userGetAppointmentTime, fetchUserProfilePhoto, getEnrolledCourses, getPaymentHistory} = require('../controllers/userController');
-const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher, getEnrollmentPricing, updateEnrollmentPricing, adminGetCourseList, adminEditCourse, adminDeleteCourse } = require('../controllers/adminControllers');
+const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher, getEnrollmentPricing, updateEnrollmentPricing, adminGetCourseList, adminEditCourse, adminDeleteCourse, adminApproveTeacher, adminRejectTeacher, getEnrolledUsersList, adminGetPricingDetails, adminEditPricing, adminDeletePricing, adminGetUserAppointments, adminCancelAppointment } = require('../controllers/adminControllers');
 
 const {TeacherGetAllUsers, } = require('../controllers/TeacherController')
 // const {addCourse, viewCourses, getCourseById} = require('../controllers/courseController')
@@ -16,9 +16,11 @@ const {userotpsend} = require('../controllers/userController')
 const {auth} = require('../midleware/auth');
 const {processPayment}= require ('../controllers/userController');
 const { adminSignUp } = require('../controllers/adminControllers');
+const { authenticateAdmin, refreshToken } = require('../midleware/adminAuth');
 
 
 /* GET home page. */
+router.post('/refreshToken', refreshToken);
 router.post('/signup', uploadCertificate.single('certificate'),userSignup);
 router.post('/login',userLogin);
 router.post('/sendotp',userotpsend)
@@ -40,10 +42,18 @@ router.post('/adminAddTeacher',adminAddTeacher)
 router.get('/adminGetTeachers',adminGetTeachers)
 router.patch('/adminToggleBlockTeacher/:teacherId', adminBlockTeacher)
 router.get('/admingetEnrollmentPricing',getEnrollmentPricing)
-router.post('/adminUpdateEnrollmentPricing',updateEnrollmentPricing)
+router.post('/adminUpdateEnrollmentPricing',authenticateAdmin,updateEnrollmentPricing)
 router.get('/adminGetCourseList',adminGetCourseList)
 router.put('/adminEditCourse/:id', adminEditCourse)
 router.delete('/adminDeleteCourse/:id',adminDeleteCourse)
+router.patch('/adminApproveTeacher/:teacherId', authenticateAdmin,adminApproveTeacher)
+router.patch('/adminRejectTeacher/:teacherId', authenticateAdmin,adminRejectTeacher)
+router.get('/getEnrolledUsersList',authenticateAdmin,getEnrolledUsersList);
+router.get('/adminGetPricingDetails',authenticateAdmin,adminGetPricingDetails);
+router.put('/adminEditPricing/:id',authenticateAdmin,adminEditPricing)
+router.delete("/adminDeletePricing/:id", authenticateAdmin,adminDeletePricing);
+router.get("/adminGetUserAppointments", authenticateAdmin, adminGetUserAppointments)
+router.delete("/adminCancelAppointment/:appointmentId", adminCancelAppointment);
 // router.get('/courses/:id',getCourseDetails);
 // router.get('/getCourseDetails/:id',getCourseDetails)
 // router.get('/getCourseDetails/:courseId', getCourseById)

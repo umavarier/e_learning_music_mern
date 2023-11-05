@@ -52,6 +52,10 @@ import Notifications from "./Components/UserComponets/Notification/Notifications
 import EnrolledCourses from "./Components/UserComponets/Profile/EnrolledCourse";
 import TeacherChat from "./Components/TeacherComponents/TeacherChat/TeacherChat";
 import StudentChat from "./Components/UserComponets/StudentChat/StudentChat";
+import EnrolledUsersList from "./Components/AdminComponents/AdminEnrolledUsers/AdminEnrolledUsers.js";
+import GetPricingDetails from "./Components/AdminComponents/CoursePricing/AdminViewPricing.js";
+import AdminBookingLists from "./Components/AdminComponents/AdminBookingList/AdminBookingLists.js";
+import TeacherProfilePictureUpload from "./Components/TeacherComponents/Header/TeacherProfilePictureUpload.js";
 
 function App() {
   return (
@@ -81,9 +85,15 @@ function App() {
         <Route path="/adminUpdateEnrollmentPricing" element={<AdminCoursePrice/>} />
         <Route path="/adminCourseManagement" element={<AdminCourseManagement />} />
         <Route path="/roleselection" element={<RoleSelection />} />
+        <Route path="/getEnrolledUsersList" element={<EnrolledUsersList />} />
+        <Route path="/adminGetPricingDetails" element={<GetPricingDetails />} />
+        <Route path="/adminGetBookingLists" element={<AdminBookingLists />} />
+
 
         {/* <Route path = '/teacher'element={<Login/>}/> */}
         <Route path="/teacherLogin" element={<TeacherLogin />} />
+        
+        <Route path="/teacherProfilePictureUpload" element={<TeacherProfilePictureUpload />} />
         <Route path="/teacher-data" element={<FetchteacherData />} />
         <Route path="/teacherhome" element={<TeacherDash />} />
         <Route path="/TeacherGetAllUsers" element={<TeacherUserManagement />} />

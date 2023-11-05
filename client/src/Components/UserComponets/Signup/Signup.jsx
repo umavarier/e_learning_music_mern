@@ -1,42 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import axios from '../../../utils/axios';
-import Swal from 'sweetalert2';
-import { Link } from 'react-router-dom';
-import './Signup.css';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import axios from "../../../utils/axios";
+import img from "./img3.jpg";
+import LOGO from "../../UserComponets/Home/logo-black.png";
+import { useNavigate } from "react-router-dom";
+
 import {
   Grid,
   Paper,
+  Avatar,
   Typography,
   TextField,
   Button,
   Checkbox,
-  Avatar,
   FormControlLabel,
-  Input,
-} from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+  Modal,
+  Card,
+  CardHeader,
+  CardContent,
+  Box,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
-function Signup() {
-  const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+const Signup = () => {
+  const salt = 10;
   const [isTeacher, setIsTeacher] = useState(false);
-  const [teacherDescription, setTeacherDescription] = useState('');
+  const [teacherModalOpen, setTeacherModalOpen] = useState(false);
+  const [isTeacherApproved, setIsTeacherApproved] = useState(false);
+
+  // State variables for the user information
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  // State variables for teacher information
+  const [teacherDescription, setTeacherDescription] = useState("");
   const [selectedCourses, setSelectedCourses] = useState([]);
-  const [certificate, setCertificate] = useState();
-  const [teacherCredentials, setTeacherCredentials] = useState('');
-  const [availableCourses,setAvailableCourses] = useState('')
+  const [teacherCredentials, setTeacherCredentials] = useState("");
+  const [selectedCertificate, setSelectedCertificate] = useState("");
+  const [availableCourses, setAvailableCourses] = useState([]);
 
   const navigate = useNavigate();
+
+  // Handle teacher modal opening
+  const handleTeacherSignup = (e) => {
+    setIsTeacher(e.target.checked);
+    if (e.target.checked) {
+      handleOpenTeacherModal();
+    }
+  };
+
+  const handleOpenTeacherModal = () => {
+    setTeacherModalOpen(true);
+  };
+
+  const handleCloseTeacherModal = () => {
+    setTeacherModalOpen(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (userName === '' || email === '' || password === '') {
-      Swal.fire('Please fill in all the fields');
+    if (userName === "" || email === "" || password === "") {
+      Swal.fire("Please fill in all the fields");
     } else {
       const body = {
         userName,
@@ -45,38 +73,58 @@ function Signup() {
         phoneNumber,
         isTeacher,
         courses: selectedCourses,
-        teacherDescription: isTeacher ? teacherDescription : '',
-        certificate: isTeacher ? certificate : '',
-        teacherCredentials: isTeacher ? teacherCredentials : '',
+        certificate: selectedCertificate,
+        teacherDescription: isTeacher ? teacherDescription : "",
+        teacherCredentials: isTeacher ? teacherCredentials : "",
       };
-      
 
       try {
-        const response = await axios.post("http://localhost:4000/signup", body, {
-          headers: { 'Content-Type': 'application/json' },
-        });
-      
-        if (response.data.status === 'ok') {
-          toast.success('Signup Success!', {
+        if (isTeacher) {
+          // Save teacher details to the database
+          const data = {
+            userName,
+            email,
+            password,
+            phoneNumber,
+            isTeacher,
+            courses: selectedCourses,
+            teacherDescription,
+            teacherCredentials,
+          };
+          await axios.post("http://localhost:4000/signup", data);
+        }
+
+        const response = await axios.post(
+          "http://localhost:4000/signup",
+          body,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
+        if (response.data.status === "ok") {
+          toast.success("Signup Success!", {
             position: "top-right",
             autoClose: 3000,
           });
-          console.log(response.data);
-          navigate('/roleSelection');
-        } else if (response.data.status === 'error' && response.data.message === 'User already exists') {
-          toast.error('User Already Registered!', {
+          navigate("/roleSelection");
+        } else if (
+          response.data.status === "error" &&
+          response.data.message === "User already exists"
+        ) {
+          toast.error("User Already Registered!", {
             position: "top-right",
             autoClose: 3000,
           });
         } else {
-          toast.error('Internal server error', {
+          toast.error("Internal server error", {
             position: "top-right",
             autoClose: 3000,
           });
         }
       } catch (err) {
         console.error(err);
-        toast.error('Internal server error', {
+        toast.error("Internal server error", {
           position: "top-right",
           autoClose: 3000,
         });
@@ -84,17 +132,14 @@ function Signup() {
     }
   };
 
-  const handleTeacherSignup = () => {
-    setIsTeacher(!isTeacher);
-  };
-
   useEffect(() => {
-    axios.get('/getCourseForSignup')
+    axios
+      .get("/getCourseForSignup")
       .then((response) => {
         setAvailableCourses(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching courses:', error);
+        console.error("Error fetching courses:", error);
       });
   }, []);
 
@@ -108,62 +153,124 @@ function Signup() {
     }
   };
 
+  // Function to send teacher details for admin approval
+  const sendForAdminApproval = () => {
+    setTeacherModalOpen(false);
+    // setShowAdminApprovalModal(true);
+  };
+
+  // Function to handle "OK" click on the admin approval card
+  const handleAdminApprovalOK = () => {
+    // setShowAdminApprovalModal(false);
+    setTeacherModalOpen(false);
+    setIsTeacherApproved(false);
+    const teacherDetails = {
+      userName,
+      email,
+      password,
+      phoneNumber,
+      isTeacher,
+      teacherDescription,
+      selectedCourses,
+      teacherCredentials,
+    };
+    axios
+      .post("http://localhost:4000/signup", teacherDetails)
+      .then((response) => {
+        if (response.data.status === "ok") {
+          toast.success("Teacher Details Saved!", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          navigate("/roleSelection");
+        } else {
+          toast.error("Failed to save Teacher Details", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error saving teacher details:", error);
+        toast.error("Internal server error", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      });
+  };
+
   const renderTeacherFields = () => {
     if (isTeacher) {
       return (
-        
-        <Grid item xs={12} md={6}>
-          <Typography variant="h6" gutterBottom>
-            Teacher Information
-          </Typography>
-          <TextField
-            label="Teacher Description"
-            variant="outlined"
-            fullWidth
-            value={teacherDescription}
-            onChange={(e) => setTeacherDescription(e.target.value)}
-          />
-          <FormControlLabel
-          label="I can teach the following courses"
-            control={
-              <Checkbox
-                checked={selectedCourses.length > 0}
-                onChange={() => handleTeacherSignup}
+        <Modal open={teacherModalOpen} onClose={handleCloseTeacherModal}>
+          <Card>
+            <CardHeader title="Teacher Information" />
+            <CardContent>
+              <TextField
+                label="Teacher Description"
+                variant="outlined"
+                fullWidth
+                value={teacherDescription}
+                onChange={(e) => setTeacherDescription(e.target.value)}
+                inputProps={{ style: { color: "black" } }}
               />
-            }
-            
-          />
-          {availableCourses.map((course) => (
-            <FormControlLabel
-              key={course._id}
-              control={
-                <Checkbox
-                  checked={selectedCourses.includes(course._id)}
-                  onChange={() => handleCourseChange(course._id)}
+              <FormControlLabel
+                label="I can teach the following courses"
+                control={
+                  <Checkbox
+                    checked={selectedCourses.length > 0}
+                    onChange={handleTeacherSignup}
+                  />
+                }
+              />
+              {availableCourses.map((course) => (
+                <FormControlLabel
+                  key={course._id}
+                  control={
+                    <Checkbox
+                      checked={selectedCourses.includes(course._id)}
+                      onChange={() => handleCourseChange(course._id)}
+                    />
+                  }
+                  label={course.name}
                 />
-              }
-              label={course.name}
-            />
-          ))}
-          {/* <Input
-            type="file"
-            name="certificate"
-            id="certificate"
-            accept=".pdf"
-            onChange={(e) => setCertificate(e.target.files[0])}
-            
-          />
-          <Typography variant="body2">
-            Upload your teaching certificate (PDF)
-          </Typography> */}
-          <TextField
-            label="Teacher Credentials"
-            variant="outlined"
-            fullWidth
-            value={teacherCredentials}
-            onChange={(e) => setTeacherCredentials(e.target.value)}
-          />
-        </Grid>
+              ))}
+              <TextField
+                label="Teacher Credentials"
+                variant="outlined"
+                fullWidth
+                value={teacherCredentials}
+                onChange={(e) => setTeacherCredentials(e.target.value)}
+                inputProps={{ style: { color: "black" } }}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  // Show Swal alert
+                  Swal.fire({
+                    title:
+                      "The signUp is pending for Admin to approve. You will get notified soon!!",
+                    text: "",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, Save it",
+                    cancelButtonText: "No, cancel!",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      handleAdminApprovalOK();
+                    }
+                  });
+                }}
+                sx={{ mt: 2 }}
+              >
+                Save Teacher Details
+              </Button>
+            </CardContent>
+          </Card>
+        </Modal>
       );
     } else {
       return null;
@@ -171,78 +278,105 @@ function Signup() {
   };
 
   return (
-    <>
-    <Grid container component="main" sx={{ height: '100vh' }}>
-      <Grid item xs={false} sm={12} md={12} component={Paper} elevation={6} square>
-        <div sx={{ margin: 'auto', maxWidth: 400, padding: 4 }}>
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography variant="h6" align="center">Signup</Typography>
-          <form onSubmit={handleSubmit}>
-          <TextField
-            label="User Name"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            autoFocus
-            inputProps={{ style: { color: 'black' } }}
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      component="main"
+      sx={{ height: "100vh" }}
+    >
+      <Grid item xs={12} sm={6} md={6}>
+        <Paper elevation={6} sx={{ maxWidth: 400, padding: 4, marginTop: 20 }}>
+          <img
+            src={LOGO}
+            alt="Logo"
+            className="teacher-login-logo"
+            style={{
+              width: "80px",
+              justifyContent: "center",
+              marginLeft: "120px",
+            }}
           />
-          <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoFocus
-            inputProps={{ style: { color: 'black' } }}
-          />
-          <TextField
-            label="Password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <TextField
-            label="Phone Number"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            inputProps={{ style: { color: 'black' } }}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={isTeacher}
-                onChange={handleTeacherSignup}
-              />
-            }
-            label="Signup as a Teacher"
-          />
-          {renderTeacherFields()}
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            color="primary"
-            sx={{ mt: 2 }}
-          >
+          <Typography variant="h6" align="center">
             Signup
-          </Button>
-        </form>
-        </div>
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="User Name"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              autoFocus
+              inputProps={{ style: { color: "black", fontSize: "25px" } }}
+            />
+            <TextField
+              label="Email"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              inputProps={{ style: { color: "black", fontSize: "25px" } }}
+            />
+            <TextField
+              label="Password"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <TextField
+              label="Phone Number"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              inputProps={{ style: { color: "black", fontSize: "25px" } }}
+            />
+
+            <FormControlLabel
+              control={
+                <Checkbox checked={isTeacher} onChange={handleTeacherSignup} />
+              }
+              label="Signup as a Teacher"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+            >
+              Signup
+            </Button>
+          </form>
+        </Paper>
       </Grid>
+
+      {/* Image */}
+      <Grid item xs="false" sm={12} md={12}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          height="100vh"
+        >
+          <img
+            src={img}
+            alt="Your Image"
+            style={{ width: "100%", height: "auto" }}
+          />
+        </Box>
+      </Grid>
+
+      {renderTeacherFields()}
     </Grid>
-    </>
   );
-}
+};
 
 export default Signup;

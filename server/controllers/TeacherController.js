@@ -21,16 +21,21 @@ const teacherLogin = async (req, res) => {
     if (!teacher) {
       return res.status(404).json({ error: "Teacher not found" });
     }
-    if (teacher.isBlock) {
-      return res.status(403).json({ error: "Teacher is blocked" });
+    
+    if (!teacher.isTeacherApproved) {
+      return res.status(401).json({ error: "Admin approval pending" });
     }
-
+    
     // Verify the provided password
     const isPasswordValid = await bcrypt.compare(password, teacher.password);
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid password" });
     }
 
+    if (teacher.isBlock) {
+      return res.status(403).json({ error: "Teacher blocked" });
+    }
+  
     // Generate an access token
     const accessToken = jwt.sign(
       { id: teacher._id, userName: teacher.userName, role: teacher.role },
@@ -66,6 +71,27 @@ const teacherLogin = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+const checkTeacherProfilePicture =  async(req,res) => {
+  try {
+    const teacherId = req.teacher.id;
+
+    const teacher = await Teacher.findById(teacherId);
+
+    if (!teacher) {
+      return res.status(404).json({ hasProfilePicture: false });
+    }
+
+    if (teacher.profilePhoto) {
+      return res.status(200).json({ hasProfilePicture: true });
+    }
+
+    return res.status(200).json({ hasProfilePicture: false });
+  } catch (error) {
+    console.error('Error checking profile picture:', error);
+    return res.status(500).json({ hasProfilePicture: false });
+  }
+}
 
 const teacherData = async (req, res) => {
   console.log("hello");
@@ -558,6 +584,7 @@ const getCourseTimings = async (req, res) => {
 module.exports = {
   TeacherGetAllUsers,
   teacherLogin,
+  checkTeacherProfilePicture,
   teacherData,
   teacherViewCourse,
   teacherUploadProfilePhoto,
