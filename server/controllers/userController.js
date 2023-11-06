@@ -63,19 +63,18 @@ const userSignup = async (req, res) => {
       description,
       credentials,   
     } = req.body;
-
     // Check if the user already exists
     const userExists = await User.findOne({ email });
-
+    
     if (userExists) {
       return res
-        .status(400)
-        .json({ status: "error", message: "User already exists" });
+      .status(400)
+      .json({ status: "error", message: "User already exists" });
     }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    
     // Create a new user
     const user = new User({
       userName,
@@ -83,13 +82,14 @@ const userSignup = async (req, res) => {
       password: hashedPassword,
       phoneNumber,
     });
-
+    
     // If the user is a teacher, save additional data to the Teacher model
     if (isTeacher) {
       const teacher = new Teacher({
         userName,
         email,
         password: hashedPassword,
+        phoneNumber,
         role: 1,
         isTeacher,
         courses,
@@ -97,8 +97,9 @@ const userSignup = async (req, res) => {
         certificate,
         
       });
-
+      
       await teacher.save();
+      console.log("req.body  "+teacher.courses)
 
       await Course.updateMany(
         { _id: { $in: courses } },

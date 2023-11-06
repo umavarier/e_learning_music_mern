@@ -78,7 +78,7 @@ function TeacherLogin() {
           Swal.fire("Good job!", "Teacher Login Success!", "success");
           checkProfilePicture();
         } else if (response.status === 401) {
-          Swal.fire("Error", "Cannot login, admin approval pending", "error");
+          Swal.fire("", "Cannot login, admin approval pending", "error");
         } else if (response.status === 401) {
           Swal.fire("Error", "Invalid password", "error");
         } else if (response.status === 403) {
@@ -91,7 +91,7 @@ function TeacherLogin() {
       } catch (err) {
         console.error(err);
         if (err.response && err.response.status === 401) {
-          Swal.fire("Error", "Admin approval pending", "error");
+          Swal.fire("Cannot Login!!", "Admin approval pending", "error");
         } else {
           Swal.fire("Error", "An error occurred. Please try again later.", "error");
         }

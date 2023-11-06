@@ -36,12 +36,12 @@ const teacherSchema =  new mongoose.Schema({
       type : Boolean,
       default : false,
     },
-    specializations: [
-        {
-            type: String,
-            required:[true, 'Specialization is required'] ,
-        },
-    ], 
+    // specializations: [
+    //     {
+    //         type: String,
+    //         required:[true, 'Specialization is required'] ,
+    //     },
+    // ], 
     // headline: {
     //     type: String,
     // },  
@@ -53,15 +53,7 @@ const teacherSchema =  new mongoose.Schema({
         type : Boolean,
         default : false,
     },
-    profilePhoto: 
-    {
-        type: String,
-    },
-    videos: [
-        {
-          url: String, 
-        },
-      ],
+   
     
     courses: 
     [
@@ -69,6 +61,16 @@ const teacherSchema =  new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Course'
         }
+    ],
+    profilePhoto: 
+    {
+        type: String,
+    },
+   
+    videos: [
+      {
+        url: String, 
+      },
     ],
     availableTimings: [
         {

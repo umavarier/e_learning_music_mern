@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import LOGO from "../../UserComponets/Home/logo-black.png";
@@ -35,7 +35,7 @@ const buttonStyle = {
 };
 
 const logoutButtonStyle = {
-  backgroundColor: "#fff", 
+  backgroundColor: "#fff",
 };
 
 function AdminHeader() {
@@ -60,6 +60,19 @@ function AdminHeader() {
     });
   };
 
+  const verifyAdminToken = () => {
+    const adminToken = Cookies.get('token');
+
+    if (!adminToken) {
+      navigate('/adminLogin');
+    }
+  };
+
+
+  React.useEffect(() => {
+    verifyAdminToken();
+  }, []);
+
   return (
     <div style={headerStyle}>
       <img style={melodyStyle} alt="Melody" src={LOGO} />
@@ -73,10 +86,7 @@ function AdminHeader() {
             Logout
           </button>
         ) : (
-          <button
-            style={buttonStyle}
-            onClick={() => navigate("/adminLogin")}
-          >
+          <button style={buttonStyle} onClick={() => navigate("/adminLogin")}>
             Login
           </button>
         )}

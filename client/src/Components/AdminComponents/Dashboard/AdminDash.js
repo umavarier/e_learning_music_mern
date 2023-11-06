@@ -26,7 +26,7 @@ function AdminDash() {
                   <div className="container-fluid " >
                     {/* <div className="card border-1 rounded shadow-sm text-center"> */}
                       <div className="card-body">
-                        <h2 className="mb-4">DASHBOARD</h2>
+                        <h2 className="mb-4 text-center">DASHBOARD</h2>
                         
                       </div>
                     {/* </div> */}

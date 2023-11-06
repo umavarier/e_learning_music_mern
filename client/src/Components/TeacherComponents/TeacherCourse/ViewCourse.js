@@ -4,7 +4,8 @@ import axios from '../../../utils/axios';
 import TeacherSidebar from '../Sidebar/TeacherSidebar';
 import TeacherHeader from '../Header/TeacherHeader';
 import './ViewCourse.css'
-import Header from '../../UserComponets/Home/Header';
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 
 function CourseManagement() {
   const teacherId = useSelector((state) => state.teacher.id);
@@ -15,7 +16,14 @@ function CourseManagement() {
   //   // Add other course properties here
   // });
   useEffect(() => {
-    axios.get(`/teacherViewCourse?teacherId=${teacherId}`)  
+    const accessToken = Cookies.get("token");
+    const decodedToken = jwt_decode(accessToken);
+    const teacherId = decodedToken.id;
+    axios.get(`/teacherViewCourse?teacherId=${teacherId}`, {
+      headers: {
+        Authorization: ` ${Cookies.get("token")}`,
+      },
+    })  
     .then((response) => {
       setCourses(response.data);
       console.log("ti   "+response.data)

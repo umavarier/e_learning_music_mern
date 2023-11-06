@@ -61,8 +61,8 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
+    // e.preventDefault();
+  
     if (userName === "" || email === "" || password === "") {
       Swal.fire("Please fill in all the fields");
     } else {
@@ -71,37 +71,33 @@ const Signup = () => {
         email,
         password,
         phoneNumber,
-        isTeacher,
-        courses: selectedCourses,
-        certificate: selectedCertificate,
+        isTeacher,        
+        // certificate:isTeacher? selectedCertificate:"",
         teacherDescription: isTeacher ? teacherDescription : "",
+        courses:isTeacher? selectedCourses:"",
         teacherCredentials: isTeacher ? teacherCredentials : "",
       };
-
-      try {
-        if (isTeacher) {
-          // Save teacher details to the database
-          const data = {
-            userName,
-            email,
-            password,
-            phoneNumber,
-            isTeacher,
-            courses: selectedCourses,
-            teacherDescription,
-            teacherCredentials,
-          };
-          await axios.post("http://localhost:4000/signup", data);
-        }
-
-        const response = await axios.post(
-          "http://localhost:4000/signup",
-          body,
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-
+  
+      // try {
+      //   if (isTeacher) {
+      //     // Save teacher details to the database
+      //     const  = {
+      //       userName,
+      //       email,
+      //       password,
+      //       phoneNumber,
+      //       isTeacher,
+      //       teacherDescription,
+      //       courses: selectedCourses,
+      //       teacherCredentials,
+      //     };
+      //     await axios.post("http://localhost:4000/signup", data);
+      //   }
+  
+        const response = await axios.post("http://localhost:4000/signup", body, {
+          headers: { "Content-Type": "application/json" },
+        });
+  
         if (response.data.status === "ok") {
           toast.success("Signup Success!", {
             position: "top-right",
@@ -122,13 +118,13 @@ const Signup = () => {
             autoClose: 3000,
           });
         }
-      } catch (err) {
-        console.error(err);
-        toast.error("Internal server error", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-      }
+      // } catch (err) {
+      //   console.error(err);
+      //   toast.error("Internal server error", {
+      //     position: "top-right",
+      //     autoClose: 3000,
+      //   });
+      // }
     }
   };
 
@@ -160,44 +156,45 @@ const Signup = () => {
   };
 
   // Function to handle "OK" click on the admin approval card
-  const handleAdminApprovalOK = () => {
-    // setShowAdminApprovalModal(false);
-    setTeacherModalOpen(false);
-    setIsTeacherApproved(false);
-    const teacherDetails = {
-      userName,
-      email,
-      password,
-      phoneNumber,
-      isTeacher,
-      teacherDescription,
-      selectedCourses,
-      teacherCredentials,
-    };
-    axios
-      .post("http://localhost:4000/signup", teacherDetails)
-      .then((response) => {
-        if (response.data.status === "ok") {
-          toast.success("Teacher Details Saved!", {
-            position: "top-right",
-            autoClose: 3000,
-          });
-          navigate("/roleSelection");
-        } else {
-          toast.error("Failed to save Teacher Details", {
-            position: "top-right",
-            autoClose: 3000,
-          });
-        }
-      })
-      .catch((error) => {
-        console.error("Error saving teacher details:", error);
-        toast.error("Internal server error", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-      });
-  };
+  // const handleAdminApprovalOK = () => {
+  //   // setShowAdminApprovalModal(false);
+  //   setTeacherModalOpen(false);
+  //   setIsTeacherApproved(false);
+  //   const teacherDetails = {
+  //     userName,
+  //     email,
+  //     password,
+  //     phoneNumber,
+  //     isTeacher,      
+  //     teacherDescription,
+  //     selectedCourses,
+  //     teacherCredentials,
+  //   };
+  //   console.log("selectedCourses  "+JSON.stringify(teacherDetails))
+  //   axios
+  //     .post("http://localhost:4000/signup", teacherDetails)
+  //     .then((response) => {
+  //       if (response.data.status === "ok") {
+  //         toast.success("Teacher Details Saved!", {
+  //           position: "top-right",
+  //           autoClose: 3000,
+  //         });
+  //         navigate("/roleSelection");
+  //       } else {
+  //         toast.error("Failed to save Teacher Details", {
+  //           position: "top-right",
+  //           autoClose: 3000,
+  //         });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error saving teacher details:", error);
+  //       toast.error("Internal server error", {
+  //         position: "top-right",
+  //         autoClose: 3000,
+  //       });
+  //     });
+  // };
 
   const renderTeacherFields = () => {
     if (isTeacher) {
@@ -260,7 +257,8 @@ const Signup = () => {
                     cancelButtonText: "No, cancel!",
                   }).then((result) => {
                     if (result.isConfirmed) {
-                      handleAdminApprovalOK();
+                      // handleAdminApprovalOK();
+                      handleSubmit();
                     }
                   });
                 }}

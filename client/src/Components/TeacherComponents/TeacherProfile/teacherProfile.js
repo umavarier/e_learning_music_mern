@@ -248,7 +248,7 @@ const TeacherProfile = () => {
           },
           {
             headers: {
-              Authorization: `Bearer ${Cookies.get("token")}`,
+              Authorization: `${Cookies.get("token")}`,
             },
           }
         )

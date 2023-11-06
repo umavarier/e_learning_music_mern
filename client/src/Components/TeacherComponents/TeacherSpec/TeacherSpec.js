@@ -31,7 +31,7 @@ function TeacherCourses() {
     // const selectedStudentId = useSelector(state => state.student.studentUserId);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("userdbtoken");
+    const accessToken = Cookies.get("token");
     const decodedToken = jwt_decode(accessToken);
     const teacherId = decodedToken._id;
 
@@ -98,6 +98,10 @@ function TeacherCourses() {
         {
           day,
           time,
+        }, {
+          headers: {
+            Authorization: ` ${Cookies.get("token")}`,
+          },
         }
       );
 
@@ -116,7 +120,11 @@ function TeacherCourses() {
   const fetchCourseTimings = async (courseId, studentId) => {
     try {
       const response = await axios.get(
-        `/teachers/getCourseTimings/${courseId}/${studentId}`
+        `/teachers/getCourseTimings/${courseId}/${studentId}`, {
+          headers: {
+            Authorization: ` ${Cookies.get("token")}`,
+          },
+        }
       );
 
       if (response.data && response.data.length > 0) {

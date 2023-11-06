@@ -5,6 +5,8 @@ import axios from '../../../utils/axios';
 import TeacherHeader from '../Header/TeacherHeader';
 import TeacherSidebar from '../Sidebar/TeacherSidebar';
 import './AddCourse.css';
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 
 function AddCourse() {
   const teacherId = useSelector(selectTeacherId);
@@ -37,7 +39,14 @@ function AddCourse() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('courses/addCourse', course)
+    const accessToken = Cookies.get("token");
+    const decodedToken = jwt_decode(accessToken);
+    const teacherId = decodedToken.id;
+    axios.post('courses/addCourse', course, {
+      headers: {
+        Authorization: ` ${Cookies.get("token")}`,
+      },
+    })
       .then((response) => {
         console.log('Course added successfully:', response.data);
         setCourse({

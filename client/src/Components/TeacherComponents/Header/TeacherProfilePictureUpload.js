@@ -10,6 +10,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
+import AdminHeader from "../Header/TeacherHeader";
 import { setTeacherProfilePicture } from "../../../Redux/teacherSlice";
 
 function TeacherProfilePictureUpload() {
@@ -92,15 +93,23 @@ function TeacherProfilePictureUpload() {
   };
 
   return (
-    <div>
+    <>
+     <AdminHeader />
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+     
       <Button variant="contained" onClick={openModal}>
         Upload Profile Picture
       </Button>
 
-      <Modal open={modalOpen} onClose={closeModal}>
-        <Card>
-          <CardHeader title="Upload Your Profile Picture" />
+      <Modal open={modalOpen} onClose={closeModal} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Card style={{ maxWidth: 400, textAlign: "center" }}>
+          <CardHeader title="Teacher Profile Picture Upload" />
           <CardContent>
+            <img
+              src={profilePhotoURL || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}
+              alt="Profile Picture"
+              style={{ width: "100px", height: "100px", borderRadius: "50%" }}
+            />
             <input
               type="file"
               accept="image/*"
@@ -121,7 +130,9 @@ function TeacherProfilePictureUpload() {
         </Card>
       </Modal>
     </div>
+    </>
   );
 }
+
 
 export default TeacherProfilePictureUpload;

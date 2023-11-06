@@ -151,7 +151,7 @@ const TeacherGetAllUsers = async (req, res) => {
 const teacherViewCourse = async (req, res) => {
   console.log("tvc");
   try {
-    const teacherId = req.query.teacherId;
+    const teacherId = req.teacher.teacherId;
     console.log("teacher   " + teacherId);
 
     if (!teacherId || !mongoose.isValidObjectId(teacherId)) {
