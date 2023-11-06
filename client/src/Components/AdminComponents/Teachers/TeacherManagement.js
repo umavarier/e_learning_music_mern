@@ -75,9 +75,22 @@ function TeacherManagement() {
       });
   };
 
-  const rejectTeacher = (teacherId) => {
+  const rejectTeacher = (teacherId,isTeacherRejected) => {
+    const accessToken = Cookies.get("token");
+    // console.log("aprv" + accessToken);
+    const decodedToken = jwt_decode(accessToken);
+    console.log("decd-admin  " + JSON.stringify(decodedToken));
+    const approveFlag = !isTeacherRejected;
     axios
-      .patch(`/adminRejectTeacher/${teacherId}`)
+      .patch(`/adminRejectTeacher/${teacherId}`,
+      {
+        isTeacherApproved: approveFlag,
+      },{
+        headers: {
+          Authorization: `${accessToken}`, 
+        },
+      }
+      )
       .then(() => {
         getTeacherList();
       })
@@ -149,7 +162,7 @@ function TeacherManagement() {
                         </button>
                         <button
                           className="reject-button"
-                          onClick={() => rejectTeacher(teacher._id)}
+                          onClick={() => rejectTeacher(teacher._id,teacher.isTeacherRejected)}
                         >
                           Reject ✗
                         </button>

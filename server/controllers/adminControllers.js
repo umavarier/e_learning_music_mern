@@ -405,6 +405,24 @@ const adminRejectTeacher = async (req, res) => {
     teacher.isTeacherRejected = true;
 
     await teacher.save();
+    await teacher.remove();
+
+    const mailOptions = {
+      from: process.env.EMAIL, 
+      to: teacher.email, 
+      subject: 'Teacher Approval Rejection',
+      text: 'Sorry! You have been rejected as a teacher on our platform!!',
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending confirmation email:', error);
+        res.status(500).json({ message: 'Internal server error' });
+      } else {
+        console.log('Confirmation email sent: ' + info.response);
+        res.status(200).json({ message: 'Teacher Rejected' });
+      }
+    })
 
     res.status(200).json({ message: "Teacher rejected successfully" });
   } catch (error) {

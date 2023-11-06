@@ -93,6 +93,23 @@ function TeacherSidebar() {
               View Profile
             </Link>
           </li>
+          <li className="nav-item">
+            <Link
+              to={"/teacherAppointmentsList"}
+              className="nav-link black-text"
+              style={{
+                marginTop: "50px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                backgroundColor: "white",
+                color: "black",
+                fontSize: "20px",
+                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              Demo Bookings
+            </Link>
+          </li>
         </ul>
       </div>
     </nav>

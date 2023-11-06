@@ -80,7 +80,9 @@ const CourseTeacherSelection = () => {
         .get(`/userGetTeachersTiming/${selectedTeacher}/availableTimings`)
         .then((response) => {
           setTeacherTimings(response.data.availableTimings);
-          console.log("timing-:" + JSON.stringify(response.data.availableTimings));
+          console.log(
+            "timing-:" + JSON.stringify(response.data.availableTimings)
+          );
         })
         .catch((error) => {
           console.error("Error fetching teacher timings", error);
@@ -104,41 +106,42 @@ const CourseTeacherSelection = () => {
   };
 
   const socket = io("http://localhost:4000");
+
   const handleConfirmBooking = () => {
     const userToken = localStorage.getItem("userdbtoken");
     console.log("tokenfrombooking: " + userToken);
     const selectedTimingData = teacherTimings.find(
       (timing) => timing._id === selectedTiming
     );
-
+    console.log("date-t  " + selectedTimingData.date);
     if (selectedTimingData) {
       axios
         .post("/book-demo", {
           course: selectedCourse,
           teacher: selectedTeacher,
-          dayOfWeek: selectedTimingData.dayOfWeek,
+          date: selectedTimingData.date,
           startTime: selectedTimingData.startTime,
           endTime: selectedTimingData.endTime,
           token: userToken,
         })
         .then((response) => {
-          const bookingTime = `${selectedTimingData.dayOfWeek}, ${selectedTimingData.startTime} - ${selectedTimingData.endTime}`;
+          const bookingTime = `${selectedTimingData.date}, ${selectedTimingData.startTime} - ${selectedTimingData.endTime}`;
           setConfirmationMessage(
             `Booking successful  !  Booking Time: ${bookingTime}`
           );
           // console.log("responseAppid " + JSON.stringify(response.data));
           // fetchAppointmentTimingStatus(response.data.appointmentId);
-          console.log("teacherSocket :"+selectedTeacher)
-          const isTimePassed = 
-          currentTime >= new Date(selectedTimingData.startTime);
+          console.log("teacherSocket :" + selectedTeacher);
+          const isTimePassed =
+            currentTime >= new Date(selectedTimingData.startTime);
           setIsButtonDisabled(isTimePassed);
           const socket = io("http://localhost:4000"); // Replace with your server URL
           // Send a notification to the selected teacher
           socket.emit("notification", {
             to: selectedTeacher, // Teacher's socket ID
-            message: `Booking confirmed for ${selectedTimingData.dayOfWeek}, ${selectedTimingData.startTime} - ${selectedTimingData.endTime}`,
+            message: `Booking confirmed for ${selectedTimingData.date}, ${selectedTimingData.startTime} - ${selectedTimingData.endTime}`,
+          });
         })
-      })
         .catch((error) => {
           console.error("Error booking", error);
         });
@@ -168,30 +171,32 @@ const CourseTeacherSelection = () => {
       const selectedTimingData = teacherTimings.find(
         (timing) => timing._id === selectedTiming
       );
-  
+
       if (selectedTimingData) {
         const daysOfWeek = [
-          'Sunday',
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday',
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
         ];
-        
-        const selectedDayOfWeek = daysOfWeek.indexOf(selectedTimingData.dayOfWeek);
-        const [hours, minutes] = selectedTimingData.startTime.split(':');
+
+        const selectedDayOfWeek = daysOfWeek.indexOf(selectedTimingData.date);
+        const [hours, minutes] = selectedTimingData.startTime.split(":");
         const bookingTime = new Date();
         bookingTime.setHours(hours, minutes, 0, 0);
-        bookingTime.setDate(bookingTime.getDate() + (selectedDayOfWeek + 7 - bookingTime.getDay()) % 7);
-        
+        bookingTime.setDate(
+          bookingTime.getDate() +
+            ((selectedDayOfWeek + 7 - bookingTime.getDay()) % 7)
+        );
+
         const isTimePassed = currentTime >= bookingTime;
         setIsButtonDisabled(!isTimePassed);
       }
     }
   }, [selectedTiming, teacherTimings, currentTime]);
-  
 
   return (
     <>
@@ -240,20 +245,19 @@ const CourseTeacherSelection = () => {
             <option value="">Select a Timing</option>
             {teacherTimings.map((timing) => (
               <option key={timing._id} value={timing._id}>
-                {timing.dayOfWeek} : {timing.startTime} - {timing.endTime}
+                {new Date(timing.date).toDateString()} : {timing.startTime} -{" "}
+                {timing.endTime}
               </option>
             ))}
           </select>
 
           <br />
 
-          <button onClick={handleConfirmBooking} >
-            Confirm Booking
-          </button>
+          <button onClick={handleConfirmBooking}>Confirm Booking</button>
           <button
             onClick={handleConfirmBooking}
             disabled={isButtonDisabled}
-            className={`join-button ${isButtonDisabled ? 'disabled' : ''}`}
+            className={`join-button ${isButtonDisabled ? "disabled" : ""}`}
           >
             Join for Demo
           </button>

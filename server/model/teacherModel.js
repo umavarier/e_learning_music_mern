@@ -74,7 +74,7 @@ const teacherSchema =  new mongoose.Schema({
     ],
     availableTimings: [
         {
-          dayOfWeek: {
+          date: {
             type: String,
             required: true,
           },

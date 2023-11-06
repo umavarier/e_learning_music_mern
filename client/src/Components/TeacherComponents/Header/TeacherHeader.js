@@ -45,24 +45,19 @@ function TeacherHeader() {
   const [notifications, setNotifications] = useState([]);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
   const socket = io("http://localhost:4000");
-  // Load teacher data from cookies on component mount
   useEffect(() => {
     const accessToken = Cookies.get('token');
 
     if (accessToken) {
-      // Decode the access token to get user data
       const decodedToken = jwtDecode(accessToken);
 
-      // Update Redux state with teacher data
       dispatch(setTeacher({ id: decodedToken.id, name: decodedToken.userName }));
-      const socket = io("http://localhost:4000"); // Replace with your server URL
+      const socket = io("http://localhost:4000"); 
 
-      // Listen for notifications 
       socket.on("notification", (notification) => {
         setNotifications((prevNotifications) => [...prevNotifications, notification]);
       });
-      // Clean up the socket connection when the component unmounts
-      return () => {
+            return () => {
         socket.disconnect();
       };  
     }
@@ -88,11 +83,10 @@ function TeacherHeader() {
 
   const handleLogout = () => {
     dispatch(clearTeacher());
-    Cookies.remove('token'); // Remove access token from cookies
+    Cookies.remove('token'); 
     navigate('/teacherLogin');
   };
 
-  // Select teacher name and profile picture from Redux
   const teacherName = useSelector(selectTeacherName);
   const profilePicture = useSelector(selectTeacherProfilePicture);
 
@@ -107,15 +101,12 @@ function TeacherHeader() {
             </Typography>
           </Link>
 
-          {/* Navbar menu */}
           <AvatarWrapper>
-            {/* Teacher profile */}
             {profilePicture ? (
               <Avatar src={profilePicture} alt="" />
             ) : (
               <Avatar>{teacherName ? teacherName.charAt(0).toUpperCase() : ''}</Avatar>
             )}
-            {/* Use the TeacherName styled component */}
             <TeacherName variant="body1" color="white" style={{padding: "20px", fontSize: "20px"}}>{teacherName}</TeacherName>
           </AvatarWrapper>
 
@@ -123,7 +114,6 @@ function TeacherHeader() {
             color="inherit"
             onClick={handleNotificationClick}
           >
-            {/* Display a notification icon or button */}
             <Badge badgeContent={notifications.length} color="secondary">
               <NotificationsIcon />
             </Badge>
@@ -153,7 +143,6 @@ function TeacherHeader() {
               ))}
             </Menu>
 
-            {/* Logout button */}
             <Button variant="outlined" color="secondary" onClick={handleLogout} style={{ color: 'black', backgroundColor: 'white' }}>
              Logout
             </Button>

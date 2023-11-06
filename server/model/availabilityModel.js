@@ -6,11 +6,10 @@ const AvailabilitySchema = new mongoose.Schema({
         ref: 'Teacher',
         required: true,
     },
-    dayOfWeek:
-    { 
-        type:  String, 
-        required: true 
-    }, 
+    date: {
+        type: Date, 
+        required: true,
+      },
     startTime: 
     { 
         type: String, 

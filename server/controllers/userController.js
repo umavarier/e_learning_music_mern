@@ -540,7 +540,6 @@ const userGetTeachers = async (req, res) => {
 const userGetTeachersTiming = async (req, res) => {
   try {
     const teacherId = req.params.teacherId;
-
     const teacher = await Teacher.findById(teacherId, "availableTimings");
 
     if (!teacher) {
@@ -548,24 +547,26 @@ const userGetTeachersTiming = async (req, res) => {
     }
 
     const availableTimings = teacher.availableTimings;
-
+    console.log("at--"+JSON.stringify(availableTimings))
     res.json({ availableTimings });
   } catch (error) {
     console.error("Error fetching teacher timings", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 const bookDemo = async (req, res) => {
   console.log("book-demo");
   try {
-    const { course, teacher, token, dayOfWeek, startTime, endTime } = req.body;
+    const { course, teacher, token, date, startTime, endTime } = req.body;
+    console.log("bookdemo  "+JSON.stringify(req.body))
     const studentId = req.user._id;
     console.log("user:" + req.user._id);
     const newAppointment = new Appointment({
       studentId,
       teacherId: teacher,
       courseId: course,
-      dayOfWeek,
+      date,
       startTime,
       endTime,
     });

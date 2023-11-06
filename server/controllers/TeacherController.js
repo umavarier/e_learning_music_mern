@@ -256,15 +256,15 @@ const teacherUploadProfilePhoto = async (req, res) => {
 //     res.status(500).json({ message: 'Internal Server Error' });
 //   }
 // };
+
 const addAvailability = async (req, res) => {
   console.log("addavail");
   try {
     const { teacherId, availableTimings } = req.body;
     const teacherFromToken = req.teacher;
 
-    console.log("t-token " + req.teacher);
-    console.log("teacher  " + teacherId);
-    // Check if the teacherId from the token matches the one in the request, if needed
+    // console.log("t-token " + req.teacher);
+    // console.log("teacher  " + teacherId);
     if (teacherFromToken.id !== teacherId) {
       return res.status(403).json({ message: "Unauthorized" });
     }
@@ -274,10 +274,11 @@ const addAvailability = async (req, res) => {
     }
 
     // Function to check if the availability already exists
-    const checkAvailabilityExists = async (dayOfWeek, startTime, endTime) => {
+    const checkAvailabilityExists = async (date, startTime, endTime) => {
+      console.log("ck-")
       const existingAvailability = await Availability.findOne({
         teacher: teacherId,
-        dayOfWeek,
+        date,
         startTime,
         endTime,
       });
@@ -287,11 +288,11 @@ const addAvailability = async (req, res) => {
     const savedAvailabilities = [];
 
     for (const timing of availableTimings) {
-      const { dayOfWeek, startTime, endTime } = timing;
+      const { date, startTime, endTime } = timing;
 
       // Check if the availability already exists
       const availabilityExists = await checkAvailabilityExists(
-        dayOfWeek,
+        date,
         startTime,
         endTime
       );
@@ -304,10 +305,9 @@ const addAvailability = async (req, res) => {
         });
       }
 
-      // Create a new availability
       const newAvailability = new Availability({
         teacher: teacherId,
-        dayOfWeek,
+        date,
         startTime,
         endTime,
       });
@@ -316,18 +316,12 @@ const addAvailability = async (req, res) => {
       savedAvailabilities.push(savedAvailability);
     }
 
-    // await Availability.deleteMany({
-    //   teacher: teacherId,
-    //   endTime: { $lte: new Date() },
-    // });
-
-    // Update the teacher's availableTimings array
     const teacher = await Teacher.findByIdAndUpdate(
       teacherId,
       { $push: { availableTimings: { $each: savedAvailabilities } } },
       { new: true }
     );
-
+      teacher.save();
     res.status(201).json(savedAvailabilities);
   } catch (error) {
     console.error("Error adding availability:", error);
@@ -581,6 +575,22 @@ const getCourseTimings = async (req, res) => {
   }
 };
 
+const getTeacherAppointments = async (req, res) => {
+  const { teacherId } = req.params;
+
+  try {
+    const appointments = await Appointment.find({ teacherId })
+      .populate('studentId', 'userName')
+      .populate('teacherId', 'userName')
+      .populate('courseId', 'name');
+
+    res.json(appointments);
+  } catch (error) {
+    console.error('Error fetching teacher appointments:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 module.exports = {
   TeacherGetAllUsers,
   teacherLogin,
@@ -600,4 +610,5 @@ module.exports = {
   fetchTeacherNamesForCourse,
   addCourseTimingOfStudent,
   getCourseTimings,
+  getTeacherAppointments,
 };

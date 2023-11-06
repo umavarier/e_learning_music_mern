@@ -56,6 +56,7 @@ import EnrolledUsersList from "./Components/AdminComponents/AdminEnrolledUsers/A
 import GetPricingDetails from "./Components/AdminComponents/CoursePricing/AdminViewPricing.js";
 import AdminBookingLists from "./Components/AdminComponents/AdminBookingList/AdminBookingLists.js";
 import TeacherProfilePictureUpload from "./Components/TeacherComponents/Header/TeacherProfilePictureUpload.js";
+import TeacherAppointmentsList from "./Components/TeacherComponents/TeacherAvailability/TeacherAppointments/TeacherAppointments.js";
 
 function App() {
   return (
@@ -103,6 +104,7 @@ function App() {
         {/* <Route path="/teacherAvailability" element={<TeacherAvailabilityPage/>} /> */}
         <Route path="/teacherSpec" element={<TeacherSpec/>} />
         <Route path="/teacherChat" element={<TeacherChat/>} />
+        <Route path="/teacherAppointmentsList" element={<TeacherAppointmentsList/>} />
 
 
 

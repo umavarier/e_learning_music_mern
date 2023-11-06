@@ -14,6 +14,8 @@ import "./teacherProfile.css";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import { Carousel } from "react-responsive-carousel";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
@@ -26,6 +28,9 @@ import FormControl from "@mui/material/FormControl";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import MobileDatePicker from "@mui/lab/MobileDatePicker";
 
 const TeacherProfile = () => {
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -34,9 +39,11 @@ const TeacherProfile = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
   const [instagramReel, setInstagramReel] = useState(null);
+
   const dispatch = useDispatch();
   const teacherId = useSelector(selectTeacherId);
   const profilePic = useSelector(selectTeacherProfilePicture);
+
   const [newEmail, setNewEmail] = useState("");
   const [availableTimings, setAvailableTimings] = useState([]);
   const [dayOfWeek, setDayOfWeek] = useState("Sunday");
@@ -51,6 +58,8 @@ const TeacherProfile = () => {
   const [teacherVideos, setTeacherVideos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [isAvailabilityFormOpen, setAvailabilityFormOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [date, setDate] = useState(new Date());
 
   const handleOpenAvailabilityForm = () => {
     setAvailabilityFormOpen(true);
@@ -129,7 +138,6 @@ const TeacherProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
   };
 
   const handleEmailChange = () => {
@@ -157,13 +165,13 @@ const TeacherProfile = () => {
 
   const handleAddAvailability = () => {
     const newAvailability = {
-      dayOfWeek,
+      date,
       startTime,
       endTime,
     };
     setAvailableTimings([...availableTimings, newAvailability]);
 
-    setDayOfWeek("Sunday");
+    setDate("");
     setStartTime("");
     setEndTime("");
   };
@@ -178,12 +186,13 @@ const TeacherProfile = () => {
     try {
       const timingsData = availableTimings.map((timing) => {
         return {
-          dayOfWeek: timing.dayOfWeek,
+          date: timing.date.toISOString().slice(0, 10),
           startTime: timing.startTime,
           endTime: timing.endTime,
         };
       });
-      console.log("--teacherid--" + Cookies.get("token"));
+      console.log("time--"+JSON.stringify(timingsData))
+      // console.log("--teacherid--" + Cookies.get("token"));
       const response = await axios.post(
         "/teachers/addAvailability",
         {
@@ -204,7 +213,7 @@ const TeacherProfile = () => {
         setAvailableTimings([]);
       }
       if (response.status === 400) {
-        const errorMessage = response.data.message; // Check for the error message
+        const errorMessage = response.data.message;
         console.log("error " + errorMessage);
         if (
           errorMessage ===
@@ -222,19 +231,21 @@ const TeacherProfile = () => {
     }
   };
 
-  function getDayOfWeekName(dayOfWeek) {
-    const daysOfWeek = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    return daysOfWeek[dayOfWeek] || "";
-  }
-
+  // function getDayOfWeekName(dayOfWeek) {
+  //   const daysOfWeek = [
+  //     "Sunday",
+  //     "Monday",
+  //     "Tuesday",
+  //     "Wednesday",
+  //     "Thursday",
+  //     "Friday",
+  //     "Saturday",
+  //   ];
+  //   return daysOfWeek[dayOfWeek] || "";
+  // }
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
   const handleSpecializationsChange = () => {
     if (specializations) {
       const specializationList = specializations
@@ -449,7 +460,7 @@ const TeacherProfile = () => {
               <div className="position-absolute top-0 end-0">
                 <button
                   onClick={() => handleJoinDemo(appointmentId, teacherId)}
-                  disabled={isButtonDisabled}  
+                  disabled={isButtonDisabled}
                   className={`join-button ${
                     isButtonDisabled ? "disabled" : ""
                   }`}
@@ -520,9 +531,9 @@ const TeacherProfile = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="col-md-8">
-                <div className="card-body card rounded-sqaure col-md-4">
+                <div className="card-body card rounded-square col-md-4">
                   <Button
                     variant="contained"
                     color="primary"
@@ -550,19 +561,12 @@ const TeacherProfile = () => {
                       <h3>Add Available Timings</h3>
                       <form>
                         <FormControl fullWidth>
-                          <InputLabel>Day of the Week</InputLabel>
-                          <Select
-                            value={dayOfWeek}
-                            onChange={(e) => setDayOfWeek(e.target.value)}
-                          >
-                            <MenuItem value="Sunday">Sunday</MenuItem>
-                            <MenuItem value="Monday">Monday</MenuItem>
-                            <MenuItem value="Tuesday">Tuesday</MenuItem>
-                            <MenuItem value="Wednesday">Wednesday</MenuItem>
-                            <MenuItem value="Thursday">Thursday</MenuItem>
-                            <MenuItem value="Friday">Friday</MenuItem>
-                            <MenuItem value="Saturday">Saturday</MenuItem>
-                          </Select>
+                          <InputLabel>Choose a Date</InputLabel>
+                          <Calendar
+                            onChange={handleDateChange}
+                            value={selectedDate}
+                            minDate={new Date()} // Restrict dates to be in the future only
+                          />
                         </FormControl>
                         <FormControl fullWidth>
                           <TextField
@@ -602,7 +606,7 @@ const TeacherProfile = () => {
                       {availableTimings.map((timing, index) => (
                         <ListItem key={index}>
                           <ListItemText
-                            primary={`${getDayOfWeekName(timing.dayOfWeek)} ${
+                            primary={`${timing.date.toDateString()} ${
                               timing.startTime
                             } - ${timing.endTime}`}
                           />
@@ -627,7 +631,6 @@ const TeacherProfile = () => {
                 </div>
               </div>
 
-              
               <div className="container">
                 <div className="row">
                   <h2 className="text-center text-dark">Your Videos</h2>

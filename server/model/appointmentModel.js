@@ -16,7 +16,7 @@ const appointmentSchema = new mongoose.Schema({
     ref: 'Course', 
     required: true,
   },
-  dayOfWeek: {
+  date: {
     type: String,
     required: true,
   },
