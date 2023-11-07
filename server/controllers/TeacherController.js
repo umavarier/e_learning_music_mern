@@ -591,6 +591,24 @@ const getTeacherAppointments = async (req, res) => {
   }
 }
 
+const cancelTeacherAppointment = async(req,res) => {
+  try {
+    const appointmentId = req.params.appointmentId;
+    const appointment = await Appointment.findById(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    await Appointment.findByIdAndRemove(appointmentId);
+
+    res.json({ message: 'Appointment canceled successfully' });
+  } catch (error) {
+    console.error('Error canceling appointment:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 module.exports = {
   TeacherGetAllUsers,
   teacherLogin,
@@ -611,4 +629,5 @@ module.exports = {
   addCourseTimingOfStudent,
   getCourseTimings,
   getTeacherAppointments,
+  cancelTeacherAppointment,
 };

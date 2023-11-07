@@ -7,6 +7,7 @@ import "./CourseTeacherSelection.css";
 import { useDispatch, useSelector } from "react-redux";
 import { addNotification } from "../../../Redux/notificationSlice";
 import io from "socket.io-client";
+import { format, isBefore, isAfter, isToday } from "date-fns";
 
 const CourseTeacherSelection = () => {
   const [courses, setCourses] = useState([]);
@@ -125,7 +126,9 @@ const CourseTeacherSelection = () => {
           token: userToken,
         })
         .then((response) => {
-          const bookingTime = `${selectedTimingData.date}, ${selectedTimingData.startTime} - ${selectedTimingData.endTime}`;
+          const bookingTime = `${isValidDate(selectedTimingData.date)
+            ? format(new Date(selectedTimingData.date), "dd/MM/yyyy")
+            : "Invalid Date"}, ${selectedTimingData.startTime} - ${selectedTimingData.endTime}`;
           setConfirmationMessage(
             `Booking successful  !  Booking Time: ${bookingTime}`
           );
@@ -198,6 +201,11 @@ const CourseTeacherSelection = () => {
     }
   }, [selectedTiming, teacherTimings, currentTime]);
 
+   function isValidDate(dateString) {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
+  }
+
   return (
     <>
       <Header />
@@ -254,13 +262,13 @@ const CourseTeacherSelection = () => {
           <br />
 
           <button onClick={handleConfirmBooking}>Confirm Booking</button>
-          <button
+          {/* <button
             onClick={handleConfirmBooking}
             disabled={isButtonDisabled}
             className={`join-button ${isButtonDisabled ? "disabled" : ""}`}
           >
             Join for Demo
-          </button>
+          </button> */}
         </div>
         {confirmationMessage && <p>{confirmationMessage}</p>}
       </div>

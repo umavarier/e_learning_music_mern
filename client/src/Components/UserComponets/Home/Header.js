@@ -230,7 +230,7 @@ useEffect(() => {
           </Link>
         </Button>
 
-        {/* <Button
+        <Button
           color="inherit"
           style={{
             width: "250px",
@@ -249,7 +249,7 @@ useEffect(() => {
           >
             Gallery
           </Link>
-        </Button> */}
+        </Button>
         <div style={{ flex: 1 }}></div>
 
         {userId ? (

@@ -18,6 +18,7 @@ import {
   TextField,
   TablePagination,
 } from "@mui/material";
+import { format, isBefore, isAfter, isToday } from "date-fns";
 
 const UserAppointmentsTable = () => {
   const [appointments, setAppointments] = useState([]);
@@ -43,7 +44,7 @@ const UserAppointmentsTable = () => {
             : "N/A",
           teacherName: appointment.teacherName,
           courseName: appointment.courseName,
-          dayOfWeek: appointment.dayOfWeek,
+          date: appointment.date,
           startTime: appointment.startTime,
           endTime: appointment.endTime,
         }));
@@ -86,7 +87,7 @@ const UserAppointmentsTable = () => {
               Authorization: `${Cookies.get("token")}`,
             },
           });
-          
+
           setAppointments((prevAppointments) =>
             prevAppointments.filter(
               (appointment) => appointment._id !== appointmentId
@@ -105,6 +106,33 @@ const UserAppointmentsTable = () => {
       .toLowerCase()
       .includes((search || "").toLowerCase())
   );
+
+  function isValidDate(dateString) {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime());
+  }
+  const getCurrentStatus = (appointment) => {
+    const currentDateTime = new Date();
+    const appointmentStartTime = new Date(appointment.date);
+    const appointmentEndTime = new Date(appointment.date);
+
+    const [hours, minutes] = appointment.startTime.split(":");
+    appointmentStartTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
+
+    const [endHours, endMinutes] = appointment.endTime.split(":");
+    appointmentEndTime.setHours(
+      parseInt(endHours, 10),
+      parseInt(endMinutes, 10)
+    );
+
+    if (isBefore(currentDateTime, appointmentStartTime)) {
+      return "Scheduled";
+    } else if (isAfter(currentDateTime, appointmentEndTime)) {
+      return "Time Over";
+    } else {
+      return "In Progress";
+    }
+  };
 
   return (
     <div>
@@ -128,9 +156,9 @@ const UserAppointmentsTable = () => {
                   <TableCell>Student Name</TableCell>
                   <TableCell>Teacher Name</TableCell>
                   <TableCell>Course Name</TableCell>
-                  <TableCell>Day of the Week</TableCell>
                   <TableCell>Start Time</TableCell>
                   <TableCell>End Time</TableCell>
+                  <TableCell>Status</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -139,13 +167,17 @@ const UserAppointmentsTable = () => {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((appointment) => (
                     <TableRow key={appointment.appointmentId}>
-                      <TableCell>{appointment.appointmentDate}</TableCell>
+                      <TableCell>
+                        {isValidDate(appointment.date)
+                          ? format(new Date(appointment.date), "dd/MM/yyyy")
+                          : "Invalid Date"}
+                      </TableCell>
                       <TableCell>{appointment.studentName}</TableCell>
                       <TableCell>{appointment.teacherName}</TableCell>
                       <TableCell>{appointment.courseName}</TableCell>
-                      <TableCell>{appointment.dayOfWeek}</TableCell>
                       <TableCell>{appointment.startTime}</TableCell>
                       <TableCell>{appointment.endTime}</TableCell>
+                      <TableCell>{getCurrentStatus(appointment)}</TableCell>
                       <TableCell>
                         <Button
                           variant="contained"

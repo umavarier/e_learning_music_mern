@@ -1,92 +1,73 @@
-import React from 'react'
-import {useParams} from 'react-router-dom';
-import {appId, serversecret} from '../CourseComponent/helper' 
-import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
+import React, { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { appId, serversecret } from "../CourseComponent/helper";
+import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
+  Button,
+  Paper,
+} from "@mui/material";
+import {
+  Delete as DeleteIcon,
+  PlayArrow as PlayArrowIcon,
+} from "@mui/icons-material";
+import { format, isBefore, isAfter, isToday } from "date-fns";
 
-// const VideoRoom = () => {
+const VideoRoom = () => {
+  const { teacherId, appointmentId } = useParams();
+  const { search } = useLocation();
+  const isTeacher = search.includes("teacher");
+  const roomID = "Yourdemo";
 
-//     // const {roomid} = useParams();
-//     const roomid = "yourfreedemo"
-//     const {teacherId, appointmentId} = useParams()
-//     // console.log(roomId)
-//     const myMeeting = async(element) => {
-//         const appID = appId
-//         const serverSecret = serversecret
-//         const kitToken =  ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomid, teacherId,"teacher"  );//userid for Date.now().toString()
-
-//         //Create instance object from kit token
-//         const zp = ZegoUIKitPrebuilt.create(kitToken);
-
-//         zp.joinRoom({
-//             container: element,
-//             sharedLinks: [  
-//               {
-//                 name:'Personal link',
-//                 url:
-//                   window.location.protocol + '//' +
-//                   window.location.host + window.location.pathname +
-//                   '?roomid =' +
-//                   roomid, 
-
-//               },
-//             ],
-//             scenario : {
-//                 mode:ZegoUIKitPrebuilt.OneONoneCall
-//             }
-//         })
-
-//     }
-
-//   return (
-//     <div>
-//       <div ref={myMeeting}
-//            style={{width:'100vw', height: '100vh'}} >
-//       </div>
-      
-//     </div>
-//   )
-// }
-
-// export default VideoRoom
-
-export default function videoRoom() {
-  const roomID = "Yourdemo"
-  
-  let myMeeting = async (element) => {
- // generate Kit Token
-  const appID = appId;
-  const serverSecret = serversecret;
-  const kitToken =  ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID,  Date.now().toString(),  "teacher");
-
-
- // Create instance object from Kit Token.
-  const zp = ZegoUIKitPrebuilt.create(kitToken);
-  // start the call
-  zp.joinRoom({
-    container: element,
-    sharedLinks: [
-      {
-        name: 'Personal link',
-        url:
-         window.location.protocol + '//' + 
-         window.location.host + window.location.pathname +
-          '?roomID=' +
+  useEffect(() => {
+    const myMeeting = async (element) => {
+      try {
+        // generate Kit Token
+        const appID = appId;
+        const serverSecret = serversecret;
+        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+          appID,
+          serverSecret,
           roomID,
-      },
-    ],
-    scenario: {
-      mode: ZegoUIKitPrebuilt.OneONoneCall, // To implement 1-on-1 calls, modify the parameter here to [ZegoUIKitPrebuilt.OneONoneCall].
-    },
-  });
+          Date.now().toString(),
+          "teacher"
+        );
 
+        // Create instance object from Kit Token.
+        const zp = ZegoUIKitPrebuilt.create(kitToken);
 
+        // start the call
+        await zp.joinRoom({
+          container: element,
+          sharedLinks: [
+            {
+              name: "Personal link",
+              url:
+                window.location.protocol +
+                "//" +
+                window.location.host +
+                window.location.pathname +
+                "?roomID=" +
+                roomID,
+            },
+          ],
+          scenario: {
+            mode: ZegoUIKitPrebuilt.OneONoneCall,
+          },
+        });
+      } catch (error) {
+        console.error("Error joining room:", error);
+      }
+    };
+
+    myMeeting(document.getElementById("elementId"));
+  }, [teacherId, roomID]);
+
+  return <div id="elementId" style={{ width: "100vw", height: "100vh" }}></div>;
 };
 
-return (
-<div
-  
-  ref={myMeeting}
-  style={{ width: '100vw', height: '100vh' }}
-></div>
-);
-}
+export default VideoRoom;

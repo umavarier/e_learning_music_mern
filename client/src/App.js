@@ -57,6 +57,7 @@ import GetPricingDetails from "./Components/AdminComponents/CoursePricing/AdminV
 import AdminBookingLists from "./Components/AdminComponents/AdminBookingList/AdminBookingLists.js";
 import TeacherProfilePictureUpload from "./Components/TeacherComponents/Header/TeacherProfilePictureUpload.js";
 import TeacherAppointmentsList from "./Components/TeacherComponents/TeacherAvailability/TeacherAppointments/TeacherAppointments.js";
+import UserDemoBookings from "./Components/UserComponets/Profile/userDemoBookings.js";
 
 function App() {
   return (
@@ -71,6 +72,7 @@ function App() {
         <Route path="/CourseDetails" element={<CourseDetails />} />
         <Route path="/EnrolledCourses" element={<EnrolledCourses/>} />
         <Route path="/StudentChat" element={<StudentChat/>} />
+        <Route path="/UserDemoBookings" element={<UserDemoBookings/>} />
 
         <Route path="/adminLogin" element={<AdminPage1 />} />
         <Route path="/adminSignUp" element={<AdminSignUp />} />

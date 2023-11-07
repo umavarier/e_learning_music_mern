@@ -539,7 +539,7 @@ const adminGetUserAppointments = async (req, res) => {
       studentName: appointment.studentId ? appointment.studentId.userName : "N/A",
       teacherName: appointment.teacherId.userName,
       courseName: appointment.courseId.name,
-      dayOfWeek: appointment.dayOfWeek,
+      date: appointment.date,
       startTime: appointment.startTime,
       endTime: appointment.endTime
     }));

@@ -787,6 +787,40 @@ const getPaymentHistory = async (req, res) => {
   }
 };
 
+
+const getUserDemoBookings = async(req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const userDemoBookings = await Appointment.find({ studentId: userId })
+      .populate('teacherId', 'userName')
+      .populate('courseId', 'name');
+
+    res.json(userDemoBookings);
+  } catch (error) {
+    console.error('Error fetching user demo bookings:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+const cancelUserAppointment =  async(req,res) => {
+  try {
+    const appointmentId = req.params.appointmentId;
+    const appointment = await Appointment.findById(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    await Appointment.findByIdAndRemove(appointmentId);
+
+    res.json({ message: 'Appointment canceled successfully' });
+  } catch (error) {
+    console.error('Error canceling appointment:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 module.exports = {
   userSignup,
   userLogin,
@@ -812,4 +846,6 @@ module.exports = {
   userGetAppointmentTime,
   getEnrolledCourses,
   getPaymentHistory,
+  getUserDemoBookings,
+  cancelUserAppointment,
 };

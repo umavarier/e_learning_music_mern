@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import Modal from "react-modal";
 import jwt_decode from "jwt-decode";
 
+
 const PaymentPage = () => {
   const location = useLocation();
   const { pricingPlan } = location.state || {};
@@ -30,6 +31,8 @@ const PaymentPage = () => {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [userId, setUserId] = useState(null);
 
+  
+
   useEffect(() => {
     const userToken = localStorage.getItem("userdbtoken");
     if (userToken) {
@@ -49,6 +52,8 @@ const PaymentPage = () => {
       }
     });
   }, []);
+
+
 
   useEffect(() => {
     if (selectedCourse) {
@@ -76,29 +81,88 @@ const PaymentPage = () => {
     }
   }, [selectedCourse, courses]);
 
-  const handlePayment = async () => {
-    try {
-      // console.log("pricingplan " + JSON.stringify(pricingPlan));
-      // console.log("pricingPlan.price"+pricingPlan.price)
-      // console.log("paymentMethod "+paymentMethod)
-      console.log("selcours" + selectedTeacher);
-      const response = await axios.post("/process-payment", {
-        amount: pricingPlan.price,
-        paymentMethod: paymentMethod,
-        userId: userId,
-        purchasedCourse: selectedCourse,
-        teacherId: selectedTeacher,
-      });
-      console.log(response.data + " paymentres");
-      if (response.data.success) {
-        setPaymentSuccess(true);
-      } else {
-        console.error("Payment failed.");
+  // const handlePayment = async () => {
+  //   try {
+  //     // console.log("pricingplan " + JSON.stringify(pricingPlan));
+  //     // console.log("pricingPlan.price"+pricingPlan.price)
+  //     // console.log("paymentMethod "+paymentMethod)
+  //     console.log("selcours" + selectedTeacher);
+  //     const response = await axios.post("/process-payment", {
+  //       amount: pricingPlan.price,
+  //       paymentMethod: paymentMethod,
+  //       userId: userId,
+  //       purchasedCourse: selectedCourse,
+  //       teacherId: selectedTeacher,
+  //     });
+  //     console.log(response.data + " paymentres");
+  //     if (response.data.success) {
+  //       setPaymentSuccess(true);
+  //     } else {
+  //       console.error("Payment failed.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error processing payment: ", error);
+  //   }
+  // };
+  console.log("pricingplan " + JSON.stringify(pricingPlan));
+  const price = pricingPlan.price;
+
+    async function displayRazorpay(price) {
+      console.log("pppppppp"+price)
+      const paymentMethod = 'ONLINE PAYMENT';
+      const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+    
+      if (!res) {
+        alert("You are offline... Failed to load Razorpay SDK");
+        return;
       }
-    } catch (error) {
-      console.error("Error processing payment: ", error);
-    }
+    
+    
+    
+    const options = {
+      key: "rzp_test_VdGdvprTKB8u1w",
+      currency: "INR",
+      amount: price * 100,
+      name: "WEYGIAT",
+      description: "Thanks for purchasing",
+      image: "https://mern-blog-akky.herokuapp.com/static/media/logo.8c649bfa.png",
+      handler: async function (response) {
+        // Handle successful payment response from Razorpay
+    
+    
+        // Only proceed with order placement if payment is successful
+        if (response.razorpay_payment_id) {
+    
+        axios .post("/process-payment" ,{
+          amount: pricingPlan.price,
+          paymentMethod: paymentMethod,
+          userId: userId,
+          purchasedCourse: selectedCourse,
+          teacherId: selectedTeacher,
+        })
+        .then((response) => {
+          if (response.data.success) {
+            setPaymentSuccess(true);
+          } else {
+            console.error("Payment failed.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error processing payment: ", error);
+        });
+  
+  }
+  },
+  prefill: {
+    name: "WEYGIAY",
+  },
   };
+  const paymentObject = new window.Razorpay(options);
+  paymentObject.open();
+  }
+
+  
+  
   console.log(paymentSuccess + "  what???");
   const enrollUser = async () => {
     console.log("enrol" + selectedTeacher);
@@ -140,6 +204,23 @@ const PaymentPage = () => {
       transform: "translate(-50%, -50%)",
     },
   };
+
+  const loadScript = (src) => {
+    return new Promise((resovle) => {
+      const script = document.createElement("script");
+      script.src = src;
+
+      script.onload = () => {
+        resovle(true);
+      };
+
+      script.onerror = () => {
+        resovle(false);
+      };
+
+      document.body.appendChild(script);
+      });
+    };       
 
   return (
     <>
@@ -195,13 +276,28 @@ const PaymentPage = () => {
             ))}
           </select>
 
-        {checkout ? (
+        {/* {checkout ? (
           <PayPal amount={pricingPlan.price} onSuccess={handlePayment} />
         ) : (
           <button className="payment-button" onClick={() => setCheckout(true)}>
             Pay Now
           </button>
-        )}
+        )} */}
+
+{checkout ? (
+  <button
+    className="payment-button"
+    onClick={()=>displayRazorpay(price)} // Call the handlePayment function when the button is clicked
+  >
+    Pay Now
+  </button>
+) : (
+  <button className="payment-button" onClick={() => setCheckout(true)}>
+  Pay Now
+</button>
+)}
+
+
         {paymentSuccess && !enrollmentCompleted && (
           <p>Processing enrollment...</p>
         )}

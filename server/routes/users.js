@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const multerConfig = require('../util/multerConfig');
-const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo,getNotifications,sendNotifications, checkAppointmentTiming, userGetAppointmentTime, fetchUserProfilePhoto, getEnrolledCourses, getPaymentHistory} = require('../controllers/userController');
+const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo,getNotifications,sendNotifications, checkAppointmentTiming, userGetAppointmentTime, fetchUserProfilePhoto, getEnrolledCourses, getPaymentHistory, getUserDemoBookings, cancelUserAppointment} = require('../controllers/userController');
 const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher, getEnrollmentPricing, updateEnrollmentPricing, adminGetCourseList, adminEditCourse, adminDeleteCourse, adminApproveTeacher, adminRejectTeacher, getEnrolledUsersList, adminGetPricingDetails, adminEditPricing, adminDeletePricing, adminGetUserAppointments, adminCancelAppointment } = require('../controllers/adminControllers');
 
 const {TeacherGetAllUsers, } = require('../controllers/TeacherController')
@@ -80,4 +80,6 @@ router.get('/check-appointment-timing/:appointmentId',checkAppointmentTiming)
 router.get('/userGetAppointmentTime/:userId',userGetAppointmentTime)
 router.get('/enrolled-courses/:id',getEnrolledCourses)
 router.get('/getPaymentHistory/:id',getPaymentHistory);
+router.get('/getUserDemoBookings',auth,getUserDemoBookings);
+router.delete('/cancelUserAppointment/:appointmentId',auth,cancelUserAppointment)
 module.exports = router;

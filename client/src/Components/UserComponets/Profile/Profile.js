@@ -127,6 +127,10 @@ function Profile() {
       });
   }, [userId]);
 
+
+    const handleBooking = () => {
+      navigate('/UserDemoBookings')
+    }
   // const filteredCourses = courses.filter((course) => {
   //   const courseTitle = course.title || ""; // Ensure course.title is defined
   //   const searchTermLowerCase = searchTerm.toLowerCase();
@@ -204,6 +208,9 @@ return (
       <div className="enroll-card col-md-8">
       <button onClick={openPaymentHistoryModal} className="btn btn-primary" style={{margin : "40px", backgroundColor : "#0c62f7" , borderRadius: "5%", borderColor:"#000"}}>
           Payment History
+        </button>
+      <button onClick={handleBooking} className="btn btn-primary" style={{margin : "40px", backgroundColor : "#0c62f7" , borderRadius: "5%", borderColor:"#000"}}>
+         Your Bookings
         </button>
       
         {/* Right Content */}

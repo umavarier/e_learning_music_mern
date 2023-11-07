@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useRef} from "react";
 import TeacherHeader from "../Header/TeacherHeader";
 import TeacherSidebar from "../Sidebar/TeacherSidebar";
 import { useDispatch, useSelector } from "react-redux";
@@ -60,6 +60,8 @@ const TeacherProfile = () => {
   const [isAvailabilityFormOpen, setAvailabilityFormOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [date, setDate] = useState(new Date());
+
+  const videoInputRef = useRef(null);
 
   const handleOpenAvailabilityForm = () => {
     setAvailabilityFormOpen(true);
@@ -191,7 +193,7 @@ const TeacherProfile = () => {
           endTime: timing.endTime,
         };
       });
-      console.log("time--"+JSON.stringify(timingsData))
+      console.log("time--" + JSON.stringify(timingsData));
       // console.log("--teacherid--" + Cookies.get("token"));
       const response = await axios.post(
         "/teachers/addAvailability",
@@ -353,8 +355,15 @@ const TeacherProfile = () => {
   };
 
   const handleVideoFileChange = (e) => {
-    const file = e.target.files[0];
-    setVideoFile(file);
+    console.log("select vdeo");
+    const files = e.target.files;
+
+    if (files) {
+      const file = files[0];
+      setVideoFile(file);
+    } else {
+      toast.warning("Please select a video!");
+    }
   };
   const handleVideoUpload = async () => {
     if (videoFile) {
@@ -458,7 +467,7 @@ const TeacherProfile = () => {
 
             <div className="position-relative mb-3">
               <div className="position-absolute top-0 end-0">
-                <button
+                {/* <button
                   onClick={() => handleJoinDemo(appointmentId, teacherId)}
                   disabled={isButtonDisabled}
                   className={`join-button ${
@@ -466,9 +475,9 @@ const TeacherProfile = () => {
                   }`}
                 >
                   Join for Demo
-                </button>
+                </button> */}
                 {/* {!isButtonDisabled && appointmentId && ( */}
-                {!isButtonDisabled && appointmentId && (
+                {/* {!isButtonDisabled && appointmentId && (
                   <button
                     onClick={() => handleGetSenderEmail(appointmentId)}
                     // className="btn btn-primary get-email-button"
@@ -478,12 +487,12 @@ const TeacherProfile = () => {
                   >
                     Get Email
                   </button>
-                )}
-                {senderEmail && (
+                )} */}
+                {/* {senderEmail && (
                   <div className="mt-2">
                     <strong>Sender's Email:</strong> {senderEmail}
                   </div>
-                )}
+                )} */}
               </div>
             </div>
 
@@ -639,10 +648,17 @@ const TeacherProfile = () => {
                     <div className="col-md-8">
                       <div className="btn-group mb-3" role="group">
                         <div className="d-flex">
+                          <input
+                            type="file"
+                            accept="video/*" // Specify the accepted file types
+                            onChange={handleVideoFileChange}
+                            style={{ display: "none" }}
+                            ref={videoInputRef}
+                          />
                           <button
-                            onClick={handleVideoFileChange}
+                            onClick={() => videoInputRef.current.click()}
                             className="btn btn-primary"
-                            style={{ marginRight: "10px" }} // Add margin between buttons
+                            style={{ marginRight: "10px" }}
                           >
                             <i className="fas fa-plus"></i> Add Video
                           </button>
