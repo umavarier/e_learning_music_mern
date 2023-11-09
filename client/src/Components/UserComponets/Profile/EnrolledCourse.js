@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "../../../utils/axios";
 import jwt_decode from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import StudentChat from "../StudentChat/StudentChat";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { useNavigate } from "react-router-dom";
 
 function EnrolledCourses() {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -9,7 +12,14 @@ function EnrolledCourses() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [noTimingsMessage, setNoTimingsMessage] = useState("");
+  const [selectedTeacherId, setSelectedTeacherId] = useState(null);
+  const [isChatWindowOpen, setIsChatWindowOpen] = useState(false)
 
+  const navigate =  useNavigate();
+
+  const token = localStorage.getItem("userdbtoken");
+  const decodedToken = jwt_decode(token);
+  const userid = decodedToken._id;
   const cardColors = [
     "#f6dae4",
     "#d4f0f7",
@@ -19,10 +29,16 @@ function EnrolledCourses() {
     "#e98c94",
   ];
 
+  const openChatWindow = (teacherId) => {
+    // setSelectedStudentId(studentId);
+    setSelectedTeacherId(teacherId);
+    setIsChatWindowOpen(true);
+  };
   useEffect(() => {
     const token = localStorage.getItem("userdbtoken");
     if (token) {
       const decodedToken = jwt_decode(token);
+      // console.log(JSON.stringify(decodedToken)+"       uid")
       if (decodedToken) {
         fetchEnrolledCourses(decodedToken._id);
       }
@@ -42,16 +58,16 @@ function EnrolledCourses() {
         console.error("Error fetching enrolled courses", error);
       });
   };
-  console.log("ec--->"+JSON.stringify(selectedCourse))
+  console.log("ec--->" + JSON.stringify(selectedCourse));
   const handleCardClick = (course) => {
-    console.log("course??????? "+course)
+    console.log("course??????? " + course);
     setSelectedCourse(course);
-    console.log(
-      JSON.stringify(selectedCourse)+"   sc"
-    )
+    console.log(JSON.stringify(selectedCourse) + "   sc");
     fetchCourseDetails(course); // Fetch additional details
     setShowDetails(true);
   };
+
+  
 
   const fetchCourseDetails = (course) => {
     if (!course.day || !course.time) {
@@ -67,10 +83,15 @@ function EnrolledCourses() {
     setShowDetails(false);
   };
 
-  // Create a CourseCard component to display each course
-  
+  const handleJoinDemo = (courseId,teacherId) => {
+    
+    
+    navigate(`/videoRoom/${courseId}`);
+  };
+
+
   const CourseCard = ({ course, color }) => (
-    <div className="col-4" onClick={() => handleCardClick(course)}>   
+    <div className="col-4" onClick={() => handleCardClick(course)}>
       <div className="card  shadow-sm" style={{ background: color }}>
         <div className="card-body">
           <p className="ec" style={{ color: "black", fontSize: "23px" }}>
@@ -94,34 +115,78 @@ function EnrolledCourses() {
 
     return (
       <div>
-        <h3>Course Details</h3>        
+        <h3>Course Details</h3>
         <div>
-         
           <table>
             <thead>
               <tr>
-              <th className="text-dark">Name</th>
-              <th className="text-dark">Level</th>
-              <th className="text-dark">Duration</th>
-              <th className="text-dark">instructor</th>              
+                <th className="text-dark">Name</th>
+                <th className="text-dark">Level</th>
+                <th className="text-dark">Duration</th>
+                <th className="text-dark">instructor</th>
                 <th className="text-dark">Day</th>
                 <th className="text-dark">Time</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-              <td className="text-dark">{selectedCourse.course.name}</td>
-                <td className="text-dark">{selectedCourse.course.level} Level </td>
-                <td className="text-dark">{selectedCourse.course.duration} Hrs</td>
+                <td className="text-dark">{selectedCourse.course.name}</td>
+                <td className="text-dark">
+                  {selectedCourse.course.level} Level{" "}
+                </td>
+                <td className="text-dark">
+                  {selectedCourse.course.duration} Hrs
+                </td>
                 <td className="text-dark">{selectedCourse.instructorName}</td>
                 <td className="text-dark">{selectedCourse.day}</td>
                 <td className="text-dark">{selectedCourse.time}</td>
-                
+                <td>
+                  <button
+                    variant="contained"
+                    color="primary"
+                    style={{ margin: "10px" }}
+                    // startIcon={<PlayArrowIcon />}
+                    onClick={() => handleJoinDemo(selectedCourse.course._id)}
+                    // disabled={!isJoinButtonEnabled(appointment)}
+                  >
+                    Join
+                  </button>
+                  </td>
+                <td>
+                 
+                    <button
+                      onClick={() => openChatWindow(selectedCourse.instructorId)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "20px",
+                        color: "#007bff", // Blue color for the message icon
+                      }}
+                    >
+                      <MailOutlineIcon />
+                    </button>
+                  
+                </td>
               </tr>
             </tbody>
           </table>
+
+          {selectedTeacherId && (
+            <StudentChat
+              userType="user"
+              userId={userid}
+              teacherId={selectedTeacherId} // Pass the selected teacherId
+            />
+          )}
         </div>
-        <button className="close-btn-timing" style={{size:"20px"}} onClick={closeDetails}>Close</button>
+        <button
+          className="close-btn-timing"
+          style={{ size: "20px" }}
+          onClick={closeDetails}
+        >
+          Close
+        </button>
       </div>
     );
   };

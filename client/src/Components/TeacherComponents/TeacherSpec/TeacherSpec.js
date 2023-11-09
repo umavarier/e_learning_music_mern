@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "../../../utils/axios";
 import { MdAdd, MdEdit, MdDelete } from "react-icons/md";
 import Cookies from "js-cookie";
@@ -11,14 +11,18 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Carousel } from "react-responsive-carousel";
 import { ToastContainer, toast } from "react-toastify";
-import { setStudentUserId } from '../../../Redux/studentSlice'; 
+import { setStudentUserId } from "../../../Redux/studentSlice";
+import EditCourseTimingModal from "./EditCourseTimingModal";
+import TeacherChat from "../TeacherChat/TeacherChat.js";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { useNavigate } from "react-router-dom";
 
 function TeacherCourses() {
-
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
   const [courses, setCourses] = useState([]);
   const [studentDetails, setStudentDetails] = useState([]);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [selectedTeacherId, setSelectedTeacherId] = useState(null);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [courseName, setCourseName] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,8 +32,18 @@ function TeacherCourses() {
   const [time, setTime] = useState("");
   const [selectedStudentIdForTiming, setSelectedStudentIdForTiming] =
     useState(null);
-    // const selectedStudentId = useSelector(state => state.student.studentUserId);
+  // const selectedStudentId = useSelector(state => state.student.studentUserId);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editStudentId, setEditStudentId] = useState(null);
+  const [teacherMessages, setTeacherMessages] = useState([]);
+  const [isChatWindowOpen, setIsChatWindowOpen] = useState(false);
 
+  const navigate = useNavigate()
+
+  const accessToken = Cookies.get("token");
+  const decodedToken = jwt_decode(accessToken);
+  const teacherId = decodedToken.id;
+  console.log("decod  " + JSON.stringify(decodedToken));
   useEffect(() => {
     const accessToken = Cookies.get("token");
     const decodedToken = jwt_decode(accessToken);
@@ -52,6 +66,12 @@ function TeacherCourses() {
         console.error("Error fetching teacher courses", error);
       });
   }, []);
+
+  const handleTeacherSendMessage = useCallback((message) => {
+    setTeacherMessages((prevMessages) => [...prevMessages, message]);
+    console.log("send")
+  }, []);
+
   const handleCourseClick = async (courseId) => {
     try {
       const response = await axios.get(
@@ -98,7 +118,8 @@ function TeacherCourses() {
         {
           day,
           time,
-        }, {
+        },
+        {
           headers: {
             Authorization: ` ${Cookies.get("token")}`,
           },
@@ -120,7 +141,8 @@ function TeacherCourses() {
   const fetchCourseTimings = async (courseId, studentId) => {
     try {
       const response = await axios.get(
-        `/teachers/getCourseTimings/${courseId}/${studentId}`, {
+        `/teachers/getCourseTimings/${courseId}/${studentId}`,
+        {
           headers: {
             Authorization: ` ${Cookies.get("token")}`,
           },
@@ -135,6 +157,112 @@ function TeacherCourses() {
       console.error("Error fetching course timings:", error);
     }
   };
+
+  const openEditModal = (studentId, courseId) => {
+    setIsEditModalOpen(true);
+    setEditStudentId(studentId);
+  };
+
+  // Function to close the edit modal
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditStudentId(null);
+  };
+
+  // Function to handle the update of course timing
+  const handleUpdateTiming = (day, time) => {
+    // Call the handleEdit function with updated values
+    handleEdit(editStudentId, selectedCourseId, day, time);
+    closeEditModal();
+  };
+
+  const handleEdit = async (studentId, courseId, day, time) => {
+    try {
+      const student = studentDetails.find((s) => s._id === studentId);
+
+      const enrolledCourse = student.enrolledCourses.find(
+        (course) => course.course.toString() === courseId
+      );
+
+      enrolledCourse.day = day;
+      enrolledCourse.time = time;
+
+      const updatedEnrolledCourses = student.enrolledCourses.map((course) => {
+        if (course.course.toString() === courseId) {
+          return enrolledCourse;
+        }
+        return course;
+      });
+
+      student.enrolledCourses = updatedEnrolledCourses;
+      console.log("cid" + JSON.stringify(student));
+
+      const response = await axios.put(
+        `/teachers/updateSessionTiming/${studentId}/${courseId}`,
+        {
+          day,
+          time,
+        },
+        {
+          headers: {
+            Authorization: ` ${Cookies.get("token")}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Course timing updated successfully");
+        // You may also want to refresh the course timings for the selected course
+        fetchCourseTimings(courseId, studentId);
+      }
+    } catch (error) {
+      console.error("Error updating course timing:", error);
+      toast.error("Failed to update course timing");
+    }
+  };
+
+  const handleDelete = async (studentId, courseId) => {
+    try {
+      const student = studentDetails.find((s) => s._id === studentId);
+
+      const updatedEnrolledCourses = student.enrolledCourses.filter(
+        (course) => course.course.toString() !== courseId
+      );
+
+      student.enrolledCourses = updatedEnrolledCourses;
+
+      const response = await axios.put(
+        `/teachers/deleteCourseTiming/${studentId}`,
+        { enrolledCourses: student.enrolledCourses },
+        {
+          headers: {
+            Authorization: ` ${Cookies.get("token")}`,
+          },
+        }
+      );
+
+
+
+      if (response.status === 200) {
+        toast.success("Course timing deleted successfully");
+        fetchCourseTimings(courseId, studentId);
+      }
+    } catch (error) {
+      console.error("Error deleting course timing:", error);
+      toast.error("Failed to delete course timing");
+    }
+  };
+  console.log("so-t    " + teacherId);
+  const openChatWindow = (studentId) => {
+    setSelectedStudentId(studentId);
+    setSelectedTeacherId(teacherId);
+    setIsChatWindowOpen(true);
+  };
+
+  const handleJoinDemo = (courseId) => {
+    navigate(`/videoRoom/${courseId}`);
+  };
+
 
   return (
     <>
@@ -151,12 +279,6 @@ function TeacherCourses() {
               showArrows={true}
               showIndicators={false}
               dynamicHeight={false}
-              showStatus={false}
-              showArrows={false}
-              showIndicators={false}
-              showThumbs={false}
-              showArrows={true}
-              emulateTouch={true}
               centerMode={true}
               centerSlidePercentage={100 / 3}
             >
@@ -194,48 +316,49 @@ function TeacherCourses() {
                 </div>
               ))}
             </Carousel>
-            
-            {studentDetails && studentDetails.length > 0 ?(
+
+            {studentDetails && studentDetails.length > 0 ? (
               <div>
-              <h2>Student Details for Course : {courseName}</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Student Name</th>
-                    <th>Email</th>
-                    <th>Course Timings</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {studentDetails.map((student, index) => (
-                    <tr key={index}>
-                      <td>{student.name}</td>
-                      <td>{student.email}</td>
-                      <td>
-                        {student.enrolledCourses
-                          .filter(
-                            (course) => course.course === selectedCourseId
-                          )
-                          .map((course, courseIndex) =>
-                            course.day && course.time ? (
-                              <div key={courseIndex}>
-                                {course.day} - {course.time}
-                              </div>
-                            ) : (
-                              <div>
-                                <p>No course timings available</p>
-                                <MdAdd
-                                  style={{
-                                    fontSize: "35px",
-                                    cursor: "pointer",
-                                    color: "green",
-                                  }}
-                                  onClick={() => addCourseTiming(student._id)}
-                                />
-                              </div>
+                <h2>Student Details for Course : {courseName}</h2>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Student Name</th>
+                      <th>Email</th>
+                      <th>Course Timings</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {studentDetails.map((student, index) => (
+                      <tr key={index}>
+                        <td>{student.name}</td>
+                        <td>{student.email}</td>
+                        <td>
+                          {student.enrolledCourses
+                            .filter(
+                              (course) => course.course === selectedCourseId
                             )
-                          )}
-                        {/* {student.enrolledCourses.filter(
+                            .map((course, courseIndex) =>
+                              course.day && course.time ? (
+                                <div key={courseIndex}>
+                                  {course.day} - {course.time}
+                                </div>
+                              ) : (
+                                <div>
+                                  <p>No course timings available</p>
+                                  <MdAdd
+                                    style={{
+                                      fontSize: "35px",
+                                      cursor: "pointer",
+                                      color: "green",
+                                    }}
+                                    onClick={() => addCourseTiming(student._id)}
+                                  />
+                                </div>
+                              )
+                            )}
+                          {/* {student.enrolledCourses.filter(
                           (course) => course.course === selectedCourseId
                         ).length === 0 ? (
                           <div>
@@ -250,17 +373,87 @@ function TeacherCourses() {
                             />
                           </div>
                         ) : null} */}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        </td>
+                        <td>
+                          {student.enrolledCourses.some(
+                            (course) =>
+                              course.course === selectedCourseId &&
+                              course.day &&
+                              course.time
+                          ) && (
+                            <div>
+                              <EditIcon
+                                style={{
+                                  fontSize: "25px",
+                                  cursor: "pointer",
+                                  color: "blue",
+                                }}
+                                onClick={() =>
+                                  openEditModal(student._id, selectedCourseId)
+                                }
+                              />
+                              <DeleteIcon
+                                style={{
+                                  fontSize: "25px",
+                                  cursor: "pointer",
+                                  color: "red",
+                                }}
+                                onClick={() => handleDelete(student._id)}
+                              />
+                            </div>
+                          )}
+                        </td>
+                        <td>
+                          <button
+                            variant="contained"
+                            color="primary"
+                            style={{ margin: "10px", backgroundColor: "green" , color: "white"}}
+                            // startIcon={<PlayArrowIcon />}
+                            onClick={() =>
+                              handleJoinDemo(selectedCourseId)
+                            }
+                            // disabled={!isJoinButtonEnabled(appointment)}
+                          >
+                            Join
+                          </button>
+                        </td>
+                        <td>
+                          <button
+                            style={{
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              fontSize: "20px",
+                              color: "#007bff",
+                            }}
+                            onClick={() => openChatWindow(student._id)}
+                          >
+                            <MailOutlineIcon />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             ) : (
-              <p className="text-dark" style ={{fontSize: "30px" , marginTop : "50px"}}>No enrolled students !! Select one course</p>
+              <p
+                className="text-dark"
+                style={{ fontSize: "30px", marginTop: "50px" }}
+              >
+                No enrolled students !! Select one course
+              </p>
             )}
-            
 
+            {isEditModalOpen && (
+              <EditCourseTimingModal
+                isOpen={isEditModalOpen}
+                onClose={closeEditModal}
+                onSubmit={handleUpdateTiming}
+                defaultDay={selectedDay}
+                defaultTime={selectedTime}
+              />
+            )}
             {isModalOpen && (
               <div
                 className="modal"
@@ -324,9 +517,25 @@ function TeacherCourses() {
                   </form>
                 </div>
               </div>
-              
             )}
           </main>
+
+          <div>
+            {isChatWindowOpen && (
+              <TeacherChat
+                teacherId={teacherId}
+                studentId={selectedStudentId}
+                messages={teacherMessages}
+                onSendMessage={handleTeacherSendMessage}
+              />
+            )}
+          </div>
+          <div>
+            {/* <TeacherChat
+              messages={teacherMessages}
+              onSendMessage={handleTeacherSendMessage}
+            /> */}
+          </div>
         </div>
       </div>
     </>

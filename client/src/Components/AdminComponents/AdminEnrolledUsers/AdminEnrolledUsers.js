@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../../utils/axios";
 import TableContainer from "@mui/material/TableContainer";
+import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -13,6 +15,7 @@ import AdminHeader from "../Header/AdminHeader.js";
 import AdminSidebar from "../Header/AdminSidebar.js";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
+import AdminPaymentHistory from "../AdminCourses/AdminPaymentHistory.js";
 
 const EnrolledUsersList = () => {
   const [enrolledUsers, setEnrolledUsers] = useState([]);
@@ -58,7 +61,7 @@ const EnrolledUsersList = () => {
     <div>
       <AdminHeader />
       <div style={{ display: "flex" }}>
-        <AdminSidebar /> 
+        <AdminSidebar />
         <div style={{ flex: 1, padding: "20px" }}>
           <h2 style={{ fontSize: "24px" }}>Enrolled Users List</h2>
           <TextField
@@ -68,13 +71,29 @@ const EnrolledUsersList = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          <Link to="/adminPaymentHistory" style={{ textDecoration: "none" }}>
+            <Button
+              variant="outlined"
+              color="primary"
+              style={{ float: "right" }}
+            >
+              Payment History
+            </Button>
+          </Link>
+
           <TableContainer component={Paper}>
             <Table style={{ border: "1px solid" }}>
               <TableHead>
                 <TableRow>
-                  <TableCell style={{ fontSize: "18px", border: "none" }}>Name</TableCell>
-                  <TableCell style={{ fontSize: "18px", border: "none" }}>Email</TableCell>
-                  <TableCell style={{ fontSize: "18px", border: "none" }}>Enrolled Courses</TableCell>
+                  <TableCell style={{ fontSize: "18px", border: "none" }}>
+                    Name
+                  </TableCell>
+                  <TableCell style={{ fontSize: "18px", border: "none" }}>
+                    Email
+                  </TableCell>
+                  <TableCell style={{ fontSize: "18px", border: "none" }}>
+                    Enrolled Courses
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -82,26 +101,38 @@ const EnrolledUsersList = () => {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((user) => (
                     <TableRow key={user._id} style={{ border: "none" }}>
-                      <TableCell style={{ fontSize: "16px", border: "2px solid" }}>{displayValueOrNotAssigned(user?.userName)}</TableCell>
-                      <TableCell style={{ fontSize: "16px", border: "2px solid" }}>{displayValueOrNotAssigned(user.email)}</TableCell>
-                      <TableCell style={{ fontSize: "16px", border: "2px solid" }}>
+                      <TableCell
+                        style={{ fontSize: "16px", border: "2px solid" }}
+                      >
+                        {displayValueOrNotAssigned(user?.userName)}
+                      </TableCell>
+                      <TableCell
+                        style={{ fontSize: "16px", border: "2px solid" }}
+                      >
+                        {displayValueOrNotAssigned(user.email)}
+                      </TableCell>
+                      <TableCell
+                        style={{ fontSize: "16px", border: "2px solid" }}
+                      >
                         {/* <ul> */}
-                          {user.enrolledCourses.map((course, index) => (
-                            // <li key={index}>
-                            //   Course: {displayValueOrNotAssigned(course.course?.name)}
-                            //   <br />
-                            //   Instructor: {displayValueOrNotAssigned(course.instructorId?.userName)}
-                            //   <br />
-                            //   Day: {displayValueOrNotAssigned(course.day)}
-                            //   <br />
-                            //   Time: {displayValueOrNotAssigned(course.time)}
-                            // </li>
-                            <TableContent
+                        {user.enrolledCourses.map((course, index) => (
+                          // <li key={index}>
+                          //   Course: {displayValueOrNotAssigned(course.course?.name)}
+                          //   <br />
+                          //   Instructor: {displayValueOrNotAssigned(course.instructorId?.userName)}
+                          //   <br />
+                          //   Day: {displayValueOrNotAssigned(course.day)}
+                          //   <br />
+                          //   Time: {displayValueOrNotAssigned(course.time)}
+                          // </li>
+                          <TableContent
                             key={index}
                             course={course}
-                            displayValueOrNotAssigned={displayValueOrNotAssigned}
+                            displayValueOrNotAssigned={
+                              displayValueOrNotAssigned
+                            }
                           />
-                          ))}
+                        ))}
                         {/* </ul> */}
                       </TableCell>
                     </TableRow>
@@ -124,23 +155,25 @@ const EnrolledUsersList = () => {
   );
 };
 
-const TableContent = ({ course ,displayValueOrNotAssigned}) => {
-    return (
-      <TableRow style={{ border: "none" }}>
-        <TableCell style={{ fontSize: "14px", border: "none" }}>
-          <strong>Course:</strong> {displayValueOrNotAssigned(course.course?.name)}
-        </TableCell>
-        <TableCell style={{ fontSize: "14px", border: "none" }}>
-          <strong>Instructor:</strong> {displayValueOrNotAssigned(course.instructorId?.userName)}
-        </TableCell>
-        <TableCell style={{ fontSize: "14px", border: "none" }}>
-          <strong>Day:</strong> {displayValueOrNotAssigned(course.day)}
-        </TableCell>
-        <TableCell style={{ fontSize: "14px", border: "none" }}>
-          <strong>Time:</strong> {displayValueOrNotAssigned(course.time)}
-        </TableCell>
-      </TableRow>
-    );
-  };
+const TableContent = ({ course, displayValueOrNotAssigned }) => {
+  return (
+    <TableRow style={{ border: "none" }}>
+      <TableCell style={{ fontSize: "14px", border: "none" }}>
+        <strong>Course:</strong>{" "}
+        {displayValueOrNotAssigned(course.course?.name)}
+      </TableCell>
+      <TableCell style={{ fontSize: "14px", border: "none" }}>
+        <strong>Instructor:</strong>{" "}
+        {displayValueOrNotAssigned(course.instructorId?.userName)}
+      </TableCell>
+      <TableCell style={{ fontSize: "14px", border: "none" }}>
+        <strong>Day:</strong> {displayValueOrNotAssigned(course.day)}
+      </TableCell>
+      <TableCell style={{ fontSize: "14px", border: "none" }}>
+        <strong>Time:</strong> {displayValueOrNotAssigned(course.time)}
+      </TableCell>
+    </TableRow>
+  );
+};
 
 export default EnrolledUsersList;

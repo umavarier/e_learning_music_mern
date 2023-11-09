@@ -163,7 +163,7 @@ useEffect(() => {
     <AppBar position="static">
       <Toolbar>
         <Link to="/" style={{ textDecoration: "none", color: "white" }}>
-          <img src={logo} alt="Logo" style={{ width: "80px" }} />
+          <img src={logo} alt="Logo" style={{ width: "80px", marginLeft:"30px", marginRight: "30px" }} />
         </Link>
         {/* <Typography variant="h6" style={{ flex: 1 }}>
           Your App
@@ -230,7 +230,7 @@ useEffect(() => {
           </Link>
         </Button>
 
-        <Button
+        {/* <Button
           color="inherit"
           style={{
             width: "250px",
@@ -249,7 +249,7 @@ useEffect(() => {
           >
             Gallery
           </Link>
-        </Button>
+        </Button> */}
         <div style={{ flex: 1 }}></div>
 
         {userId ? (

@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const db = require('./config/db');
 const socketIo = require('socket.io');
 
-const { Server } = require("socket.io");
+// const { Server } = require("socket.io");
 
 
 require('dotenv').config();

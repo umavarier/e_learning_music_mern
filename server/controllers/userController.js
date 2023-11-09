@@ -733,10 +733,12 @@ const getEnrolledCourses = async (req, res) => {
           course: {
             _id: enrolledCourse.course._id,
             name: enrolledCourse.course.name,
+            
             duration: enrolledCourse.course.duration,
             level: enrolledCourse.course.level,
           },
           instructorName: enrolledCourse.instructorId.userName, 
+          instructorId:enrolledCourse.instructorId._id,
           time: enrolledCourse.time,
           day: enrolledCourse.day
         };
@@ -821,6 +823,30 @@ const cancelUserAppointment =  async(req,res) => {
   }
 }
 
+const getTeacherProfileForHome = async(req,res) => {
+  const teacherId = req.params.teacherId;
+  try {
+    const teacher = await Teacher.findById(teacherId);
+
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+    const response = {
+      profilePhoto: teacher.profilePhoto,
+      videos: teacher.videos.map(video => video.url),
+      email: teacher.email,
+      courses: teacher.courses,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error fetching teacher's profile:", error);
+    res.status(500).json({ message: "Failed to fetch teacher's profile" });
+  }
+}
+
+
+
 module.exports = {
   userSignup,
   userLogin,
@@ -848,4 +874,5 @@ module.exports = {
   getPaymentHistory,
   getUserDemoBookings,
   cancelUserAppointment,
+  getTeacherProfileForHome,
 };

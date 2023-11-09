@@ -58,6 +58,9 @@ import AdminBookingLists from "./Components/AdminComponents/AdminBookingList/Adm
 import TeacherProfilePictureUpload from "./Components/TeacherComponents/Header/TeacherProfilePictureUpload.js";
 import TeacherAppointmentsList from "./Components/TeacherComponents/TeacherAvailability/TeacherAppointments/TeacherAppointments.js";
 import UserDemoBookings from "./Components/UserComponets/Profile/userDemoBookings.js";
+import EditCourseTimingModal from "./Components/TeacherComponents/TeacherSpec/EditCourseTimingModal.js";
+import TeacherProfileForHome from "./Components/UserComponets/TeachersForUser/TeacherProfileForHome.js";
+import AdminPaymentHistory from "./Components/AdminComponents/AdminCourses/AdminPaymentHistory.js";
 
 function App() {
   return (
@@ -91,6 +94,7 @@ function App() {
         <Route path="/getEnrolledUsersList" element={<EnrolledUsersList />} />
         <Route path="/adminGetPricingDetails" element={<GetPricingDetails />} />
         <Route path="/adminGetBookingLists" element={<AdminBookingLists />} />
+        <Route path="/adminPaymentHistory" element={<AdminPaymentHistory />} />
 
 
         {/* <Route path = '/teacher'element={<Login/>}/> */}
@@ -107,6 +111,9 @@ function App() {
         <Route path="/teacherSpec" element={<TeacherSpec/>} />
         <Route path="/teacherChat" element={<TeacherChat/>} />
         <Route path="/teacherAppointmentsList" element={<TeacherAppointmentsList/>} />
+        <Route path="/EditCourseTimingModal" element={<EditCourseTimingModal/>} />
+        <Route path="/teacherProfileForHome/:teacherId" element={<TeacherProfileForHome/>} />
+        <Route path="/teacherChat" element={< TeacherChat />}/>
 
 
 
@@ -117,7 +124,8 @@ function App() {
         {/* <Route path="/courses/:courseId?userId=:userId" element={<CourseDetails />}/> */}
         <Route path="/select-course-teacher" element={<CourseTeacherSelection />} /> 
         {/* <Route path="/schedule-demo" element={<ScheduleDemo />} /> */}
-        <Route path="/videoRoom/:teacherId/:appointmentId" element={<VideoRoom />} />
+        {/* <Route path="/videoRoom/:teacherId/:appointmentId" element={<VideoRoom />} /> */}
+        <Route path="/videoRoom/:appointmentId" element={<VideoRoom />} />
         <Route path="/user:userId" element={<usergetUserDetails />} />
         <Route path = '/otp' element={<Otp/>} />
         {/* <Route path="/userLoginWithOTP" element={<UserLoginwithOTP />} /> */}
@@ -125,6 +133,7 @@ function App() {
         <Route path="/payment" element={<Payment />} />
         <Route path="/gallery" element={< Gallery />}/>
         <Route path="/notifications" element={< Notifications />}/>
+        <Route path="/studentChat" element={< StudentChat />}/>
     
 
       </Routes>

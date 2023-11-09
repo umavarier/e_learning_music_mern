@@ -5,8 +5,8 @@ import axios from "../../utils/axios";
 import "./CourseDetails.css";
 import TimeSelectionModal from "../UserComponets/TimeSelection/timeSelectionModal";
 import img from "./guitar.jpeg";
-import Header from "../UserComponets/Home/Header"
-import moment from 'moment';
+import Header from "../UserComponets/Home/Header";
+import moment from "moment";
 import { Link } from "react-router-dom";
 import Pricing from "./Pricing";
 
@@ -26,17 +26,19 @@ function CourseDetails() {
   const [value, setValue] = useState();
   const [roomValue, setRoomValue] = useState();
   const navigate = useNavigate();
-  
 
   const [availableTimes, setAvailableTimes] = useState([]);
   const [isBookingSuccessful, setIsBookingSuccessful] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isTimePickerDisabled, setIsTimePickerDisabled] = useState(true);
+  const [instructors, setInstructors] = useState(null)
 
   const currentDate = moment();
   useEffect(() => {
     if (selectedDate) {
-      const selectedDateTime = moment(selectedDate).add(moment(selectedTime).format('HH:mm:ss'));
+      const selectedDateTime = moment(selectedDate).add(
+        moment(selectedTime).format("HH:mm:ss")
+      );
       setIsTimePickerDisabled(selectedDateTime.isBefore(currentDate));
     }
   }, [selectedDate, selectedTime, currentDate]);
@@ -46,8 +48,6 @@ function CourseDetails() {
     setIsTimePickerDisabled(true); // Disable the time picker when the date changes
   };
 
-
-
   const fetchAvailableTimes = async () => {
     try {
       // const response = await axios.get("/getAvailableTimes", {
@@ -55,7 +55,6 @@ function CourseDetails() {
       //     teacherId: teacherId,
       //   },
       // });
-
       // setAvailableTimes(response.data);
     } catch (error) {
       console.error("Error fetching available times:", error);
@@ -77,7 +76,7 @@ function CourseDetails() {
     setIsModalOpen(false);
   };
 
-  const   isScheduledTime = () => {
+  const isScheduledTime = () => {
     console.log("isScheduled???");
     console.log("selectedtime " + selectedTime);
     if (!selectedTime) {
@@ -97,11 +96,20 @@ function CourseDetails() {
           courseId: courseId,
         },
       });
-      console.log("fetch")
+      console.log("fetch");
       const appointmentTime = response.data.appointmentTime;
-      const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-  const localTime = new Date(appointmentTime).toLocaleString('en-US', options);
-      
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      };
+      const localTime = new Date(appointmentTime).toLocaleString(
+        "en-US",
+        options
+      );
+
       console.log("apptime   " + appointmentTime);
 
       // const appointmentTimeIST = moment.tz(appointmentTime, 'YYYY-MM-DDTHH:mm:ss.SSSZ', 'Asia/Kolkata');
@@ -147,14 +155,14 @@ function CourseDetails() {
   //       console.error("Error fetching course details:", error);
   //     });
   // }, [courseId]);
- 
+
   useEffect(() => {
     axios
       .get(`/courses/getCourseById/${courseId}`)
       .then((response) => {
         const courseData = response.data;
         console.log("treacherdataincluded?? " + courseData.instructorId);
-        setCourse(courseData); 
+        setCourse(courseData);
         setTeacherId(courseData.instructorId);
       })
       .catch((error) => {
@@ -163,13 +171,13 @@ function CourseDetails() {
   }, [courseId]);
 
   useEffect(() => {
-    console.log('Selected Time:', selectedTime);
-    
+    console.log("Selected Time:", selectedTime);
+
     if (isScheduledTime()) {
-      console.log('Video button should be enabled.');
+      console.log("Video button should be enabled.");
       setIsVideoButtonEnabled(true);
     } else {
-      console.log('Video button should be disabled.');
+      console.log("Video button should be disabled.");
       setIsVideoButtonEnabled(false);
     }
   }, [selectedTime]);
@@ -178,6 +186,31 @@ function CourseDetails() {
     fetchAppointmentDetails();
   }, [userId, teacherId, courseId, selectedTime]);
 
+
+  const fetchInstructors = async (courseId) => {
+    try {
+      const response = await axios.get(`/instructors/byCourse/${courseId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching instructor details:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    if (courseId) {
+      fetchInstructors(courseId)
+        .then((instructors) => {
+          // Set the instructor information in your component state.
+          setInstructors(instructors);
+        })
+        .catch((error) => {
+          console.error("Error fetching instructors:", error);
+        });
+    }
+  }, [courseId]);
+
+
   const handleScheduleDemo = () => {
     // console.log("handleScheduleDemo called"); // Add this line
     // console.log("Selected Time:", selectedTime);
@@ -185,10 +218,10 @@ function CourseDetails() {
     // console.log({user});
     // console.log("TeacherID : " + teacherId);
 
-    if ( !user) {
+    if (!user) {
       console.error("user not logged in.");
-      alert("please login first!!!")
-      navigate('/loginwithotp')
+      alert("please login first!!!");
+      navigate("/loginwithotp");
       return;
     }
 
@@ -197,6 +230,7 @@ function CourseDetails() {
     const studentId = userId;
     // console.log("studentid: " + studentId);
 
+   
     axios
       .post("/schedule-demo", {
         studentId,
@@ -222,7 +256,6 @@ function CourseDetails() {
   const handleStartVideoDemo = () => {
     if (isScheduledTime()) {
       // Call the function to start the video demo
-  
       // navigate(`/videoRoom/${value}`);
     } else {
       alert("Video demo can only be started at the scheduled time.");
@@ -231,40 +264,40 @@ function CourseDetails() {
 
   return (
     <>
-    <Header />
-    <div className="course-details-banner">
-      
-      <div className="course-details-image">
-        <img src={img} alt="Course Image" />
-      </div>
-      <div className="course-details-content">
-        <h1>Live 1 to 1 Online {course?.name} Classes</h1>
-        <p>
-          Looking for the best online {course?.name} classes near you? Learn to
-          {` ${course?.name}`} for all age groups from the comfort of your home
-          with the best qualified {`${course?.name}`} teachers.
-        </p>
-        {selectedTime ? (
+      <Header />
+      <div className="course-details-banner">
+        <div className="course-details-image">
+          <img src={img} alt="Course Image" />
+        </div>
+        <div className="course-details-content">
+          <h1>Live 1 to 1 Online {course?.name} Classes</h1>
           <p>
-            You have selected the following time for your free demo:{" "}
-            {selectedTime}
+            Looking for the best online {course?.name} classes near you? Learn
+            to
+            {` ${course?.name}`} for all age groups from the comfort of your
+            home with the best qualified {`${course?.name}`} teachers.
           </p>
-        ) : (
-          <div className="book-button-container" onClick={handleOpenModal}>
-            {/* <button className="book-button">Book a Free Demo</button> */}
-          </div>
-        )}
-        {isVideoButtonEnabled && (
-          <>
-            <input
-              type="text text-dark"
-              placeholder="Enter Room id"
-              onChange={(e) => setValue(e.target.value)}
-              name=""
-              id=""
-            />
+          {selectedTime ? (
+            <p>
+              You have selected the following time for your free demo:{" "}
+              {selectedTime}
+            </p>
+          ) : (
+            <div className="book-button-container" onClick={handleOpenModal}>
+              {/* <button className="book-button">Book a Free Demo</button> */}
+            </div>
+          )}
+          {isVideoButtonEnabled && (
+            <>
+              <input
+                type="text text-dark"
+                placeholder="Enter Room id"
+                onChange={(e) => setValue(e.target.value)}
+                name=""
+                id=""
+              />
 
-            {/* {scheduledAppointmentTime && (
+              {/* {scheduledAppointmentTime && (
               <button
                 className="start-demo-button"
                 onClick={handleStartVideoDemo}
@@ -273,26 +306,32 @@ function CourseDetails() {
                 Start Video Demo
               </button>
             )} */}
-          </>
+            </>
+          )}
+        </div>
+
+        <div className="instructors-list">
+          <h2>Instructors for {course?.name}:</h2>
+          <ul>
+            {instructors.map((instructor) => (
+              <li key={instructor._id}>{instructor.userName}</li>
+            ))}
+          </ul>
+        </div>
+
+        {isModalOpen && (
+          <TimeSelectionModal
+            isOpen={isModalOpen}
+            onRequestClose={handleCloseModal}
+            onTimeSelected={handleTimeSelected}
+            handleScheduleDemo={handleScheduleDemo}
+            selectedDate={selectedDate}
+            selectedTime={selectedTime}
+            isTimePickerDisabled={isTimePickerDisabled}
+          />
         )}
       </div>
-      {isModalOpen && (
-      <TimeSelectionModal
-      isOpen={isModalOpen}
-      onRequestClose={handleCloseModal}
-      onTimeSelected={handleTimeSelected}
-      handleScheduleDemo={handleScheduleDemo}
-      selectedDate={selectedDate}
-      selectedTime={selectedTime}
-      isTimePickerDisabled={isTimePickerDisabled}
-      />
-      )}
-    </div>
-    <div>
-    
-    {/* <Pricing /> */}
-    </div>
-    
+      <div>{/* <Pricing /> */}</div>
     </>
   );
 }

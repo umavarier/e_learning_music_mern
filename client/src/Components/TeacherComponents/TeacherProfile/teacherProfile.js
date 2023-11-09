@@ -445,7 +445,7 @@ const TeacherProfile = () => {
         );
 
         if (response.status === 200) {
-          // Update the state with the fetched video URLs
+          // Update the state with the fetched video URLs 
           setTeacherVideos(response.data.teacherVideos);
         }
       } catch (error) {

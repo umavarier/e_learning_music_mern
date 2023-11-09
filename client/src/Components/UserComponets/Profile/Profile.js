@@ -13,7 +13,9 @@ import jwt_decode from "jwt-decode";
 import EnrolledCourses from "./EnrolledCourse";
 import PaymentHistoryModal from "./PaymentHistoryModal";
 import ProgressCard from "./ProgressCard";
-import Chat from '../StudentChat/StudentChat'
+import StudentChat from '../StudentChat/StudentChat'
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+
 
 
 import "./Profile.css";
@@ -233,9 +235,9 @@ return (
         />
       </div>
     </div>
-    <div>
-      <Chat />
-    </div>
+    {/* <div>
+        <StudentChat userType="user" userId={userId} /> 
+      </div> */}
   </div>
 );  
 

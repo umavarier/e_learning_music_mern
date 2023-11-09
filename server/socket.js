@@ -1,38 +1,53 @@
+// Server
 module.exports = function (io) {
-  // Store connected sockets with user information
-  const connectedSockets = {};
+  const connectedSockets = []; // Store connected sockets with user information
 
-  io.on('connection', (socket) => {
-    console.log(`Socket connected: ${socket.id}`);
+  io.on("connection", (socket) => {
 
-    socket.on('join', (userId) => {
+    socket.on("join", (userId) => {
       // Associate the socket with a specific user (student or teacher)
-      connectedSockets[userId] = socket;
-      console.log(`User ${userId} connected`);
+      connectedSockets.push({
+        userId: userId,
+        socketId: socket.id,
+      });
+      console.log(`User ${userId} connected `);
 
+      console.log(connectedSockets, "data from the socket");
       // Notify the connected user that they are online
-      socket.emit('online', true);
+      socket.emit("online", true);
 
-      socket.on('chat message', (data) => {
-        // Broadcast the chat message to the target user (student or teacher)
-        const targetSocket = connectedSockets[data.userId];
-        if (targetSocket) {
-          targetSocket.emit('chat message', data.message);
-        }
-      });
-
-      socket.on('disconnect', () => {
-        const userId = Object.keys(connectedSockets).find(
-          (key) => connectedSockets[key] === socket
-        );
-        if (userId) {
-          console.log(`User ${userId} disconnected`);
-          delete connectedSockets[userId];
-
-          // Notify the disconnected user that they are offline
-          socket.emit('online', false);
-        }
-      });
+      // socket.on("joinRoom", (roomId) => {
+        // Join the specified room (e.g., teacher-student chat session)
+      //   socket.join(roomId);
+      // });
     });
+
+    socket.on("chat", (data) => {
+      console.log(data, "chat reciver data");
+      // Broadcast the chat message to the target user (student or teacher)
+      const targetSocket = connectedSockets.find(
+        (user) => user.userId === data.userId
+      );
+      console.log(JSON.stringify(targetSocket) + "  ts");
+      if (targetSocket) {
+        console.log("recvd  " + data.text);
+        io.to(targetSocket.socketId).emit("receive-message", data.text);
+      }
+    });
+
+    socket.on("disconnect", () => {
+      const userId = Object.keys(connectedSockets).find(
+        (key) => connectedSockets[key].socket === socket
+      );
+      if (userId) {
+        console.log(`User ${userId} disconnected`);
+        delete connectedSockets[userId];
+
+        // Notify the disconnected user that they are offline
+        socket.emit("online", false);
+      }
+    });
+
+
   });
 };

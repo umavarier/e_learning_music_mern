@@ -70,7 +70,7 @@ const UserDemoBookings = () => {
     console.log(`Join clicked for teacherId: ${teacherId}`);
     console.log(`Join clicked for appointment ID: ${appointmentId}`);
     
-    navigate(`/videoRoom/${teacherId}/${appointmentId}`);
+    navigate(`/videoRoom/${appointmentId}`);
   };
 
   const handleCancelClick = (appointmentId) => {

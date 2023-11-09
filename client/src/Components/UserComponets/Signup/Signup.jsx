@@ -44,7 +44,19 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
-  // Handle teacher modal opening
+  const isPhoneNumberValid = (phoneNumber) => {
+    return /^\d{10}$/.test(phoneNumber);
+  };
+  const isEmailValid = (email) => {
+    return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email);
+  };
+  const isNameValid = (name) => {
+    return /^[A-Za-z\s]+$/.test(name);
+  };
+  const isPasswordValid = (password) => {
+    return password.length >= 8;
+  };
+
   const handleTeacherSignup = (e) => {
     setIsTeacher(e.target.checked);
     if (e.target.checked) {
@@ -62,22 +74,35 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     // e.preventDefault();
-  
-    if (userName === "" || email === "" || password === "") {
+
+    if (
+      userName === "" ||
+      email === "" ||
+      password === "" ||
+      phoneNumber === ""
+    ) {
       Swal.fire("Please fill in all the fields");
+    } else if (!isPhoneNumberValid(phoneNumber)) {
+      Swal.fire("Please enter a valid 10-digit phone number");
+    } else if (!isEmailValid(email)) {
+      Swal.fire("Please enter a valid email address");
+    } else if (!isNameValid(userName)) {
+      Swal.fire("Name should not contain numbers");
+    } else if (!isPasswordValid(password)) {
+      Swal.fire("Password should contain at least 8 characters");
     } else {
       const body = {
         userName,
         email,
         password,
         phoneNumber,
-        isTeacher,        
+        isTeacher,
         // certificate:isTeacher? selectedCertificate:"",
         teacherDescription: isTeacher ? teacherDescription : "",
-        courses:isTeacher? selectedCourses:"",
+        courses: isTeacher ? selectedCourses : "",
         teacherCredentials: isTeacher ? teacherCredentials : "",
       };
-  
+
       // try {
       //   if (isTeacher) {
       //     // Save teacher details to the database
@@ -93,31 +118,31 @@ const Signup = () => {
       //     };
       //     await axios.post("http://localhost:4000/signup", data);
       //   }
-  
-        const response = await axios.post("http://localhost:4000/signup", body, {
-          headers: { "Content-Type": "application/json" },
+
+      const response = await axios.post("http://localhost:4000/signup", body, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.data.status === "ok") {
+        toast.success("Signup Success!", {
+          position: "top-right",
+          autoClose: 3000,
         });
-  
-        if (response.data.status === "ok") {
-          toast.success("Signup Success!", {
-            position: "top-right",
-            autoClose: 3000,
-          });
-          navigate("/roleSelection");
-        } else if (
-          response.data.status === "error" &&
-          response.data.message === "User already exists"
-        ) {
-          toast.error("User Already Registered!", {
-            position: "top-right",
-            autoClose: 3000,
-          });
-        } else {
-          toast.error("Internal server error", {
-            position: "top-right",
-            autoClose: 3000,
-          });
-        }
+        navigate("/roleSelection");
+      } else if (
+        response.data.status === "error" &&
+        response.data.message === "User already exists"
+      ) {
+        toast.error("User Already Registered!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      } else {
+        toast.error("Internal server error", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
       // } catch (err) {
       //   console.error(err);
       //   toast.error("Internal server error", {
@@ -165,7 +190,7 @@ const Signup = () => {
   //     email,
   //     password,
   //     phoneNumber,
-  //     isTeacher,      
+  //     isTeacher,
   //     teacherDescription,
   //     selectedCourses,
   //     teacherCredentials,
@@ -199,75 +224,87 @@ const Signup = () => {
   const renderTeacherFields = () => {
     if (isTeacher) {
       return (
-        <Modal open={teacherModalOpen} onClose={handleCloseTeacherModal}>
-          <Card>
-            <CardHeader title="Teacher Information" />
-            <CardContent>
-              <TextField
-                label="Teacher Description"
-                variant="outlined"
-                fullWidth
-                value={teacherDescription}
-                onChange={(e) => setTeacherDescription(e.target.value)}
-                inputProps={{ style: { color: "black" } }}
-              />
-              <FormControlLabel
-                label="I can teach the following courses"
-                control={
-                  <Checkbox
-                    checked={selectedCourses.length > 0}
-                    onChange={handleTeacherSignup}
-                  />
-                }
-              />
-              {availableCourses.map((course) => (
+        <Modal open={teacherModalOpen}>
+          {/* <Card> */}
+          <Grid
+            container
+            justifyContent="center"
+            alignItems="center"
+            background ="#fff"
+            component="main"
+            sx={{ width: "50vh" }}
+          >
+            <Grid>
+              <CardHeader title="Teacher Information" />
+              <CardContent>
+                <TextField
+                  label="Teacher Description"
+                  variant="outlined"
+                  fullWidth
+                  value={teacherDescription}
+                  onChange={(e) => setTeacherDescription(e.target.value)}
+                  inputProps={{ style: { color: "black" } }}
+                />
                 <FormControlLabel
-                  key={course._id}
+                  label="I can teach the following courses"
                   control={
                     <Checkbox
-                      checked={selectedCourses.includes(course._id)}
-                      onChange={() => handleCourseChange(course._id)}
+                      checked={selectedCourses.length > 0}
+                      onChange={handleTeacherSignup}
                     />
                   }
-                  label={course.name}
                 />
-              ))}
-              <TextField
-                label="Teacher Credentials"
-                variant="outlined"
-                fullWidth
-                value={teacherCredentials}
-                onChange={(e) => setTeacherCredentials(e.target.value)}
-                inputProps={{ style: { color: "black" } }}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  // Show Swal alert
-                  Swal.fire({
-                    title:
-                      "The signUp is pending for Admin to approve. You will get notified soon!!",
-                    text: "",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, Save it",
-                    cancelButtonText: "No, cancel!",
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      // handleAdminApprovalOK();
-                      handleSubmit();
+                {availableCourses.map((course) => (
+                  <FormControlLabel
+                    key={course._id}
+                    control={
+                      <Checkbox
+                        checked={selectedCourses.includes(course._id)}
+                        onChange={() => handleCourseChange(course._id)}
+                      />
                     }
-                  });
-                }}
-                sx={{ mt: 2 }}
-              >
-                Save Teacher Details
-              </Button>
-            </CardContent>
-          </Card>
+                    label={course.name}
+                  />
+                ))}
+                <TextField
+                  label="Teacher Credentials"
+                  variant="outlined"
+                  fullWidth
+                  value={teacherCredentials}
+                  onChange={(e) => setTeacherCredentials(e.target.value)}
+                  inputProps={{ style: { color: "black" } }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    handleCloseTeacherModal();
+                    Swal.fire({
+                      title:
+                        "The signUp is pending for Admin to approve. You will get notified soon!!",
+                      text: "",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Yes, Save it",
+                      cancelButtonText: "No, cancel!",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        // handleAdminApprovalOK();
+                        handleCloseTeacherModal();
+                        handleSubmit();
+                      }
+                    });
+                  }}
+                  sx={{ mt: 2 }}
+                >
+                  Save Teacher Details
+                </Button>
+              </CardContent>
+            </Grid>
+          </Grid>
+          {/* </Card> */}
         </Modal>
       );
     } else {
@@ -356,7 +393,7 @@ const Signup = () => {
       </Grid>
 
       {/* Image */}
-      <Grid item xs="false" sm={12} md={12}>
+      {/* <Grid item xs="false" sm={12} md={12}>
         <Box
           display="flex"
           flexDirection="column"
@@ -370,7 +407,7 @@ const Signup = () => {
             style={{ width: "100%", height: "auto" }}
           />
         </Box>
-      </Grid>
+      </Grid> */}
 
       {renderTeacherFields()}
     </Grid>

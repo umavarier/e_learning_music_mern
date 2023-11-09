@@ -609,6 +609,39 @@ const cancelTeacherAppointment = async(req,res) => {
   }
 }
 
+const updateSessionTiming =  async(req, res) => {
+  try {
+    const {userId , courseId} = req.params;
+    // const { enrolledCourses } = req.body; 
+    const {day, time} = req.body;
+    console.log("stuuuu  "+JSON.stringify(req.params))
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const enrolledCourse = user.enrolledCourses.find((course) =>
+      course.course.toString() === courseId
+    );
+
+    if (!enrolledCourse) {
+      return res.status(404).json({ message: "Enrolled course not found" });
+    }
+
+    enrolledCourse.day = day;
+    enrolledCourse.time = time;
+
+    await user.save();
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error updating course timing:", error);
+    res.status(500).json({ message: "Failed to update course timing" });
+  }
+
+}
+
 module.exports = {
   TeacherGetAllUsers,
   teacherLogin,
@@ -630,4 +663,5 @@ module.exports = {
   getCourseTimings,
   getTeacherAppointments,
   cancelTeacherAppointment,
+  updateSessionTiming,
 };

@@ -9,7 +9,7 @@ import axios from "../../../utils/axios";
 import banner2 from "./banner2.avif";
 import img from "./banner1.png";
 import Header from "./Header";
-import Pricing from "../../CourseComponent/Pricing"
+import Pricing from "../../CourseComponent/Pricing";
 import jwt_decode from "jwt-decode";
 // import Notifications from "../Notification/Notifications";
 
@@ -19,7 +19,7 @@ function Home() {
   const notifications = useSelector(
     (state) => state.notifications?.notifications
   );
-  const [userId,setUserId] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [courses, setCourses] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [profilePhoto, setProfilePhoto] = useState([]);
@@ -28,7 +28,7 @@ function Home() {
   const [appointmentId, setAppointmentId] = useState(null);
   const [buttonLabel, setButtonLabel] = useState("Join for Demo");
   const [teacherMeetingLink, setTeacherMeetingLink] = useState("");
-  const [teacherId, setTeacherId]= useState(null)
+  const [teacherId, setTeacherId] = useState(null);
   const [pricingData, setPricingData] = useState([]);
   const navigate = useNavigate();
 
@@ -42,7 +42,7 @@ function Home() {
       }
     }
   }, []);
-  useEffect(() => {    
+  useEffect(() => {
     axios
       .get("/getPricing")
       .then((response) => {
@@ -54,12 +54,12 @@ function Home() {
       });
   }, []);
   const handleGetStartedClick = (pricingPlan) => {
-    navigate(`/payment`,{ state: { pricingPlan } });
+    navigate(`/payment`, { state: { pricingPlan } });
   };
 
   // console.log("notify: " + notifications);
   console.log(userId + "     userId    ");
-  useEffect(() => {    
+  useEffect(() => {
     axios
       .get("/viewCourses")
       .then((response) => {
@@ -71,20 +71,20 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    console.log("fetchid "+userId)
-    if(userId){
-    axios
-      .get(`/userGetAppointmentTime/${userId}`)
-      .then((response) => {
-        setUserAppointments(response.data);
-        setAppointmentId(response.data.appointmentId);
-        setTeacherId(response.data.teacherId)
-      })
-      .catch((error) => {
-        console.error("Error fetching user's appointments:", error);
-      });
+    console.log("fetchid " + userId);
+    if (userId) {
+      axios
+        .get(`/userGetAppointmentTime/${userId}`)
+        .then((response) => {
+          setUserAppointments(response.data);
+          setAppointmentId(response.data.appointmentId);
+          setTeacherId(response.data.teacherId);
+        })
+        .catch((error) => {
+          console.error("Error fetching user's appointments:", error);
+        });
     }
-  },[])
+  }, []);
   useEffect(() => {
     axios
       .get("/viewTeachers")
@@ -97,7 +97,6 @@ function Home() {
         console.error("Error fetching teachers:", error);
       });
   }, []);
-  
 
   const isAppointmentTimePassed = (appointment) => {
     const currentTime = new Date();
@@ -121,8 +120,6 @@ function Home() {
     console.log("startTime: " + appointmentStartTime);
     console.log("endTime: " + appointmentEndTime);
     console.log("currentTime: " + currentTime);
-
-   
 
     return (
       currentTime >= appointmentStartTime && currentTime <= appointmentEndTime
@@ -167,11 +164,11 @@ function Home() {
               </p>
             </div>
             <Link to="/select-course-teacher">
-            {userAppointments.length === 0 && (
-              <button className="book-button" onClick={handlebookDemo}>
-                Book a Free Demo
-              </button>
-            )} 
+              {userAppointments.length === 0 && (
+                <button className="book-button" onClick={handlebookDemo}>
+                  Book a Free Demo
+                </button>
+              )}
             </Link>
 
             {userAppointments.length > 0 && (
@@ -189,7 +186,11 @@ function Home() {
         <Carousel>
           <div className="row">
             {courses.map((course) => (
-              <div className=" rounded-card-c mb-8" style={{margib:"30px"}} key={course._id}>
+              <div
+                className=" rounded-card-c mb-8"
+                style={{ margib: "30px" }}
+                key={course._id}
+              >
                 <Link
                   to={`courses/${course._id}?userId=${userId}`}
                   className="course-link"
@@ -198,7 +199,9 @@ function Home() {
                     <i className={`fas ${course.icon} fa-5x text-primary`}></i>
                   </div>
                   <div className="card-body text-center">
-                    <h5 className="card-title" style={{fontSize : "30px"}}>{course?.name}</h5>
+                    <h5 className="card-title" style={{ fontSize: "30px" }}>
+                      {course?.name}
+                    </h5>
                     {/* <p className="card-text">{course.description}</p> */}
                     {/* <p className="card-text">Instructor: {course.instructor?.userName}</p> */}
                     {/* Add more course details as needed */}
@@ -219,22 +222,26 @@ function Home() {
         <Carousel>
           <div className="row">
             {teachers.map((teacher) => (
-              <div className="col-md-2" key={teacher.id}>
-               
-                <div className="teacher-card mb-4" >
-                  <div className="card-img-square" >
-                    <img
-                      src={`http://localhost:4000/uploads/${teacher.profilePhoto}`}
-                      className="card-img-top"
-                      alt="Teacher's profile"
-                    />
-                  </div>
-                  <div className="card-body">
-                    <h3 className="card-title text-center">{teacher?.userName}</h3>
-                    <h5 className="card-title">{teacher?.credentials}</h5>
-                   
-                  </div>
-                </div>
+              <div className="col-md-2" key={teacher._id}>
+                {teacher.isTeacherApproved ? (
+                  <Link to={`/teacherProfileForHome/${teacher._id}`}>
+                    <div className="teacher-card mb-4">
+                      <div className="card-img-square">
+                        <img
+                          src={`http://localhost:4000/uploads/${teacher.profilePhoto}`}
+                          className="card-img-top"
+                          alt="Teacher's profile"
+                        />
+                      </div>
+                      <div className="card-body">
+                        <h3 className="card-title text-center">
+                          {teacher?.userName}
+                        </h3>
+                        <h5 className="card-title">{teacher?.credentials}</h5>
+                      </div>
+                    </div>
+                  </Link>
+                ) : null}
               </div>
             ))}
           </div>
@@ -242,10 +249,10 @@ function Home() {
       </div>
 
       {/* pricing section */}
-            
+
       <div className="subscription-section">
-      <h1 className="text-dark">Our Pricing</h1>
-      <div className="pricing-cards">
+        <h1 className="text-dark">Our Pricing</h1>
+        <div className="pricing-cards">
           {pricingData.map((pricingPlan, index) => (
             <div className="pricing-card" key={index}>
               <div className="pricing-card-header">
@@ -269,25 +276,25 @@ function Home() {
             </div>
           ))}
         </div>
-      </div>  
+      </div>
 
       {/* Banner Image */}
-    
+
       <div className="container-m">
         <div className="banner-home-end">
-        <div className="row">
-          <div className="col-md-6">
-            <div className="banner1">
-              <img
-                src={img}
-                className="banner"
-                alt="..."
-                // style={{ width: "70%", height: "auto" }}
-              />
+          <div className="row">
+            <div className="col-md-6">
+              <div className="banner1">
+                <img
+                  src={img}
+                  className="banner"
+                  alt="..."
+                  // style={{ width: "70%", height: "auto" }}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   );

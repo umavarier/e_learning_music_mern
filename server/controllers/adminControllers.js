@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const Enrollment = require("../model/enrollmentModel");
 const Course = require("../model/courseModel");
 const Appointment = require("../model/appointmentModel");
+const Payment = require("../model/paymentModel")
 const Admin = require("../model/adminModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
@@ -570,6 +571,30 @@ const adminCancelAppointment = async(req,res) => {
 
 }
 
+const getAdminPaymentList = async(req,res) => {
+  try {
+    const payments = await Payment.find().populate({
+      path: 'teacherId',
+      select: 'userName', // Select the teacher's name
+    }).populate({
+      path: 'purchasedCourse',
+      model: Course,
+      select: 'name', // Select the course name
+    }).populate({
+      path: 'userId',
+      model : User,
+      select : 'userName',
+    })
+
+    console.log("pay  "+payments)
+
+    res.json(payments);
+  } catch (error) {
+    console.error('Error fetching payment history:', error);
+    res.status(500).json({ message: 'Failed to fetch payment history' });
+  }
+}
+
 module.exports = {
   adminSignUp,
   adminLoginn,
@@ -594,4 +619,5 @@ module.exports = {
   adminDeletePricing,
   adminGetUserAppointments,
   adminCancelAppointment,
+  getAdminPaymentList,
 };

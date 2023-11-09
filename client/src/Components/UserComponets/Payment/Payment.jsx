@@ -9,16 +9,15 @@ import { useSelector } from "react-redux";
 import Modal from "react-modal";
 import jwt_decode from "jwt-decode";
 
-
 const PaymentPage = () => {
   const location = useLocation();
   const { pricingPlan } = location.state || {};
   const [paymentMethod, setPaymentMethod] = useState("creditCard");
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState("");
-  const [selectTeacherId, setSelectTeacherId] = useState("")
+  const [selectTeacherId, setSelectTeacherId] = useState("");
   const [selectedTeacherName, setSelectedTeacherName] = useState([]);
-  const [teacherIdArray, setTeacherIdArray] =  useState([])
+  const [teacherIdArray, setTeacherIdArray] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [courses, setCourses] = useState([]);
   const [courseId, setCourseId] = useState("");
@@ -30,8 +29,6 @@ const PaymentPage = () => {
   const [enrolledCourseName, setEnrolledCourseName] = useState("");
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [userId, setUserId] = useState(null);
-
-  
 
   useEffect(() => {
     const userToken = localStorage.getItem("userdbtoken");
@@ -52,8 +49,6 @@ const PaymentPage = () => {
       }
     });
   }, []);
-
-
 
   useEffect(() => {
     if (selectedCourse) {
@@ -76,7 +71,7 @@ const PaymentPage = () => {
           console.error(
             "Error fetching teachers for the selected course",
             error
-          )
+          );
         });
     }
   }, [selectedCourse, courses]);
@@ -104,65 +99,64 @@ const PaymentPage = () => {
   //     console.error("Error processing payment: ", error);
   //   }
   // };
+  
+  
   console.log("pricingplan " + JSON.stringify(pricingPlan));
   const price = pricingPlan.price;
 
-    async function displayRazorpay(price) {
-      console.log("pppppppp"+price)
-      const paymentMethod = 'ONLINE PAYMENT';
-      const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
-    
-      if (!res) {
-        alert("You are offline... Failed to load Razorpay SDK");
-        return;
-      }
-    
-    
-    
+  async function displayRazorpay(price) {
+    console.log("pppppppp" + price);
+    const paymentMethod = "ONLINE PAYMENT";
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+
+    if (!res) {
+      alert("You are offline... Failed to load Razorpay SDK");
+      return;
+    }
+
     const options = {
       key: "rzp_test_VdGdvprTKB8u1w",
       currency: "INR",
       amount: price * 100,
       name: "WEYGIAT",
       description: "Thanks for purchasing",
-      image: "https://mern-blog-akky.herokuapp.com/static/media/logo.8c649bfa.png",
+      image:
+        "https://mern-blog-akky.herokuapp.com/static/media/logo.8c649bfa.png",
       handler: async function (response) {
         // Handle successful payment response from Razorpay
-    
-    
+
         // Only proceed with order placement if payment is successful
         if (response.razorpay_payment_id) {
-    
-        axios .post("/process-payment" ,{
-          amount: pricingPlan.price,
-          paymentMethod: paymentMethod,
-          userId: userId,
-          purchasedCourse: selectedCourse,
-          teacherId: selectedTeacher,
-        })
-        .then((response) => {
-          if (response.data.success) {
-            setPaymentSuccess(true);
-          } else {
-            console.error("Payment failed.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error processing payment: ", error);
-        });
-  
-  }
-  },
-  prefill: {
-    name: "WEYGIAY",
-  },
-  };
-  const paymentObject = new window.Razorpay(options);
-  paymentObject.open();
+          axios
+            .post("/process-payment", {
+              amount: pricingPlan.price,
+              paymentMethod: paymentMethod,
+              userId: userId,
+              purchasedCourse: selectedCourse,
+              teacherId: selectedTeacher,
+            })
+            .then((response) => {
+              if (response.data.success) {
+                setPaymentSuccess(true);
+              } else {
+                console.error("Payment failed.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error processing payment: ", error);
+            });
+        }
+      },
+      prefill: {
+        name: "WEYGIAY",
+      },
+    };
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
   }
 
-  
-  
   console.log(paymentSuccess + "  what???");
   const enrollUser = async () => {
     console.log("enrol" + selectedTeacher);
@@ -219,8 +213,8 @@ const PaymentPage = () => {
       };
 
       document.body.appendChild(script);
-      });
-    };       
+    });
+  };
 
   return (
     <>
@@ -264,17 +258,17 @@ const PaymentPage = () => {
           </select>
         </div>
         <label>Select a Teacher:</label>
-          <select
-            value={selectedTeacher}
-            onChange={(e) => setSelectedTeacher(e.target.value)}
-          >
-            <option value="">Select a Teacher</option>
-            {teachers.map((teacher) => (
-              <option key={teacher._id} value={teacher._id}>
-                {teacher.userName}
-              </option>
-            ))}
-          </select>
+        <select
+          value={selectedTeacher}
+          onChange={(e) => setSelectedTeacher(e.target.value)}
+        >
+          <option value="">Select a Teacher</option>
+          {teachers.map((teacher) => (
+            <option key={teacher._id} value={teacher._id}>
+              {teacher.userName}
+            </option>
+          ))}
+        </select>
 
         {/* {checkout ? (
           <PayPal amount={pricingPlan.price} onSuccess={handlePayment} />
@@ -284,19 +278,18 @@ const PaymentPage = () => {
           </button>
         )} */}
 
-{checkout ? (
-  <button
-    className="payment-button"
-    onClick={()=>displayRazorpay(price)} // Call the handlePayment function when the button is clicked
-  >
-    Pay Now
-  </button>
-) : (
-  <button className="payment-button" onClick={() => setCheckout(true)}>
-  Pay Now
-</button>
-)}
-
+        {checkout ? (
+          <button
+            className="payment-button"
+            onClick={() => displayRazorpay(price)} // Call the handlePayment function when the button is clicked
+          >
+            Pay Now
+          </button>
+        ) : (
+          <button className="payment-button" onClick={() => setCheckout(true)}>
+            Pay Now
+          </button>
+        )}
 
         {paymentSuccess && !enrollmentCompleted && (
           <p>Processing enrollment...</p>
