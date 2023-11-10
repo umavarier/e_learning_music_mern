@@ -642,6 +642,45 @@ const updateSessionTiming =  async(req, res) => {
 
 }
 
+const getTeacherAvailabilityList = async(req,res) => {
+  const teacherId = req.params.teacherId;
+
+  try {
+    // Check if the teacher exists
+    const teacher = await Teacher.findById(teacherId);
+    if (!teacher) {
+      return res.status(404).json({ message: 'Teacher not found' });
+    }
+
+    // Fetch availabilities for the specific teacher, populating the 'teacher' field
+    const availabilities = await Availability.find({ teacher: teacherId }).populate('teacher', 'userName');
+
+    // Send the availabilities as a JSON response
+    res.json(availabilities);
+  } catch (error) {
+    console.error('Error fetching teacher availabilities:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+const cancelTeacherAvailabilities = async (req,res) => {
+  const availabilityId = req.params.availabilityId;
+
+  try {
+    const availability = await Availability.findById(availabilityId);
+
+    if (!availability) {
+      return res.status(404).json({ message: 'Availability not found' });
+    }
+
+    await Availability.findByIdAndRemove(availabilityId);
+
+    res.status(200).json({ message: 'Availability canceled successfully' });
+  } catch (error) {
+    console.error('Error canceling availability:', error);
+    res.status(500).json({ message: 'Failed to cancel availability' });
+  }
+}
 module.exports = {
   TeacherGetAllUsers,
   teacherLogin,
@@ -664,4 +703,6 @@ module.exports = {
   getTeacherAppointments,
   cancelTeacherAppointment,
   updateSessionTiming,
+  getTeacherAvailabilityList,
+  cancelTeacherAvailabilities,
 };

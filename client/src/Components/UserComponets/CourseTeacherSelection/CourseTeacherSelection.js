@@ -209,6 +209,7 @@ const CourseTeacherSelection = () => {
   return (
     <>
       <Header />
+      <div class="center-wrapper">
       <div className="card">
         <header className="card-header">
           <h1>Book a Demo</h1>
@@ -271,6 +272,7 @@ const CourseTeacherSelection = () => {
           </button> */}
         </div>
         {confirmationMessage && <p>{confirmationMessage}</p>}
+      </div>
       </div>
     </>
   );

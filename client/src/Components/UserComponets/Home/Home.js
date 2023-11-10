@@ -7,7 +7,7 @@ import { Dropdown } from "react-bootstrap";
 import Carousel from "react-material-ui-carousel";
 import axios from "../../../utils/axios";
 import banner2 from "./banner2.avif";
-import img from "./banner1.png";
+import img from "./Banner23.jpg";
 import Header from "./Header";
 import Pricing from "../../CourseComponent/Pricing";
 import jwt_decode from "jwt-decode";
@@ -188,7 +188,7 @@ function Home() {
             {courses.map((course) => (
               <div
                 className=" rounded-card-c mb-8"
-                style={{ margib: "30px" }}
+                style={{ margin: "30px" }}
                 key={course._id}
               >
                 <Link
@@ -222,7 +222,7 @@ function Home() {
         <Carousel>
           <div className="row">
             {teachers.map((teacher) => (
-              <div className="col-md-2" key={teacher._id}>
+              <div className="col-md-2" key={teacher._id}>  
                 {teacher.isTeacherApproved ? (
                   <Link to={`/teacherProfileForHome/${teacher._id}`}>
                     <div className="teacher-card mb-4">
@@ -262,8 +262,8 @@ function Home() {
               <div className="pricing-card-content">
                 <p>{pricingPlan.numberOfClasses} Classes</p>
                 <p className="pricing-price">₹ {pricingPlan.price}</p>
-                <p>Beginner Lessons</p>
-                <p>8 Online Classes</p>
+                <p>Beginner and Advance Lessons</p>
+                <p>Online Classes</p>
                 <p>45 min / Class</p>
                 <p>Regional / English Instructions</p>
               </div>
@@ -280,22 +280,22 @@ function Home() {
 
       {/* Banner Image */}
 
-      <div className="container-m">
-        <div className="banner-home-end">
-          <div className="row">
-            <div className="col-md-6">
-              <div className="banner1">
-                <img
-                  src={img}
-                  className="banner"
-                  alt="..."
-                  // style={{ width: "70%", height: "auto" }}
-                />
+        {/* <div className="container-m">
+          <div className="banner-home-end">
+            <div className="row">
+              <div className="col-md-6">
+                <div className="banner1">
+                  <img
+                    src={img}
+                    className="banner"
+                    alt="..."
+                    // style={{ width: "70%", height: "auto" }}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </div> */}
     </div>
   );
 }

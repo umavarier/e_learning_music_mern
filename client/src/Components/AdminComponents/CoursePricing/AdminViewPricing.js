@@ -147,21 +147,21 @@ const PricingDetails = () => {
           <table>
             <thead>
               <tr>
-                <th>Plan Number</th>
-                <th>Plan Name</th>
-                <th>Number of Classes</th>
-                <th>Price</th>
-                <th>Actions</th>
+                <th style={{ fontSize: "24px"}}>Plan Number</th>
+                <th style={{ fontSize: "24px"}}>Plan Name</th>
+                <th style={{ fontSize: "24px"}}>Number of Classes</th>
+                <th style={{ fontSize: "24px"}}>Price</th>
+                <th style={{ fontSize: "24px"}}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {pricingDetails.map((pricing, index) => (
                 <tr key={index}>
-                  <td>{pricing.planNumber}</td>
-                  <td>{pricing.planName}</td>
-                  <td>{pricing.numberOfClasses}</td>
-                  <td>{pricing.price}</td>
-                  <td>
+                  <td style={{ fontSize: "24px"}}>{pricing.planNumber}</td>
+                  <td style={{ fontSize: "24px"}}>{pricing.planName}</td>
+                  <td style={{ fontSize: "24px"}}>{pricing.numberOfClasses}</td>
+                  <td style={{ fontSize: "24px"}}>{pricing.price}</td>
+                  <td style={{marginRight:"10px"}}>
                     <EditIcon
                       color="primary"
                       onClick={() => handleEditPricing(pricing)}

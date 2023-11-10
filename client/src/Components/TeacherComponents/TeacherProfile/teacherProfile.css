@@ -1,6 +1,8 @@
 /* Profile.css */
 
-/* Background colors */
+.container-video {
+  max-width: 1000px;
+}
 .background {
   background-color: #000137;
 }

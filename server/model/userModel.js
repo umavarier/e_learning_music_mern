@@ -73,6 +73,11 @@ const userSchema= new mongoose.Schema({
     headline: {
         type : String
     },
+    isBlock:{
+      
+        type : Boolean,
+        default : false
+    },
     image:
     {
         type: String

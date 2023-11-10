@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import "./Sidebar.css";
+// import "./Sidebar.css";
 
 function TeacherSidebar() {
   const teacherId = useSelector((state) => state.teacher.id);
@@ -25,7 +25,7 @@ function TeacherSidebar() {
             ></Link>
           </li>
 
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <Link
               to={"/teacherhome"}
               className="nav-link black-text"
@@ -41,7 +41,7 @@ function TeacherSidebar() {
             >
               Teacher Dashboard
             </Link>
-          </li>
+          </li> */}
           <li className="nav-item">
             {/* <Link
               to={"/TeacherGetAllUsers"}
@@ -58,23 +58,6 @@ function TeacherSidebar() {
             >
               Students
             </Link> */}
-          </li>
-          <li className="nav-item">
-            <Link
-              to={"/TeacherSpec"}
-              className="nav-link black-text"
-              style={{
-                marginTop: "50px",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                backgroundColor: "white",
-                color: "black",
-                fontSize: "20px",
-                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
-              }}
-            >
-              Your Courses
-            </Link>
           </li>
           <li className="nav-item">
             <Link
@@ -95,6 +78,24 @@ function TeacherSidebar() {
           </li>
           <li className="nav-item">
             <Link
+              to={"/TeacherSpec"}
+              className="nav-link black-text"
+              style={{
+                marginTop: "50px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                backgroundColor: "white",
+                color: "black",
+                fontSize: "20px",
+                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              Your Courses
+            </Link>
+          </li>
+         
+          <li className="nav-item">
+            <Link
               to={"/teacherAppointmentsList"}
               className="nav-link black-text"
               style={{
@@ -108,6 +109,23 @@ function TeacherSidebar() {
               }}
             >
               Demo Bookings
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link
+              to={"/teacherAvailabilityList"}
+              className="nav-link black-text"
+              style={{
+                marginTop: "50px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                backgroundColor: "white",
+                color: "black",
+                fontSize: "20px",
+                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
+              }}
+            >
+              Your Availability List
             </Link>
           </li>
         </ul>

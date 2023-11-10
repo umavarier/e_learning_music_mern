@@ -640,10 +640,10 @@ const TeacherProfile = () => {
                 </div>
               </div>
 
-              <div className="container">
+              <div className="container-video">
                 <div className="row">
                   <h2 className="text-center text-dark">Your Videos</h2>
-                  <div className="col-md-2"></div>
+                  {/* <div className="col-md-2"></div> */}
                   <div className="card-body card rounded-sqaure col-md-6">
                     <div className="col-md-8">
                       <div className="btn-group mb-3" role="group">

@@ -39,13 +39,13 @@
 }
 .home-course-container{
   padding : 40px;
-  margin-left:100px;
-  margin-right:100px;
+  margin-left:200px;
+  margin-right:200px;
 }
 .teacher-container {
   padding: 40px;
-  margin-left:100px;
-  margin-right:100px;
+  margin-left:200px;
+  margin-right:200px;
   justify-content: space-between;
 
 }
@@ -164,7 +164,9 @@ div.statistics p span {
   color: #fff; /* White text color */
   padding: 50px 0;
   text-align: center;
-  margin:100px;
+  margin-left:200px;
+  margin-right :200px;
+  margin-bottom:50px;
 }
 
 /* Style the container */
@@ -177,7 +179,7 @@ div.statistics p span {
 .subscription-cards {
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   margin-top: 20px;
 }
 
@@ -205,6 +207,7 @@ div.statistics p span {
   padding: 10px 20px;
   cursor: pointer;
   transition: background-color 0.3s;
+  align-items: center;
 }
 
 .enroll-button:hover {
@@ -244,10 +247,10 @@ div.statistics p span {
 }
 
 .banner-home-end {
-  width:170%;
+  width:100%;
   justify-content: center;
   align-items: center;
-  margin-left:100px;
+  margin-left:200px;
   margin-right:100px;
   margin-top:0px;
 }

@@ -51,9 +51,10 @@ function AdminAddTeacher() {
   return (
     <div>
       <AdminHeader />
-      {/* <AdminSidebar /> */}
-      <form className="updateForm" onSubmit={(e) => handleSubmit(e)}>
-        <div className="container1">
+      <div style={{ display: "flex" }}>
+      <AdminSidebar />
+      <form className="updateForm" style={{justifyContent : "center"}} onSubmit={(e) => handleSubmit(e)}>
+        <div className="container1" >
           <h1>ADD TEACHER</h1>
 
           <label htmlFor="teacherName">
@@ -62,6 +63,7 @@ function AdminAddTeacher() {
           <input
             type="text"
             placeholder="Enter teacher name"
+            style={{fontSize : "24px"}}
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
             id="teacherName"
@@ -74,6 +76,7 @@ function AdminAddTeacher() {
           <input
             type="text"
             placeholder="Enter Email"
+            style={{fontSize : "24px"}}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             id="email"
@@ -85,6 +88,7 @@ function AdminAddTeacher() {
           <input
             type="password"
             placeholder="Enter Password"
+            style={{fontSize : "24px"}}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             id="password"
@@ -93,6 +97,7 @@ function AdminAddTeacher() {
           <button type="submit">Add Teacher</button>
         </div>
       </form>
+      </div>
       <Footer />
     </div>
   );

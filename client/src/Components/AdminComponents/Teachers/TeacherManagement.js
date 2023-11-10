@@ -77,7 +77,6 @@ function TeacherManagement() {
 
   const rejectTeacher = (teacherId,isTeacherRejected) => {
     const accessToken = Cookies.get("token");
-    // console.log("aprv" + accessToken);
     const decodedToken = jwt_decode(accessToken);
     console.log("decd-admin  " + JSON.stringify(decodedToken));
     const approveFlag = !isTeacherRejected;
@@ -125,16 +124,16 @@ function TeacherManagement() {
             <tbody>
               {teachers.map((teacher, index) => (
                 <tr key={teacher._id}>
-                  <td>{index + 1}</td>
-                  <td>{teacher.userName}</td>
-                  <td>{teacher.email}</td>
+                  <td style={{fontSize : "24px"}}>{index + 1}</td>
+                  <td style={{fontSize : "24px"}}>{teacher.userName}</td>
+                  <td style={{fontSize : "24px"}}>{teacher.email}</td>
                   <td>
                     {teacher.isTeacherApproved ? (
-                      <span className="approved">Approved ✓</span>
+                      <span className="approved" style={{fontSize : "24px"}}>Approved ✓</span>
                     ) : teacher.isRejected ? (
-                      <span className="rejected">Rejected ✗</span>
+                      <span className="rejected" style={{fontSize : "24px"}}>Rejected ✗</span>
                     ) : (
-                      <span className="pending">Pending !</span>
+                      <span className="pending" style={{fontSize : "24px"}}>Pending !</span>
                     )}
                   </td>
                   <td>

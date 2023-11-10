@@ -113,6 +113,7 @@ function AdminEnrollmentPricing() {
                     label="Search Plan Name"
                     variant="outlined"
                     margin="20px"
+                    style={{fontSize : "24px"}}
                     // fullWidth
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -123,12 +124,14 @@ function AdminEnrollmentPricing() {
                     label="Plan Number"
                     type="number"
                     margin="10px"
+                    style={{fontSize : "24px"}}
                     fullWidth
                     value={planNumber}
                     onChange={(e) => setPlanNumber(e.target.value)}
                   />
                   <TextField
                     label="Plan Name"
+                    style={{fontSize : "24px"}}
                     fullWidth
                     value={planName}
                     onChange={(e) => setPlanName(e.target.value)}
@@ -136,6 +139,7 @@ function AdminEnrollmentPricing() {
                   <TextField
                     label="Number of Classes"
                     type="number"
+                    style={{fontSize : "24px"}}
                     fullWidth
                     value={numberOfClasses}
                     onChange={(e) => setNumberOfClasses(e.target.value)}
@@ -143,6 +147,7 @@ function AdminEnrollmentPricing() {
                   <TextField
                     label="Class Price"
                     type="number"
+                    style={{fontSize : "24px"}}
                     fullWidth
                     value={classPrice}
                     onChange={(e) => setClassPrice(e.target.value)}
@@ -161,11 +166,11 @@ function AdminEnrollmentPricing() {
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Plan Number</TableCell>
-                          <TableCell>Plan Name</TableCell>
-                          <TableCell>Number of Classes</TableCell>
-                          <TableCell>Class Price</TableCell>
-                          <TableCell>Action</TableCell>
+                          <TableCell style={{fontSize : "24px"}}>Plan Number</TableCell>
+                          <TableCell style={{fontSize : "24px"}}>Plan Name</TableCell>
+                          <TableCell style={{fontSize : "24px"}}>Number of Classes</TableCell>
+                          <TableCell style={{fontSize : "24px"}}>Class Price</TableCell>
+                          <TableCell style={{fontSize : "24px"}}>Action</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -176,10 +181,10 @@ function AdminEnrollmentPricing() {
                           )
                           .map((item, index) => (
                             <TableRow key={index}>
-                              <TableCell>{item.planNumber}</TableCell>
-                              <TableCell>{item.planName}</TableCell>
-                              <TableCell>{item.numberOfClasses}</TableCell>
-                              <TableCell>{item.price}</TableCell>
+                              <TableCell style={{fontSize : "24px"}}>{item.planNumber}</TableCell>
+                              <TableCell style={{fontSize : "24px"}}>{item.planName}</TableCell>
+                              <TableCell style={{fontSize : "24px"}}>{item.numberOfClasses}</TableCell>
+                              <TableCell style={{fontSize : "24px"}}>{item.price}</TableCell>
                               <TableCell>
                                 <IconButton
                                   color="secondary"

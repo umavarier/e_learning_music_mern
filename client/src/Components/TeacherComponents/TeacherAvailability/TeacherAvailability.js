@@ -121,18 +121,18 @@ function TeacherAvailabilityPage() {
       <table className="av-table">
         <thead>
           <tr>
-            <th>Day of the Week</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Action</th>
+            <th style={{fontSize : "24px"}}>Day of the Week</th>
+            <th style={{fontSize : "24px"}}>Start Time</th>
+            <th style={{fontSize : "24px"}}>End Time</th>
+            <th style={{fontSize : "24px"}}>Action</th>
           </tr>
         </thead>
         <tbody>
           {availabilityData.map((item) => (
             <tr key={item._id}>
-              <td>{item.dayOfWeek}</td>
-              <td>{item.startTime}</td>
-              <td>{item.endTime}</td>
+              <td style={{fontSize : "24px"}}>{item.dayOfWeek}</td>
+              <td style={{fontSize : "24px"}}>{item.startTime}</td>
+              <td style={{fontSize : "24px"}}>{item.endTime}</td>
               <td>
                 <button className="av-button"onClick={() => handleDelete(item._id)}>Delete</button>
               </td>

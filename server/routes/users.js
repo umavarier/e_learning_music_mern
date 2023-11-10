@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 const multerConfig = require('../util/multerConfig');
-const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo,getNotifications,sendNotifications, checkAppointmentTiming, userGetAppointmentTime, fetchUserProfilePhoto, getEnrolledCourses, getPaymentHistory, getUserDemoBookings, cancelUserAppointment, updateStudentTiming, updateSessionTiming, getTeacherProfileForHome} = require('../controllers/userController');
-const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher, getEnrollmentPricing, updateEnrollmentPricing, adminGetCourseList, adminEditCourse, adminDeleteCourse, adminApproveTeacher, adminRejectTeacher, getEnrolledUsersList, adminGetPricingDetails, adminEditPricing, adminDeletePricing, adminGetUserAppointments, adminCancelAppointment, getAdminPaymentList } = require('../controllers/adminControllers');
+const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo,getNotifications,sendNotifications, checkAppointmentTiming, userGetAppointmentTime, fetchUserProfilePhoto, getEnrolledCourses, getPaymentHistory, getUserDemoBookings, cancelUserAppointment, updateStudentTiming, updateSessionTiming, getTeacherProfileForHome, getTeachersByCourse} = require('../controllers/userController');
+const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher, getEnrollmentPricing, updateEnrollmentPricing, adminGetCourseList, adminEditCourse, adminDeleteCourse, adminApproveTeacher, adminRejectTeacher, getEnrolledUsersList, adminGetPricingDetails, adminEditPricing, adminDeletePricing, adminGetUserAppointments, adminCancelAppointment, getAdminPaymentList, adminBlockUser } = require('../controllers/adminControllers');
 
 const {TeacherGetAllUsers, } = require('../controllers/TeacherController')
 // const {addCourse, viewCourses, getCourseById} = require('../controllers/courseController')
@@ -35,6 +35,7 @@ router.get('/getallusers',getAllUsers)
 router.delete('/deleteUser/:id',deleteUsers)        
 router.get('/admineditUser/:id',getUserDetails)
 router.put('/updateUser/:id',updateUsers);
+router.put('/adminBlockUser/:id',adminBlockUser)
 router.post('/updateImage/:id',multerConfig.logRequestMiddleware, multerConfig.uploadProfilePhoto.single('image'),userImageUpdate)
 router.get('/fetchUserProfilePhoto/:userId',fetchUserProfilePhoto)
 router.get('/searchUser/:userkey',adminSearchUser)
@@ -84,6 +85,6 @@ router.get('/getPaymentHistory/:id',getPaymentHistory);
 router.get('/getUserDemoBookings',auth,getUserDemoBookings);
 router.delete('/cancelUserAppointment/:appointmentId',auth,cancelUserAppointment)
 router.get('/getTeacherProfileForHome/:teacherId',getTeacherProfileForHome)
-
+router.get('/getTeachersByCourse/:courseId' , getTeachersByCourse)
 
 module.exports = router;

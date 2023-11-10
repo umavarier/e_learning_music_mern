@@ -150,7 +150,7 @@ const PaymentPage = () => {
         }
       },
       prefill: {
-        name: "WEYGIAY",
+        name: "MELODY",
       },
     };
     const paymentObject = new window.Razorpay(options);
@@ -304,8 +304,8 @@ const PaymentPage = () => {
           style={customStyles}
         >
           <h2>Payment Successful!</h2>
-          <p>You are now enrolled in the course - {enrolledCourseName}</p>
-          <button onClick={() => navigate("/")}>Yaaayy!!!</button>
+          <p>You are now enrolled in the course  {enrolledCourseName}</p>
+          <button style={{justifyContent:"center"}} onClick={() => navigate("/")}>Yaaayy!!!</button>
         </Modal>
       </div>
     </>

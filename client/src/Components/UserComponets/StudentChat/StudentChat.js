@@ -37,24 +37,32 @@ const StudentChat = ({ userId, teacherId }) => {
   const socket = io("http://localhost:4000");
 
   useEffect(() => {
-    socket.emit("join", userId);
+    const handleReceiveMessage = (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    };
+
     socket.on("connect", () => {
+      socket.emit("join", userId);
       console.log(userId + " connected");
     });
 
+    // socket.on("chat message", handleReceiveMessage);
+    // console.log("chat",handleReceiveMessage)
+
     return () => {
+      socket.off("chat message", handleReceiveMessage);
       socket.disconnect();
     };
   }, [userId]);
 
   useEffect(() => {
     socket.on("receive-message", (data) => {
-      console.log("received msg " + data);
+      
       setReceiveMessage(data);
+      console.log("received msg " + data);
     });
-  }, [receiveMessage]);
-
-  console.log("receiveMessage from teacher",receiveMessage);
+  }, []);
+  console.log(receiveMessage);
 
   const handleSendMessage = () => {
     socket.emit("chat", {

@@ -68,6 +68,7 @@ const AdminEditPricing = ({
         <TextField
           label="Plan Number"
           name="planNumber"
+          style={{ fontSize: "24px"}}
           value={editedPricing.planNumber}
           onChange={handleChange}
           fullWidth
@@ -75,6 +76,7 @@ const AdminEditPricing = ({
         <TextField
           label="Plan Name"
           name="planName"
+          style={{ fontSize: "24px"}}
           value={editedPricing.planName}
           onChange={handleChange}
           fullWidth
@@ -82,6 +84,7 @@ const AdminEditPricing = ({
         <TextField
           label="Number of Classes"
           name="numberOfClasses"
+          style={{ fontSize: "24px"}}
           value={editedPricing.numberOfClasses}
           onChange={handleChange}
           fullWidth
@@ -89,6 +92,7 @@ const AdminEditPricing = ({
         <TextField
           label="Price"
           name="price"
+          style={{ fontSize: "24px"}}
           value={editedPricing.price}
           onChange={handleChange}
           fullWidth

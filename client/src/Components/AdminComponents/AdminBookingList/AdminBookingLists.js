@@ -152,14 +152,14 @@ const UserAppointmentsTable = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Appointment Date</TableCell>
-                  <TableCell>Student Name</TableCell>
-                  <TableCell>Teacher Name</TableCell>
-                  <TableCell>Course Name</TableCell>
-                  <TableCell>Start Time</TableCell>
-                  <TableCell>End Time</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Actions</TableCell>
+                  <TableCell style={{ fontSize: "24px"}}>Appointment Date</TableCell>
+                  <TableCell style={{ fontSize: "24px"}}>Student Name</TableCell>
+                  <TableCell style={{ fontSize: "24px"}}>Teacher Name</TableCell>
+                  <TableCell style={{ fontSize: "24px"}}>Course Name</TableCell>
+                  <TableCell style={{ fontSize: "24px"}}>Start Time</TableCell>
+                  <TableCell style={{ fontSize: "24px"}}>End Time</TableCell>
+                  <TableCell style={{ fontSize: "24px"}}>Status</TableCell>
+                  <TableCell style={{ fontSize: "24px"}}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -167,18 +167,18 @@ const UserAppointmentsTable = () => {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((appointment) => (
                     <TableRow key={appointment.appointmentId}>
-                      <TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>
                         {isValidDate(appointment.date)
                           ? format(new Date(appointment.date), "dd/MM/yyyy")
                           : "Invalid Date"}
                       </TableCell>
-                      <TableCell>{appointment.studentName}</TableCell>
-                      <TableCell>{appointment.teacherName}</TableCell>
-                      <TableCell>{appointment.courseName}</TableCell>
-                      <TableCell>{appointment.startTime}</TableCell>
-                      <TableCell>{appointment.endTime}</TableCell>
-                      <TableCell>{getCurrentStatus(appointment)}</TableCell>
-                      <TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>{appointment.studentName}</TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>{appointment.teacherName}</TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>{appointment.courseName}</TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>{appointment.startTime}</TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>{appointment.endTime}</TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>{getCurrentStatus(appointment)}</TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>
                         <Button
                           variant="contained"
                           color="primary"

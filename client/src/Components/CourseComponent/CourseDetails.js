@@ -9,6 +9,7 @@ import Header from "../UserComponets/Home/Header";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import Pricing from "./Pricing";
+import { Carousel, Card } from "react-bootstrap";
 
 function CourseDetails() {
   const { courseId } = useParams();
@@ -31,7 +32,7 @@ function CourseDetails() {
   const [isBookingSuccessful, setIsBookingSuccessful] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isTimePickerDisabled, setIsTimePickerDisabled] = useState(true);
-  const [instructors, setInstructors] = useState(null)
+  const [instructors, setInstructors] = useState([]);
 
   const currentDate = moment();
   useEffect(() => {
@@ -186,10 +187,9 @@ function CourseDetails() {
     fetchAppointmentDetails();
   }, [userId, teacherId, courseId, selectedTime]);
 
-
   const fetchInstructors = async (courseId) => {
     try {
-      const response = await axios.get(`/instructors/byCourse/${courseId}`);
+      const response = await axios.get(`/getTeachersByCourse/${courseId}`);
       return response.data;
     } catch (error) {
       console.error("Error fetching instructor details:", error);
@@ -201,7 +201,6 @@ function CourseDetails() {
     if (courseId) {
       fetchInstructors(courseId)
         .then((instructors) => {
-          // Set the instructor information in your component state.
           setInstructors(instructors);
         })
         .catch((error) => {
@@ -209,7 +208,6 @@ function CourseDetails() {
         });
     }
   }, [courseId]);
-
 
   const handleScheduleDemo = () => {
     // console.log("handleScheduleDemo called"); // Add this line
@@ -230,7 +228,6 @@ function CourseDetails() {
     const studentId = userId;
     // console.log("studentid: " + studentId);
 
-   
     axios
       .post("/schedule-demo", {
         studentId,
@@ -309,28 +306,57 @@ function CourseDetails() {
             </>
           )}
         </div>
-
-        <div className="instructors-list">
-          <h2>Instructors for {course?.name}:</h2>
-          <ul>
-            {instructors.map((instructor) => (
-              <li key={instructor._id}>{instructor.userName}</li>
-            ))}
-          </ul>
-        </div>
-
-        {isModalOpen && (
-          <TimeSelectionModal
-            isOpen={isModalOpen}
-            onRequestClose={handleCloseModal}
-            onTimeSelected={handleTimeSelected}
-            handleScheduleDemo={handleScheduleDemo}
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
-            isTimePickerDisabled={isTimePickerDisabled}
-          />
-        )}
       </div>
+      <div
+        className="instructors-list"
+        style={{ marginLeft: "100px", marginRight:"100px", padding: "20px" }}
+      >
+        <h2 className="text-center">Our Teachers for {course.name}:</h2>
+        <Carousel>
+          {instructors.map((instructor, index) => (
+            <Carousel.Item key={index}>
+              <div className="d-flex justify-content-around">
+                {instructors.slice(index, index + 4).map((teacher) => (
+                  <Link to={`/teacherProfileForHome/${teacher._id}`} key={teacher._id}> 
+                  <Card
+                    key={teacher._id}
+                    className="mx-4"
+                    style={{ width: "300px", height: "400px" }}
+                  >
+                    <Card.Img
+                      variant="top"
+                      src={`http://localhost:4000/uploads/${teacher.profilePhoto}`}
+                      style={{
+                        width: "300px",
+                        height: "300px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
+                    />
+                    <Card.Body className="text-center">
+                      <Card.Title className="text-dark">{teacher.userName}</Card.Title>
+                    </Card.Body>
+                  </Card>
+                  </Link>
+                ))}
+              </div>
+            </Carousel.Item>
+          ))}
+        </Carousel>
+      </div>
+
+      {isModalOpen && (
+        <TimeSelectionModal
+          isOpen={isModalOpen}
+          onRequestClose={handleCloseModal}
+          onTimeSelected={handleTimeSelected}
+          handleScheduleDemo={handleScheduleDemo}
+          selectedDate={selectedDate}
+          selectedTime={selectedTime}
+          isTimePickerDisabled={isTimePickerDisabled}
+        />
+      )}
+
       <div>{/* <Pricing /> */}</div>
     </>
   );

@@ -39,31 +39,31 @@ function AdminSidebar() {
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
-          <ListItemText primary="Dashboard" />
+          <ListItemText style={{fontSize : "24px"}} primary="Dashboard" />
         </ListItem>
         <ListItem button component={Link} to="/users">
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
-          <ListItemText primary="Users" />
+          <ListItemText style={{fontSize : "24px"}} primary="Users" />
         </ListItem>
         <ListItem button component={Link} to="/teachers">
           <ListItemIcon>
             <SchoolIcon />
           </ListItemIcon>
-          <ListItemText primary="Teachers" />
+          <ListItemText  style={{fontSize : "24px"}}primary="Teachers" />
         </ListItem>
         <ListItem button component={Link} to="/getEnrolledUsersLIst">
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
-          <ListItemText primary="Enrolled Users" />
+          <ListItemText  style={{fontSize : "24px"}} primary="Enrolled Users" />
         </ListItem>
         <ListItem button component={Link} to="/adminCourseManagement">
           <ListItemIcon>
             <AssignmentIcon />
           </ListItemIcon>
-          <ListItemText primary="Courses" />
+          <ListItemText style={{fontSize : "24px"}} primary="Courses" />
         </ListItem>
         <ListItem button component={Link} to="/adminGetPricingDetails">
           <ListItemIcon>
@@ -75,14 +75,14 @@ function AdminSidebar() {
           <ListItemIcon>
             <PaymentIcon />
           </ListItemIcon>
-          <ListItemText primary="Free Demo Bookings" />
+          <ListItemText style={{fontSize : "24px"}} primary="Free Demo Bookings" />
         </ListItem>
-        <ListItem button component={Link} to="">
+        {/* <ListItem button component={Link} to="">
           <ListItemIcon>
             <NotificationsIcon />
           </ListItemIcon>
           <ListItemText primary="Notifications" />
-        </ListItem>
+        </ListItem> */}
       </List>
     </nav>
   );

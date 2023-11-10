@@ -27,6 +27,7 @@ import TeacherViewCourse from "./Components/TeacherComponents/TeacherCourse/View
 import TeacherProfile from "./Components/TeacherComponents/TeacherProfile/teacherProfile";
 import TeacherUploadProfilePhoto from './Components/TeacherComponents/TeacherProfile/teacherProfile';
 
+
 // import { getCourseById } from './Components/CourseComponent/Course';
 import usergetUserDetails from "./Components/CourseComponent/CourseDetails";
 // import CourseDetails from './Components/CourseComponent/CourseDetails';
@@ -61,6 +62,7 @@ import UserDemoBookings from "./Components/UserComponets/Profile/userDemoBooking
 import EditCourseTimingModal from "./Components/TeacherComponents/TeacherSpec/EditCourseTimingModal.js";
 import TeacherProfileForHome from "./Components/UserComponets/TeachersForUser/TeacherProfileForHome.js";
 import AdminPaymentHistory from "./Components/AdminComponents/AdminCourses/AdminPaymentHistory.js";
+import TeacherAvailabilityList from "./Components/TeacherComponents/TeacherAvailability/TeacherAvailabilityList.js";
 
 function App() {
   return (
@@ -114,6 +116,7 @@ function App() {
         <Route path="/EditCourseTimingModal" element={<EditCourseTimingModal/>} />
         <Route path="/teacherProfileForHome/:teacherId" element={<TeacherProfileForHome/>} />
         <Route path="/teacherChat" element={< TeacherChat />}/>
+        <Route path="/teacherAvailabilityList" element={< TeacherAvailabilityList />}/>
 
 
 

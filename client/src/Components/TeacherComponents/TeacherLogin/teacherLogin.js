@@ -28,7 +28,7 @@ function TeacherLogin() {
       });
 
       if (response.data.hasProfilePicture) {
-        navigate("/teacherhome");
+        navigate("/teacherProfile");
       } else {
         navigate("/teacherProfilePictureUpload");
       }

@@ -823,7 +823,7 @@ const cancelUserAppointment =  async(req,res) => {
   }
 }
 
-const getTeacherProfileForHome = async(req,res) => {
+const getTeacherProfileForHome = async (req, res) => {
   const teacherId = req.params.teacherId;
   try {
     const teacher = await Teacher.findById(teacherId);
@@ -831,17 +831,46 @@ const getTeacherProfileForHome = async(req,res) => {
     if (!teacher) {
       return res.status(404).json({ message: "Teacher not found" });
     }
+
+    // Fetch course names using the course IDs
+    const courseNames = await Course.find({ _id: { $in: teacher.courses } })
+      .select('name')
+      .exec();
+
     const response = {
+      userName:teacher.userName,
       profilePhoto: teacher.profilePhoto,
-      videos: teacher.videos.map(video => video.url),
+      videos: teacher.videos.map((video) => video.url),
       email: teacher.email,
-      courses: teacher.courses,
+      courseNames: courseNames.map((course) => course.name), // Extract course names
     };
 
     res.status(200).json(response);
   } catch (error) {
     console.error("Error fetching teacher's profile:", error);
     res.status(500).json({ message: "Failed to fetch teacher's profile" });
+  }
+};
+
+
+const getTeachersByCourse = async(req, res) => {
+  const { courseId } = req.params;
+
+  try {
+    const course = await Course.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ error: 'Course not found' });
+    }
+
+    const instructorIds = course.instructorIds;
+
+    const instructors = await Teacher.find({ _id: { $in: instructorIds } });
+
+    res.json(instructors);
+  } catch (error) {
+    console.error('Error fetching instructors:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
 
@@ -875,4 +904,5 @@ module.exports = {
   getUserDemoBookings,
   cancelUserAppointment,
   getTeacherProfileForHome,
+  getTeachersByCourse,
 };

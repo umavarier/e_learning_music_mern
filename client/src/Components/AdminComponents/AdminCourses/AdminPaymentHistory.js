@@ -37,20 +37,20 @@ const AdminPaymentHistory = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>User Name</TableCell>
-              <TableCell>Course Name</TableCell>
-              <TableCell>Teacher Name</TableCell>
-              <TableCell>Amount</TableCell>
+              <TableCell style={{ fontSize: "24px"}}>User Name</TableCell>
+              <TableCell style={{ fontSize: "24px"}}>Course Name</TableCell>
+              <TableCell style={{ fontSize: "24px"}}>Teacher Name</TableCell>
+              <TableCell style={{ fontSize: "24px"}}>Amount</TableCell>
               {/* <TableCell>Pricing Plan</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
                 {payments.map((payment) => (
                   <TableRow key={payment._id}>
-                    <TableCell>{payment.userId.userName}</TableCell>
-                    <TableCell>{payment.purchasedCourse.name}</TableCell>
-                    <TableCell>{payment.teacherId.userName}</TableCell> 
-                    <TableCell>{payment.amount}</TableCell>
+                    <TableCell style={{ fontSize: "24px"}}>{payment.userId.userName}</TableCell>
+                    <TableCell style={{ fontSize: "24px"}}>{payment.purchasedCourse.name}</TableCell>
+                    <TableCell style={{ fontSize: "24px"}}>{payment.teacherId.userName}</TableCell> 
+                    <TableCell style={{ fontSize: "24px"}}>{payment.amount}</TableCell>
                     {/* <TableCell>{getPricingPlan(payment.amount)}</TableCell> */}
                   </TableRow>
                 ))}

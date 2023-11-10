@@ -1,12 +1,21 @@
+.center-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* min-height: 100vh; */
+  margin-top: 100px;
+}
+
 .card {
-    
-    max-width: 1000px;
-    margin: 200 auto;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(85, 76, 254, 0.2);
-    background: #f9f9fb;
-  }
+  max-width: 1000px;
+  margin: 0 auto;
+  border: 1px solid #060303;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(196, 193, 242, 0.2);
+  background: #f9f9fb;
+  width: 100%; /* Adjust the width as needed */
+  padding: 20px;
+}
   
   .card-header {
     background-color: #02055a;

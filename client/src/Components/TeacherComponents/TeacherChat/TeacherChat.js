@@ -33,27 +33,37 @@ const TeacherChat = ({ teacherId, studentId }) => {
   const classes = useStyles();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [receiveMessage, setReceiveMessage] = useState("");
   // const []
   const socket = io("http://localhost:4000");
 
   useEffect(() => {
-    socket.emit("join", teacherId);
+    // const handleReceiveMessage = (message) => {
+      // console.log("msg-recvd" + message);
+    //   setMessages((prevMessages) => [...prevMessages, message]);
+    // };
 
+    socket.on("connect", () => {
+      socket.emit("join", teacherId);
+      console.log(teacherId + " connected ");
+    });
+
+    // socket.on("chat message", handleReceiveMessage);
     return () => {
+      // socket.off("chat", handleReceiveMessage);
       socket.disconnect();
     };
   }, [teacherId]);
 
-  useEffect(() => {
-    socket.on("receive-message", (data) => {
-      console.log("received msg " + data);
-      setReceiveMessage(data);
-    });
-  }, [receiveMessage]);
+  useEffect(()=>{
+  socket.on("receive-message", (data) => {
+    console.log("r-msg")
+    console.log("received msg "+data)
+  })
+  },[])
 
-  console.log("receiveMessage from student" + receiveMessage);
 
+  
+  // console.log("nm   " + newMessage);
   const handleSendMessage = () => {
     console.log("halo i am clicked");
     const data = {

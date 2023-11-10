@@ -23,7 +23,7 @@
     margin-bottom: 15px;
     border: 1px solid black;
     border-radius: 5px;
-    background-color: rgb(127, 126, 129);
+    background-color: #fff;
   }
   
   /* Submit button styles */
@@ -48,6 +48,8 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    justify-content: center;
+    margin-left: 500px;
   }
   
   /* Additional styles */

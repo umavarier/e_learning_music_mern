@@ -39,7 +39,7 @@ function TeacherProfileForHome() {
       <Header />
       <Container>
         <Typography
-          variant="h4"
+          variant="h3"
           component="div"
           sx={{ marginTop: 2, textAlign: "center" }}
         >
@@ -62,68 +62,82 @@ function TeacherProfileForHome() {
             />
             <CardContent>
               <Typography
-                variant="h5"
+                variant="h4"
                 component="div"
                 align="center"
-                sx={{ fontSize: "24px" }}
+                sx={{ fontSize: "30px" }}
               >
                 {teacher.userName}
               </Typography>
-              
+
               <Typography
                 variant="subtitle2"
                 align="center"
-                sx={{ fontSize: "30px" }}
+                sx={{ fontSize: "24px" }}
               >
                 Email: {teacher.email}
               </Typography>
             </CardContent>
-          </Card>   
+          </Card>
         </div>
 
         <Typography
-          variant="h5"
+          variant="h2"
           component="div"
-          sx={{ marginTop: 2, textAlign: "center" }}
-        >
-          Courses
-        </Typography>
-        <Carousel autoPlay={false}>
-          {teacher.courses.map((course, index) => (
+          sx={{ marginTop: "30px", marginBotton: "50px", textAlign: "center" }}
+        ></Typography>
+        <Carousel autoPlay={true}>
+          {teacher.courseNames.map((course, index) => (
             <div key={index}>
               <Card
                 sx={{
-                  borderRadius: "50%",
-                  width: 100,
+                  borderRadius: "10%",
+                  width: 300,
                   height: 100,
                   textAlign: "center",
                   margin: "0 auto",
+                  background: "#FFEDC5 ",
                 }}
               >
                 <CardContent>
-                  <Typography variant="h6">{course}</Typography>
+                  <Typography variant="h4" style={{ alignItems: "center" }}>
+                    {course}
+                  </Typography>
                 </CardContent>
               </Card>
             </div>
           ))}
         </Carousel>
 
-        <Typography
-          variant="h5"
-          component="div"
-          sx={{ marginTop: 2, textAlign: "center" }}
-        >
-          Teacher's Videos
-        </Typography>
-        <Carousel autoPlay={false}>
-          {teacher.videos.map((video, index) => (
-            <div key={index}>
-              <video width="560" height="315" controls>
-                <source src={video} type="video/mp4" />
-                Your browser does not support the video
-              </video>
+        <Carousel autoPlay={true}>
+          <div>
+            <Typography
+              variant="h2"
+              component="div"
+              style={{
+                marginTop: "30px",
+                marginBottom: "40px",
+                textAlign: "center",
+              }}
+            >
+              Teacher's Videos
+            </Typography>
+            <div
+              style={{
+                display: "flex",
+                overflowX: "auto",
+              }}
+            >
+              {teacher.videos.map((video, index) => (
+                <div key={index} style={{ marginRight: "10px" }}>
+                  <video width="300" height="169" controls>
+                    <source src={video} type="video/mp4" />
+                    Your browser does not support the video
+                  </video>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </Carousel>
       </Container>
     </>

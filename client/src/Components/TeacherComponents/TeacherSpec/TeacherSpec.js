@@ -323,18 +323,18 @@ function TeacherCourses() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Student Name</th>
-                      <th>Email</th>
-                      <th>Course Timings</th>
-                      <th>Actions</th>
+                      <th style={{fontSize : "24px"}}>Student Name</th>
+                      <th style={{fontSize : "24px"}}>Email</th>
+                      <th style={{fontSize : "24px"}}>Course Timings</th>
+                      <th style={{fontSize : "24px"}}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {studentDetails.map((student, index) => (
                       <tr key={index}>
-                        <td>{student.name}</td>
-                        <td>{student.email}</td>
-                        <td>
+                        <td style={{fontSize : "24px"}}>{student.name}</td>
+                        <td style={{fontSize : "24px"}}>{student.email}</td>
+                        <td style={{fontSize : "24px"}}>
                           {student.enrolledCourses
                             .filter(
                               (course) => course.course === selectedCourseId

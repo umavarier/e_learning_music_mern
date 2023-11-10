@@ -149,10 +149,11 @@ function AdminCourseManagement() {
         <div className="row">
           <AdminSidebar />
           <div className="col">
-            <h2>Course Management</h2>
+            <h1 className="text-center">Course Management</h1>
             <Button
               variant="contained"
               color="primary"
+              style={{marginBottom:"20px"}}
               onClick={openAddCourseModal}
             >
               Add New Course
@@ -161,21 +162,22 @@ function AdminCourseManagement() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Duration</TableCell>
-                    <TableCell>Level</TableCell>
-                    <TableCell>Actions</TableCell>
+                    <TableCell style={{ fontSize: "24px"}}>Name</TableCell>
+                    <TableCell style={{ fontSize: "24px"}}>Duration</TableCell>
+                    <TableCell style={{ fontSize: "24px"}}>Level</TableCell>
+                    <TableCell style={{ fontSize: "24px"}}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {courses.map((course) => (
                     <TableRow key={course?._id}>
-                      <TableCell>{course?.name}</TableCell>
-                      <TableCell>{course?.duration}</TableCell>
-                      <TableCell>{course?.level}</TableCell>
-                      <TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>{course?.name}</TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>{course?.duration}</TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>{course?.level}</TableCell>
+                      <TableCell style={{ fontSize: "24px"}}>
                         <IconButton
                           color="primary"
+                          style={{margin:"10px"}}
                           onClick={() => handleEdit(course)}
                         >
                           <Edit />

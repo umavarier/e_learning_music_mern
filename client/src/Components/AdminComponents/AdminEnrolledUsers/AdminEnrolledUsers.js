@@ -85,13 +85,13 @@ const EnrolledUsersList = () => {
             <Table style={{ border: "1px solid" }}>
               <TableHead>
                 <TableRow>
-                  <TableCell style={{ fontSize: "18px", border: "none" }}>
+                  <TableCell style={{ fontSize: "24px", border: "none" }}>
                     Name
                   </TableCell>
-                  <TableCell style={{ fontSize: "18px", border: "none" }}>
+                  <TableCell style={{ fontSize: "24px", border: "none" }}>
                     Email
                   </TableCell>
-                  <TableCell style={{ fontSize: "18px", border: "none" }}>
+                  <TableCell style={{ fontSize: "24px", border: "none" }}>
                     Enrolled Courses
                   </TableCell>
                 </TableRow>
@@ -102,17 +102,17 @@ const EnrolledUsersList = () => {
                   .map((user) => (
                     <TableRow key={user._id} style={{ border: "none" }}>
                       <TableCell
-                        style={{ fontSize: "16px", border: "2px solid" }}
+                        style={{ fontSize: "24px", border: "2px solid" }}
                       >
                         {displayValueOrNotAssigned(user?.userName)}
                       </TableCell>
                       <TableCell
-                        style={{ fontSize: "16px", border: "2px solid" }}
+                        style={{ fontSize: "24px", border: "2px solid" }}
                       >
                         {displayValueOrNotAssigned(user.email)}
                       </TableCell>
                       <TableCell
-                        style={{ fontSize: "16px", border: "2px solid" }}
+                        style={{ fontSize: "24px", border: "2px solid" }}
                       >
                         {/* <ul> */}
                         {user.enrolledCourses.map((course, index) => (
@@ -158,18 +158,18 @@ const EnrolledUsersList = () => {
 const TableContent = ({ course, displayValueOrNotAssigned }) => {
   return (
     <TableRow style={{ border: "none" }}>
-      <TableCell style={{ fontSize: "14px", border: "none" }}>
+      <TableCell style={{ fontSize: "20px", border: "none" }}>
         <strong>Course:</strong>{" "}
         {displayValueOrNotAssigned(course.course?.name)}
       </TableCell>
-      <TableCell style={{ fontSize: "14px", border: "none" }}>
+      <TableCell style={{ fontSize: "20px", border: "none" }}>
         <strong>Instructor:</strong>{" "}
         {displayValueOrNotAssigned(course.instructorId?.userName)}
       </TableCell>
-      <TableCell style={{ fontSize: "14px", border: "none" }}>
+      <TableCell style={{ fontSize: "20px", border: "none" }}>
         <strong>Day:</strong> {displayValueOrNotAssigned(course.day)}
       </TableCell>
-      <TableCell style={{ fontSize: "14px", border: "none" }}>
+      <TableCell style={{ fontSize: "20px", border: "none" }}>
         <strong>Time:</strong> {displayValueOrNotAssigned(course.time)}
       </TableCell>
     </TableRow>

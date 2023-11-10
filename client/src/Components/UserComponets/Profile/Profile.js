@@ -139,22 +139,17 @@ function Profile() {
   //   return courseTitle.toLowerCase().includes(searchTermLowerCase);
   // });
 
-  useEffect(() => {
-    const storedPaymentHistory = localStorage.getItem('paymentHistory');
-    if (storedPaymentHistory) {
-      setPaymentHistory(JSON.parse(storedPaymentHistory));
-    } else {
-      axios.get(`/getPaymentHistory/${userId}`)
-        .then((response) => {
-          const data = response.data;
-          setPaymentHistory(data);
-          localStorage.setItem('paymentHistory', JSON.stringify(data));
+ 
+    useEffect(() => {
+      // Fetch payment history data
+      axios.get(`/getPaymentHistory/${userId}`) 
+        .then(response => {
+          setPaymentHistory(response.data);
         })
-        .catch((error) => {
-          console.error(error);
+        .catch(error => {
+          console.error('Error fetching payment history:', error);
         });
-    }
-  }, []);
+    }, []);
   
   const openPaymentHistoryModal = () => {
     setIsPaymentHistoryModalOpen(true);
@@ -163,7 +158,7 @@ function Profile() {
   const closePaymentHistoryModal = () => {
     setIsPaymentHistoryModalOpen(false);
   };
-  console.log("ph" +paymentHistory)
+  console.log("ph" +JSON.stringify(paymentHistory))
 console.log("pc" +purchasedCourse)
 
 return (
