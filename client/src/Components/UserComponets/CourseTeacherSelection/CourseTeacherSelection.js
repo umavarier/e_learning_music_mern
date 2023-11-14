@@ -209,7 +209,7 @@ const CourseTeacherSelection = () => {
   return (
     <>
       <Header />
-      <div class="center-wrapper">
+      <div className="center-wrapper">
       <div className="card">
         <header className="card-header">
           <h1>Book a Demo</h1>

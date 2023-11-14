@@ -21,10 +21,9 @@ import {
 } from "@mui/icons-material";
 import { format, isBefore, isAfter, isToday } from "date-fns";
 
-
 const TeacherAppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
-  const navigate =  useNavigate();
+  const navigate = useNavigate();
   const accessToken = Cookies.get("token");
   const decodedToken = jwt_decode(accessToken);
   const teacherId = decodedToken.id;
@@ -76,7 +75,7 @@ const TeacherAppointmentsList = () => {
   const handleJoinDemo = (appointmentId, teacherId) => {
     console.log(`Join clicked for teacherId: ${teacherId}`);
     console.log(`Join clicked for appointment ID: ${appointmentId}`);
-   
+
     navigate(`/videoRoom/${appointmentId}`);
   };
 
@@ -146,29 +145,45 @@ const TeacherAppointmentsList = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{fontSize : "24px"}}>Student Name</TableCell>
-                    <TableCell style={{fontSize : "24px"}}>Course Name</TableCell>
-                    <TableCell style={{fontSize : "24px"}}>Date</TableCell>
-                    <TableCell style={{fontSize : "24px"}}>Start Time</TableCell>
-                    <TableCell style={{fontSize : "24px"}}>End Time</TableCell>
-                    <TableCell style={{fontSize : "24px"}}>Status</TableCell>
-                    <TableCell style={{fontSize : "24px"}}>Actions</TableCell>
+                    <TableCell style={{ fontSize: "24px" }}>
+                      Student Name
+                    </TableCell>
+                    <TableCell style={{ fontSize: "24px" }}>
+                      Course Name
+                    </TableCell>
+                    <TableCell style={{ fontSize: "24px" }}>Date</TableCell>
+                    <TableCell style={{ fontSize: "24px" }}>
+                      Start Time
+                    </TableCell>
+                    <TableCell style={{ fontSize: "24px" }}>End Time</TableCell>
+                    <TableCell style={{ fontSize: "24px" }}>Status</TableCell>
+                    <TableCell style={{ fontSize: "24px" }}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {appointments.map((appointment) => (
                     <TableRow key={appointment._id}>
-                      <TableCell style={{fontSize : "24px"}}>{appointment?.studentId.userName}</TableCell>
-                      <TableCell style={{fontSize : "24px"}}>{appointment.courseId?.name}</TableCell>
-                      <TableCell style={{fontSize : "24px"}}>
+                      <TableCell style={{ fontSize: "24px" }}>
+                        {appointment?.studentId.userName}
+                      </TableCell>
+                      <TableCell style={{ fontSize: "24px" }}>
+                        {appointment.courseId?.name}
+                      </TableCell>
+                      <TableCell style={{ fontSize: "24px" }}>
                         {isValidDate(appointment.date)
                           ? format(new Date(appointment.date), "dd/MM/yyyy")
                           : "Invalid Date"}
                       </TableCell>
-                      <TableCell style={{fontSize : "24px"}}>{appointment.startTime}</TableCell>
-                      <TableCell style={{fontSize : "24px"}}>{appointment.endTime}</TableCell>
-                       <TableCell style={{fontSize : "24px"}}>{getCurrentStatus(appointment)}</TableCell>
-                      <TableCell style={{fontSize : "24px"}}>
+                      <TableCell style={{ fontSize: "24px" }}>
+                        {appointment.startTime}
+                      </TableCell>
+                      <TableCell style={{ fontSize: "24px" }}>
+                        {appointment.endTime}
+                      </TableCell>
+                      <TableCell style={{ fontSize: "24px" }}>
+                        {getCurrentStatus(appointment)}
+                      </TableCell>
+                      <TableCell style={{ fontSize: "24px" }}>
                         <Button
                           variant="contained"
                           color="primary"
@@ -181,15 +196,29 @@ const TeacherAppointmentsList = () => {
                         >
                           Join
                         </Button>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          style={{ margin: "10px" }}
-                          startIcon={<DeleteIcon />}
-                          onClick={() => handleCancelClick(appointment._id)}
-                        >
-                          Cancel
-                        </Button>
+                        {getCurrentStatus(appointment) === "Time Over" ? (
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            style={{ margin: "10px" }}
+                            startIcon={<DeleteIcon />}
+                            disabled
+                          >
+                            Time Over
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            style={{ margin: "10px" }}
+                            startIcon={<DeleteIcon />}
+                            onClick={() => handleCancelClick(appointment._id)}
+                          >
+                            {isAfter(new Date(), new Date(appointment.endTime))
+                              ? "Time Over"
+                              : "Cancel"}
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const multer = require("../util/multer1");
 const Availability = require("../model/availabilityModel");
 const Notification = require("../model/notificationModel");
+const mongoose = require('mongoose');
 
 const secretKey = "your-secret-key";
 
@@ -332,7 +333,7 @@ const addAvailability = async (req, res) => {
 const getAppointments = async (req, res) => {
   console.log("tg-a");
   try {
-    console.log("params--" + req.params.teacherId);
+    // console.log("params--" + req.params.teacherId);
     const { teacherId } = req.params;
 
     const appointments = await Appointment.find({ teacherId });
@@ -681,6 +682,27 @@ const cancelTeacherAvailabilities = async (req,res) => {
     res.status(500).json({ message: 'Failed to cancel availability' });
   }
 }
+
+const getEnrolledUsersForChat =  async(req,res)=> {
+  try {
+    const enrolledUsers = await User.find({
+      enrolledCourses: { $exists: true, $not: { $size: 0 } },
+    })
+      .populate({
+        path: "enrolledCourses.course",
+        select: "name",
+      })
+      .populate({
+        path: "enrolledCourses.instructorId",
+        select: "userName profilePhoto",
+      })
+      .exec();
+    return res.status(200).json(enrolledUsers);
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
+
 module.exports = {
   TeacherGetAllUsers,
   teacherLogin,
@@ -705,4 +727,5 @@ module.exports = {
   updateSessionTiming,
   getTeacherAvailabilityList,
   cancelTeacherAvailabilities,
+  getEnrolledUsersForChat,
 };

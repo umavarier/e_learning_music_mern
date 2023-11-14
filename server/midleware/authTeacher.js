@@ -6,7 +6,7 @@ const authenticateTeacher = (req, res, next) => {
   if (!accessToken) {
     return res.status(401).json({ message: 'Authentication required' });
   }
-  console.log("auth----"+accessToken)
+  // console.log("auth----"+accessToken)
   
   try {
     const decoded = jwt.verify(accessToken, 'secret123');

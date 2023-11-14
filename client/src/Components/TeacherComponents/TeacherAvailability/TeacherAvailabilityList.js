@@ -14,6 +14,8 @@ import TeacherSidebar from "../Sidebar/TeacherSidebar";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import { toast } from "react-toastify";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { format, isBefore, isAfter, isToday } from "date-fns";
 
 
 const TeacherAvailabilityList = () => {
@@ -51,6 +53,15 @@ const TeacherAvailabilityList = () => {
       }
   };
 
+  const isTimeOver = (endTime) => {
+    const currentTime = new Date();
+    const availabilityEndTime = new Date(endTime);
+    console.log("av  "+availabilityEndTime)
+    console.log("cur  "+endTime)
+    return currentTime > availabilityEndTime;
+  };
+
+
   return (
     <div>
       <TeacherHeader />
@@ -77,13 +88,26 @@ const TeacherAvailabilityList = () => {
                   <TableCell style={{fontSize : "24px"}}>{availability.startTime}</TableCell>
                   <TableCell style={{fontSize : "24px"}}>{availability.endTime}</TableCell>
                   <TableCell>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => handleCancel(availability._id)}
-                    >
-                      Cancel
-                    </Button>
+                    {isTimeOver(availability.endTime) || availability.canceled ? (
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<CancelIcon />}
+                        disabled
+                      >
+                        Time Over
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<CancelIcon />}
+                        onClick={() => handleCancel(availability._id)}
+                        disabled={isAfter(new Date(), new Date(availability.date))}
+                      >
+                        Cancel
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

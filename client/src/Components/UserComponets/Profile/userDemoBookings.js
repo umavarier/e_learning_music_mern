@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../utils/axios";
 import { toast } from "react-toastify";
-import Header from '../Home/Header.js'
+import Header from "../Home/Header.js";
 import {
   Button,
   Table,
@@ -22,17 +22,17 @@ import { format, isBefore, isAfter, isToday } from "date-fns";
 const UserDemoBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [appointments, setAppointments] = useState([]);
-  const navigate =  useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-      const userToken = localStorage.getItem("userdbtoken");
-      axios
+    const userToken = localStorage.getItem("userdbtoken");
+    axios
       .get("/getUserDemoBookings", {
-          headers: {
+        headers: {
           Authorization: `${userToken}`,
         },
-    })
-    .then((response) => {
+      })
+      .then((response) => {
         setAppointments(response.data);
         // console.log("getbook"+JSON.stringify(response.data))
       })
@@ -66,16 +66,16 @@ const UserDemoBookings = () => {
     );
   };
 
-  const handleJoinDemo = (appointmentId,teacherId) => {
+  const handleJoinDemo = (appointmentId, teacherId) => {
     console.log(`Join clicked for teacherId: ${teacherId}`);
     console.log(`Join clicked for appointment ID: ${appointmentId}`);
-    
+
     navigate(`/videoRoom/${appointmentId}`);
   };
 
   const handleCancelClick = (appointmentId) => {
     const userToken = localStorage.getItem("userdbtoken");
-  
+
     axios
       .delete(`/cancelUserAppointment/${appointmentId}`, {
         headers: {
@@ -85,9 +85,11 @@ const UserDemoBookings = () => {
       .then((response) => {
         if (response.status === 200) {
           setAppointments((appointments) =>
-            appointments.filter((appointment) => appointment._id !== appointmentId)
+            appointments.filter(
+              (appointment) => appointment._id !== appointmentId
+            )
           );
-  
+
           toast.success("Appointment canceled successfully!");
         } else {
           toast.error("Error canceling appointment. Please try again later.");
@@ -98,7 +100,6 @@ const UserDemoBookings = () => {
         toast.error("Error canceling appointment. Please try again later.");
       });
   };
-  
 
   function isValidDate(dateString) {
     const date = new Date(dateString);
@@ -130,7 +131,7 @@ const UserDemoBookings = () => {
 
   return (
     <div>
-        <Header />
+      <Header />
       <h1>Free Demo Bookings</h1>
       <TableContainer>
         <Table>
@@ -151,10 +152,10 @@ const UserDemoBookings = () => {
                 <TableCell>{appointment.courseId.name}</TableCell>
                 <TableCell>{appointment.teacherId.userName}</TableCell>
                 <TableCell>
-                        {isValidDate(appointment.date)
-                          ? format(new Date(appointment.date), "dd/MM/yyyy")
-                          : "Invalid Date"}
-                      </TableCell>
+                  {isValidDate(appointment.date)
+                    ? format(new Date(appointment.date), "dd/MM/yyyy")
+                    : "Invalid Date"}
+                </TableCell>
                 <TableCell>{appointment.startTime}</TableCell>
                 <TableCell>{appointment.endTime}</TableCell>
                 <TableCell>{getCurrentStatus(appointment)}</TableCell>
@@ -164,19 +165,33 @@ const UserDemoBookings = () => {
                     color="primary"
                     style={{ margin: "10px" }}
                     startIcon={<PlayArrowIcon />}
-                    onClick={() => handleJoinDemo(appointment._id,appointment.teacherId._id)}
+                    onClick={() =>
+                      handleJoinDemo(appointment._id, appointment.teacherId._id)
+                    }
                     disabled={!isJoinButtonEnabled(appointment)}
                   >
                     Join
                   </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<CancelIcon />}
-                    onClick={() => handleCancelClick(appointment._id)}
-                  >
-                    Cancel
-                  </Button>
+                  {getCurrentStatus(appointment) === "Time Over" ? (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      startIcon={<CancelIcon />}
+                      disabled
+                    >
+                      Time Over
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      startIcon={<CancelIcon />}
+                      onClick={() => handleCancelClick(appointment._id)}
+                      disabled={isAfter(new Date(), new Date(appointment.date))}
+                    >
+                      Cancel
+                    </Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

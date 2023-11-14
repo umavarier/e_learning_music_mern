@@ -18,6 +18,7 @@ import {
   TextField,
   TablePagination,
 } from "@mui/material";
+import { Delete as DeleteIcon } from "@mui/icons-material"; 
 import { format, isBefore, isAfter, isToday } from "date-fns";
 
 const UserAppointmentsTable = () => {
@@ -67,7 +68,7 @@ const UserAppointmentsTable = () => {
   };
 
   // Handle appointment cancellation
-  const cancelAppointment = async (appointmentId) => {
+  const handleCancelClick = async (appointmentId) => {
     Swal.fire({
       title: "Are you sure?",
       text: "Do you want to cancel the Booking?",
@@ -134,6 +135,14 @@ const UserAppointmentsTable = () => {
     }
   };
 
+  const isTimeOver = (endTime) => {
+    const currentTime = new Date();
+    const appointmentEndTime = new Date(endTime);
+
+    return currentTime > appointmentEndTime;
+  };
+
+
   return (
     <div>
       <AdminHeader />
@@ -178,17 +187,36 @@ const UserAppointmentsTable = () => {
                       <TableCell style={{ fontSize: "24px"}}>{appointment.startTime}</TableCell>
                       <TableCell style={{ fontSize: "24px"}}>{appointment.endTime}</TableCell>
                       <TableCell style={{ fontSize: "24px"}}>{getCurrentStatus(appointment)}</TableCell>
-                      <TableCell style={{ fontSize: "24px"}}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() =>
-                            cancelAppointment(appointment.appointmentId)
-                          }
-                        >
-                          Cancel
-                        </Button>
-                      </TableCell>
+                      <TableCell style={{ fontSize: "24px" }}>
+                {getCurrentStatus(appointment) === "Time Over" ? (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    style={{ margin: "10px" }}
+                    startIcon={<DeleteIcon />}
+                    disabled
+                  >
+                    Time Over
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    style={{ margin: "10px" }}
+                    startIcon={<DeleteIcon />}
+                    onClick={() =>
+                      handleCancelClick(
+                        appointment.appointmentId,
+                        appointment.endTime
+                      )
+                    }
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </TableCell>
+
+
                     </TableRow>
                   ))}
               </TableBody>

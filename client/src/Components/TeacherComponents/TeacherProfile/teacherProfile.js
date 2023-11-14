@@ -1,4 +1,4 @@
-import React, { useEffect, useState ,useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import TeacherHeader from "../Header/TeacherHeader";
 import TeacherSidebar from "../Sidebar/TeacherSidebar";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +31,7 @@ import ListItemText from "@mui/material/ListItemText";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import MobileDatePicker from "@mui/lab/MobileDatePicker";
+import ChatComponent from "../../UserComponets/ChatComponent.js";
 
 const TeacherProfile = () => {
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -60,7 +61,9 @@ const TeacherProfile = () => {
   const [isAvailabilityFormOpen, setAvailabilityFormOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [date, setDate] = useState(new Date());
-
+  const [showChat, setShowChat] = useState(false);
+  const [enrolledUsers, setEnrolledUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState("");
   const videoInputRef = useRef(null);
 
   const handleOpenAvailabilityForm = () => {
@@ -445,7 +448,7 @@ const TeacherProfile = () => {
         );
 
         if (response.status === 200) {
-          // Update the state with the fetched video URLs 
+          // Update the state with the fetched video URLs
           setTeacherVideos(response.data.teacherVideos);
         }
       } catch (error) {
@@ -456,6 +459,43 @@ const TeacherProfile = () => {
     fetchTeacherVideos();
   }, [teacherId]);
 
+  useEffect(() => {
+    // Fetch the list of users who have enrolled in the teacher's courses
+    const fetchEnrolledUsers = async () => {
+      const accessToken = Cookies.get("token");
+      console.log("tttt  " + teacherId);
+      try {
+        const response = await axios.get(
+          `/teachers/getEnrolledUsersForChat/${teacherId}`,
+          {
+            headers: {
+              Authorization: `${accessToken}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          setEnrolledUsers(response.data);
+          // console.log("en-res  " + JSON.stringify(response.data));
+        }
+      } catch (error) {
+        console.error("Error fetching enrolled users", error);
+      }
+    };
+
+    fetchEnrolledUsers();
+  }, [teacherId]);
+
+  const handleStartChat = (userId) => {
+    setSelectedUserId(userId);
+    setShowChat(true);
+  };
+
+  const handleBackToEnrolledUsers = () => {
+    setSelectedUserId(null);
+    setShowChat(false);
+  };
+  // console.log("chat  " + showChat);
   return (
     <>
       <TeacherHeader />
@@ -639,6 +679,38 @@ const TeacherProfile = () => {
                   </Button>
                 </div>
               </div>
+              {/* <button onClick={() => setShowChat(!showChat)}>
+                {showChat ? "Hide Chat" : "Show Chat"}
+              </button> */}
+
+              {/* {showChat ? (
+                selectedUserId ? (
+                  <div>
+                    <ChatComponent userId={selectedUserId} userType="teacher" />
+                    <button onClick={handleBackToEnrolledUsers}>
+                      Back to Enrolled Users
+                    </button>
+                  </div>
+                ) : (
+                  <div className="container-video">
+                    <div className="row">
+                      <div>
+                        <h3>Enrolled Users:</h3>
+                        <ul>
+                          {enrolledUsers.map((user) => (
+                            <li key={user._id}>
+                              {user.userName}{" "}
+                              <button onClick={() => handleStartChat(user._id)}>
+                                Start Chat
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                )
+              ) : null} */}
 
               <div className="container-video">
                 <div className="row">
@@ -697,6 +769,35 @@ const TeacherProfile = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6">
+                <div>
+                  <h4>Enrolled Users</h4>
+                  <ul>
+                    {enrolledUsers.map((user) => (
+                      <li key={user._id}>
+                        {user.userName}{" "}
+                        <button onClick={() => handleStartChat(user._id)}>
+                          Start Chat
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="col-md-6">
+                {showChat && selectedUserId && (
+                  <ChatComponent
+                    userId={teacherId}
+                    userType="teacher"
+                    recipientId={selectedUserId}
+                    recipientType="user" // or whatever type is appropriate
+                  />
+                )}
               </div>
             </div>
           </main>

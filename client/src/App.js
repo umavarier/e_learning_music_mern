@@ -63,6 +63,7 @@ import EditCourseTimingModal from "./Components/TeacherComponents/TeacherSpec/Ed
 import TeacherProfileForHome from "./Components/UserComponets/TeachersForUser/TeacherProfileForHome.js";
 import AdminPaymentHistory from "./Components/AdminComponents/AdminCourses/AdminPaymentHistory.js";
 import TeacherAvailabilityList from "./Components/TeacherComponents/TeacherAvailability/TeacherAvailabilityList.js";
+import ChatComponent from "./Components/UserComponets/ChatComponent.js";
 
 function App() {
   return (
@@ -76,7 +77,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/CourseDetails" element={<CourseDetails />} />
         <Route path="/EnrolledCourses" element={<EnrolledCourses/>} />
-        <Route path="/StudentChat" element={<StudentChat/>} />
+        {/* <Route path="/StudentChat" element={<StudentChat/>} /> */}
         <Route path="/UserDemoBookings" element={<UserDemoBookings/>} />
 
         <Route path="/adminLogin" element={<AdminPage1 />} />
@@ -115,7 +116,7 @@ function App() {
         <Route path="/teacherAppointmentsList" element={<TeacherAppointmentsList/>} />
         <Route path="/EditCourseTimingModal" element={<EditCourseTimingModal/>} />
         <Route path="/teacherProfileForHome/:teacherId" element={<TeacherProfileForHome/>} />
-        <Route path="/teacherChat" element={< TeacherChat />}/>
+        {/* <Route path="/teacherChat" element={< TeacherChat />}/> */}
         <Route path="/teacherAvailabilityList" element={< TeacherAvailabilityList />}/>
 
 
@@ -136,7 +137,8 @@ function App() {
         <Route path="/payment" element={<Payment />} />
         <Route path="/gallery" element={< Gallery />}/>
         <Route path="/notifications" element={< Notifications />}/>
-        <Route path="/studentChat" element={< StudentChat />}/>
+        <Route path="/Chat" element={< ChatComponent />}/>
+        {/* <Route path="/studentChat" element={< StudentChat />}/> */}
     
 
       </Routes>

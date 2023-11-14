@@ -15,6 +15,7 @@ const multer = require("multer");
 const fs = require("fs");
 const storage = require("../util/multer1");
 const directoryPath = "public/";
+const { format } = require('date-fns');
 
 //email config
 
@@ -573,6 +574,8 @@ const bookDemo = async (req, res) => {
 
     await newAppointment.save();
 
+    
+
     const adminId = "adminUserId";
     const teacherId = teacher;
     const message = `New appointment booked by user: ${studentId}`;
@@ -593,6 +596,29 @@ const bookDemo = async (req, res) => {
 
     // await Promise.all([adminNotification.save(), teacherNotification.save()]);
     await Promise.all([teacherNotification.save()]);
+    const user = await User.findById(studentId)
+    const userEmail = user.email;
+   
+    const mailOptions = {
+      from: process.env.EMAIL, // replace with your Gmail email
+      to: userEmail, // replace with the user's email
+      subject: 'Free Demo Booking Successful',
+      html: `
+        <p>Your booking for the free demo is successful for ${course.name} </p>
+        <p>Date: ${format(new Date(date), "dd/MM/yyyy")}</p>
+        <p>Start Time: ${startTime}</p>
+        <p>End Time: ${endTime}</p>       
+        <p>Thank you for booking with us!</p>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+      }
+    });
 
     res.status(201).json({
       message: "Booking successful!",
@@ -603,6 +629,8 @@ const bookDemo = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
 
 const getNotifications = async (req, res) => {
   console.log("getnot");
@@ -874,7 +902,15 @@ const getTeachersByCourse = async(req, res) => {
   }
 }
 
-
+const getAllTeachersList = async (req, res) => {
+  try {
+    const teachers = await Teacher.find({ isTeacher: true });
+    res.status(200).json(teachers);
+  } catch (error) {
+    console.error('Error fetching teachers:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
 
 module.exports = {
   userSignup,
@@ -905,4 +941,5 @@ module.exports = {
   cancelUserAppointment,
   getTeacherProfileForHome,
   getTeachersByCourse,
+  getAllTeachersList,
 };

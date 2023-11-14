@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const multerConfig = require('../util/multerConfig');
-const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo,getNotifications,sendNotifications, checkAppointmentTiming, userGetAppointmentTime, fetchUserProfilePhoto, getEnrolledCourses, getPaymentHistory, getUserDemoBookings, cancelUserAppointment, updateStudentTiming, updateSessionTiming, getTeacherProfileForHome, getTeachersByCourse} = require('../controllers/userController');
+const { userSignup, userLogin, verifyUserToken,userImageUpdate , viewTeachers, getCourseDetails, usergetUserDetails, userLoginwithOtp, getPricing, getTeachersInCourse, getCourseForSignup, userGetCourses, userGetTeachers,userGetTeachersTiming,bookDemo,getNotifications,sendNotifications, checkAppointmentTiming, userGetAppointmentTime, fetchUserProfilePhoto, getEnrolledCourses, getPaymentHistory, getUserDemoBookings, cancelUserAppointment, updateStudentTiming, updateSessionTiming, getTeacherProfileForHome, getTeachersByCourse, getAllTeachersList} = require('../controllers/userController');
 const { adminLoginn,getAllUsers,deleteUsers,updateUsers,getUserDetails,adminSearchUser,adminAddTeacher, adminGetTeachers, adminBlockTeacher, getEnrollmentPricing, updateEnrollmentPricing, adminGetCourseList, adminEditCourse, adminDeleteCourse, adminApproveTeacher, adminRejectTeacher, getEnrolledUsersList, adminGetPricingDetails, adminEditPricing, adminDeletePricing, adminGetUserAppointments, adminCancelAppointment, getAdminPaymentList, adminBlockUser } = require('../controllers/adminControllers');
 
 const {TeacherGetAllUsers, } = require('../controllers/TeacherController')
@@ -86,5 +86,6 @@ router.get('/getUserDemoBookings',auth,getUserDemoBookings);
 router.delete('/cancelUserAppointment/:appointmentId',auth,cancelUserAppointment)
 router.get('/getTeacherProfileForHome/:teacherId',getTeacherProfileForHome)
 router.get('/getTeachersByCourse/:courseId' , getTeachersByCourse)
+router.get('/getAllTeachersList',auth,getAllTeachersList)
 
 module.exports = router;
