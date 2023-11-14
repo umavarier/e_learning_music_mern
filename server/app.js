@@ -24,12 +24,14 @@ app.use(express.static(path.join(__dirname, 'images')));
 const userRouter = require('./routes/users');
 const teacherRouter = require('./routes/teacherRoutes');
 const courseRoutes = require('./routes/courseRoutes');
+const messageRoutes = require('./routes/messageRoute')
 
 app.use(cors());
 app.use(express.static('public'));
 app.use('/', userRouter);
 app.use('/teachers', teacherRouter);
 app.use('/courses', courseRoutes);
+app.use('/messages',messageRoutes)
 
 // Connect to MongoDB
 async function startApp() {

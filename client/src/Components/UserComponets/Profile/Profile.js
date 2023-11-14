@@ -34,6 +34,11 @@ function Profile() {
   const [videoCallCount, setVideoCallCount] = useState(0);
   const [users, setUsers] = useState([]); // State to store the list of users
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUserForChat, setSelectedUserForChat] = useState(null);
+  const [chatWindows, setChatWindows] = useState([]);
+  const [sortedChatList, setSortedChatList] = useState([]);
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [unreadMessages, setUnreadMessages] = useState({});
 
   // const userImage = useSelector((state) => state.userImage);
 
@@ -163,33 +168,56 @@ function Profile() {
 
   useEffect(() => {
     const token = localStorage.getItem("userdbtoken");
-
     const decodedToken = jwt_decode(token);
-    console.log("ddddd   "+JSON.stringify(decodedToken))
-    const studentId=decodedToken._id
+    console.log("ddddd   " + JSON.stringify(decodedToken));
+    const studentId = decodedToken._id;
+
     const fetchUsers = async () => {
       try {
         const response = await axios.get("/GetAllTeachersList", {
           headers: {
             Authorization: `${token}`,
           },
-        }); 
+        });
         setUsers(response.data);
-        console.log("chat? "+JSON.stringify(response.data))
+
+        const unreadMessagesData = {};
+        response.data.forEach((user) => {
+          unreadMessagesData[user._id] = user.unreadMessages || 0;
+        });
+        setUnreadMessages(unreadMessagesData);
+
+        const sortedUsers = response.data.sort((a, b) => {
+          const latestMessageA = a.latestMessage
+            ? new Date(a.latestMessage.timestamp)
+            : new Date(0);
+          const latestMessageB = b.latestMessage
+            ? new Date(b.latestMessage.timestamp)
+            : new Date(0);
+
+          return latestMessageB - latestMessageA;
+        });
+        setSortedChatList(sortedUsers);
+        console.log("chat? " + JSON.stringify(response.data));
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     };
 
     fetchUsers();
-  }, []);
+  }, [userToken]);
 
   const handleUserSelection = (user) => {
     setSelectedUser(user);
   };
-
   const handleChatIconClick = (user) => {
-    setSelectedUser(user);
+    setSelectedChat(user);
+  };
+
+  const handleCloseChat = (userId) => {
+    setChatWindows((prevWindows) =>
+      prevWindows.filter((window) => window.userId !== userId)
+    );
   };
 
   return (
@@ -259,30 +287,30 @@ function Profile() {
             Your Bookings
           </button>
 
-          <div>
-            <h4>Users List</h4>
-            <ul>
-              {users.map((user) => (
-                <li key={user._id}>
-                  {user.userName}{' '}
-                  <button onClick={() => handleChatIconClick(user)}>
-                    Start Chat
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* Chat Component */}
-          {selectedUser && (
-            <ChatComponent
-              userId={studentId}
-              userType="user"
-              recipientId={selectedUser._id}
-              recipientType={selectedUser.type}
-            />
-          )}
-
+          {sortedChatList.map((user) => (
+            <li key={user._id}>
+              {user.userName}{" "}
+              {unreadMessages[user._id] > 0 && (
+                <span style={{ color: "red", marginLeft: "5px" }}>
+                  {unreadMessages[user._id]}
+                </span>
+              )}
+              <button onClick={() => handleChatIconClick(user)}>
+                Start Chat
+              </button>
+              {selectedChat && selectedChat._id === user._id && (
+                // Render the selected chat window here
+                <ChatComponent
+                  userId={userId}
+                  userType="user"
+                  recipientId={selectedChat._id}
+                  recipientType={selectedChat.type}
+                  senderName={selectedChat.userName}
+                />
+              )}
+            </li>
+          ))}
           {/* Right Content */}
           <div className="row">
             <div className="enroll-column col-md-12">
@@ -303,7 +331,6 @@ function Profile() {
           />
         </div>
       </div>
-      
     </div>
   );
 }

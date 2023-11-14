@@ -64,6 +64,15 @@ const TeacherProfile = () => {
   const [showChat, setShowChat] = useState(false);
   const [enrolledUsers, setEnrolledUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
+  const [chats, setChats] = useState([]);
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUserMessages, setSelectedUserMessages] = useState([]);
+  const [sortedChatList, setSortedChatList] = useState([]);
+  const accessToken = Cookies.get("token");
+  const [users, setUsers] = useState([]);
+
   const videoInputRef = useRef(null);
 
   const handleOpenAvailabilityForm = () => {
@@ -236,18 +245,6 @@ const TeacherProfile = () => {
     }
   };
 
-  // function getDayOfWeekName(dayOfWeek) {
-  //   const daysOfWeek = [
-  //     "Sunday",
-  //     "Monday",
-  //     "Tuesday",
-  //     "Wednesday",
-  //     "Thursday",
-  //     "Friday",
-  //     "Saturday",
-  //   ];
-  //   return daysOfWeek[dayOfWeek] || "";
-  // }
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -474,21 +471,31 @@ const TeacherProfile = () => {
           }
         );
 
-        if (response.status === 200) {
-          setEnrolledUsers(response.data);
-          // console.log("en-res  " + JSON.stringify(response.data));
-        }
+        setUsers(response.data);
+        const sortedUsers = response.data.sort((a, b) => {
+          const latestMessageA = a.latestMessage
+            ? new Date(a.latestMessage.timestamp)
+            : new Date(0);
+          const latestMessageB = b.latestMessage
+            ? new Date(b.latestMessage.timestamp)
+            : new Date(0);
+
+          return latestMessageB - latestMessageA;
+        });
+        setSortedChatList(sortedUsers);
+        console.log("chat-t? " + JSON.stringify(response.data));
       } catch (error) {
         console.error("Error fetching enrolled users", error);
       }
     };
 
     fetchEnrolledUsers();
-  }, [teacherId]);
+  }, [accessToken]);
 
-  const handleStartChat = (userId) => {
-    setSelectedUserId(userId);
-    setShowChat(true);
+  const handleStartChat = (user) => {
+    setSelectedUserId(user._id);
+    // setShowChat(true);
+    setSelectedChat(user);
   };
 
   const handleBackToEnrolledUsers = () => {
@@ -496,6 +503,7 @@ const TeacherProfile = () => {
     setShowChat(false);
   };
   // console.log("chat  " + showChat);
+console.log("sendername  "+selectedChat?.userName)
   return (
     <>
       <TeacherHeader />
@@ -506,34 +514,7 @@ const TeacherProfile = () => {
             <h2>Teacher Profile</h2>
 
             <div className="position-relative mb-3">
-              <div className="position-absolute top-0 end-0">
-                {/* <button
-                  onClick={() => handleJoinDemo(appointmentId, teacherId)}
-                  disabled={isButtonDisabled}
-                  className={`join-button ${
-                    isButtonDisabled ? "disabled" : ""
-                  }`}
-                >
-                  Join for Demo
-                </button> */}
-                {/* {!isButtonDisabled && appointmentId && ( */}
-                {/* {!isButtonDisabled && appointmentId && (
-                  <button
-                    onClick={() => handleGetSenderEmail(appointmentId)}
-                    // className="btn btn-primary get-email-button"
-                    className={`getEmail-button ${
-                      isButtonDisabled ? "disabled" : ""
-                    }`}
-                  >
-                    Get Email
-                  </button>
-                )} */}
-                {/* {senderEmail && (
-                  <div className="mt-2">
-                    <strong>Sender's Email:</strong> {senderEmail}
-                  </div>
-                )} */}
-              </div>
+              <div className="position-absolute top-0 end-0"></div>
             </div>
 
             <div className="row">
@@ -679,38 +660,6 @@ const TeacherProfile = () => {
                   </Button>
                 </div>
               </div>
-              {/* <button onClick={() => setShowChat(!showChat)}>
-                {showChat ? "Hide Chat" : "Show Chat"}
-              </button> */}
-
-              {/* {showChat ? (
-                selectedUserId ? (
-                  <div>
-                    <ChatComponent userId={selectedUserId} userType="teacher" />
-                    <button onClick={handleBackToEnrolledUsers}>
-                      Back to Enrolled Users
-                    </button>
-                  </div>
-                ) : (
-                  <div className="container-video">
-                    <div className="row">
-                      <div>
-                        <h3>Enrolled Users:</h3>
-                        <ul>
-                          {enrolledUsers.map((user) => (
-                            <li key={user._id}>
-                              {user.userName}{" "}
-                              <button onClick={() => handleStartChat(user._id)}>
-                                Start Chat
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                )
-              ) : null} */}
 
               <div className="container-video">
                 <div className="row">
@@ -775,7 +724,7 @@ const TeacherProfile = () => {
             <div className="row">
               <div className="col-md-6">
                 <div>
-                  <h4>Enrolled Users</h4>
+                  {/* <h4>Enrolled Users</h4>
                   <ul>
                     {enrolledUsers.map((user) => (
                       <li key={user._id}>
@@ -785,20 +734,39 @@ const TeacherProfile = () => {
                         </button>
                       </li>
                     ))}
-                  </ul>
+                  </ul> */}
+                  {sortedChatList.map((user) => (
+                    <li key={user._id}>
+                      {user.userName}{" "}
+                      <button onClick={() => handleStartChat({ _id: user._id, userName: user.userName })}>
+                        Start Chat 
+                      </button>
+                      {selectedChat && selectedChat._id === user._id && (
+                        // Render the selected chat window here
+                        <ChatComponent
+                          userId={teacherId}
+                          userType="teacher"
+                          recipientId={selectedChat._id}
+                          recipientType={selectedChat.type}
+                          senderName={selectedChat?.userName}
+                        />
+                      )}
+                    </li>
+                  ))}
                 </div>
               </div>
 
-              <div className="col-md-6">
-                {showChat && selectedUserId && (
+              {/* <div className="col-md-6">
+                {showChat && selectedUserId & & (
                   <ChatComponent
                     userId={teacherId}
                     userType="teacher"
                     recipientId={selectedUserId}
-                    recipientType="user" // or whatever type is appropriate
+                    recipientType="user" 
+                    
                   />
                 )}
-              </div>
+              </div> */}
             </div>
           </main>
         </div>
