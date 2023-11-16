@@ -140,7 +140,7 @@ const userLogin = async (req, res) => {
               id: teacher._id,
               role: 1, // Set the role as 'teacher' for teachers
             },
-            "secret123",
+            process.env.JWT_SECRET,
             {
               expiresIn: "7d",
             }
@@ -169,7 +169,7 @@ const userLogin = async (req, res) => {
               id: user1._id,
               role: 0,
             },
-            "secret123",
+            process.env.JWT_SECRET,
             {
               expiresIn: "7d",
             }
@@ -310,7 +310,7 @@ const verifyUserToken = async (req, res) => {
     }
 
     // Verify the token using your JWT secret
-    const decoded = jwt.verify(token, "secret123");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log("decoded  token: " + decoded._id);
 
     // Find the user from  database based on the decoded user ID
@@ -333,7 +333,7 @@ const verifyUserToken = async (req, res) => {
 
 // const verifyToken = async (req, res) => {
 //   try {
-//     const decodedToken = jwt.verify(req.body.Token, "secret123");
+//     const decodedToken = jwt.verify(req.body.Token, process.env.JWT_SECRET);
 //     const user = await User.findOne({ email: decodedToken.email });
 
 //     if (user.image) {
@@ -383,7 +383,7 @@ const userImageUpdate = async (req, res) => {
   try {
     const token = req.query.token; // Access the token from the query parameter
 
-    const decodedToken = jwt.verify(token, "secret123"); // Verify the token
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
 
     const user = await User.findOne({ _id: decodedToken._id });
 

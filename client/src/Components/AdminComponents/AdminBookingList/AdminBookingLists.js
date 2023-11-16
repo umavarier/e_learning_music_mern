@@ -37,7 +37,7 @@ const UserAppointmentsTable = () => {
             Authorization: `${Cookies.get("token")}`,
           },
         });
-        console.log("app-res----" + JSON.stringify(response.data));
+        // console.log("app-res----" + JSON.stringify(response.data));
         const transformedAppointments = response.data.map((appointment) => ({
           appointmentId: appointment.appointmentId,
           studentName: appointment.studentName
@@ -81,7 +81,7 @@ const UserAppointmentsTable = () => {
       if (result.isConfirmed) {
         const accessToken = Cookies.get("token");
         const decodedToken = jwt_decode(accessToken);
-        console.log("Appid----" + appointmentId);
+        // console.log("Appid----" + appointmentId);
         try {
           axios.delete(`/adminCancelAppointment/${appointmentId}`, {
             headers: {

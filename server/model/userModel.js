@@ -111,7 +111,7 @@ const userSchema= new mongoose.Schema({
 userSchema.methods.generateAuthtoken = async function(){
     try {
         console.log("generated")
-        let newtoken = jwt.sign({_id:this._id , userName : this.userName, image:this.image, email:this.email},"secret123",{
+        let newtoken = jwt.sign({_id:this._id , userName : this.userName, image:this.image, email:this.email},process.env.JWT_SECRET,{
             expiresIn:"1d"
         });
         console.log("newtoken ", newtoken)

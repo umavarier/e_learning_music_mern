@@ -15,7 +15,13 @@ import PaymentHistoryModal from "./PaymentHistoryModal";
 import ProgressCard from "./ProgressCard";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import ChatComponent from "../ChatComponent";
-import "./Profile.css";
+import Button from "@mui/material/Button";
+import Popover from "@mui/material/Popover";
+import { Button as MUIButton } from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import EditIcon from "@mui/icons-material/Edit";
+import HistoryIcon from "@mui/icons-material/History";
+import EventIcon from "@mui/icons-material/Event";
 
 function Profile() {
   const navigate = useNavigate();
@@ -39,6 +45,8 @@ function Profile() {
   const [sortedChatList, setSortedChatList] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [unreadMessages, setUnreadMessages] = useState({});
+  const [isChatListOpen, setIsChatListOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // const userImage = useSelector((state) => state.userImage);
 
@@ -220,109 +228,151 @@ function Profile() {
     );
   };
 
+  const openChatList = (event) => {
+    setAnchorEl(event.currentTarget);
+    setIsChatListOpen(true);
+  };
+
+  const closeChatList = () => {
+    setAnchorEl(null);
+    setIsChatListOpen(false);
+  };
+
   return (
-    <div>
-      <Header />
-      <div className="row">
-        <div className="col-md-2">
-          {/* Left Sidebar */}
-          <div className="card border-4 rounded shadow-sm">
-            <div className="card-body text-center">
-              <img
-                className="rounded-circle mt-3"
-                width={250}
-                src={`http://localhost:4000/uploads/${profilePhoto}`}
-                alt="profile photo"
-              />
-              <h5 className="mt-3 font-weight-bold">{userName}</h5>
-              <p className="text-muted">{email}</p>
-              <button
-                onClick={addImage}
-                type="button"
-                className="btn btn-primary"
-              >
-                Update Image
-              </button>
-            </div>
-            <div className="card border-2 rounded shadow-sm">
-              <div className="card-body">
-                <h4 className="mb-4">Profile Settings</h4>
-                <div className="form-group">
-                  <label className="labels">Name</label>
-                  <input className="form-control" value={userName} />
-                </div>
-                <div className="form-group">
-                  <label className="labels">Email</label>
-                  <input className="form-control" value={email} />
-                </div>
+    <>
+      <div>
+        <Header />
+        <div className="row">
+          <div className="col-md-2">
+            <div className="card rounded " style={{ border: "none" ,backgroundColor:"#fff", marginTop : "10p"}}>
+              <div className="card-body text-center">
+                <img
+                  className="rounded-circle mt-3"
+                  width={250}
+                  src={`http://localhost:4000/uploads/${profilePhoto}`}
+                  alt="profile photo"
+                />
+                <h5 className="mt-3 font-weight-bold text-dark"  style={{fontSize:"24px"}}>{userName}</h5>
+                <p className="text-muted">{email}</p>
+                <MUIButton
+                  onClick={addImage}
+                  variant="contained"
+                  color="primary"
+                  style={{ width: "300px", marginBottom: "8px" ,backgroundColor:"#fff", color:"black", fontSize:"24px"}}
+                >
+                  <EditIcon /> Update Image
+                </MUIButton>
               </div>
-              <br />
-            </div>
+
+              {/* Profile Icons */}
+              <div className="profile-icons">
+                <MUIButton
+                  onClick={openPaymentHistoryModal}
+                  variant="contained"
+                  color="primary"
+                  style={{ width: "300px", marginBottom: "8px" ,marginLeft : "25px",justifyContent:"center",backgroundColor:"#fff", color:"black", fontSize:"24px"}}
+                >
+                  <HistoryIcon /> Payment History
+                </MUIButton>
+                <MUIButton
+                  onClick={handleBooking}
+                  variant="contained"
+                  color="primary"
+                  style={{ width: "300px",justifyContent:"center",marginLeft : "25px", marginTop :"30px",backgroundColor:"#fff", color:"black", fontSize:"24px"}}
+                  
+                >
+                  <EventIcon /> Your Bookings
+                </MUIButton>
+              </div>
+           
+
+            <Button
+              onClick={openChatList}
+              variant="contained"
+              color="primary"
+              style={{
+                position: "fixed",
+                bottom: 16,
+                right: 16,
+                width: "200px",
+              }}
+            >
+              Chat with Teacher
+            </Button>
           </div>
+          <Popover
+            open={isChatListOpen}
+            anchorEl={anchorEl}
+            onClose={closeChatList}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <div style={{ padding: 16 }}>
+              <h3>Chat With Teacher</h3>
+              {sortedChatList.map((user) => (
+                <div key={user._id} style={{ marginBottom: 8 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "10px",
+                      backgroundColor: "primary",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() =>
+                      handleChatIconClick({
+                        _id: user._id,
+                        userName: user.userName,
+                      })
+                    }
+                  >
+                    <MUIButton
+                      variant="contained"
+                      color="primary"
+                      style={{ width: "380px" }}
+                    >
+                      {user.userName}
+                    </MUIButton>
+                  </div>
+                  {unreadMessages[user._id] > 0 && (
+                    <span style={{ color: "red", marginLeft: "5px" }}>
+                      {unreadMessages[user._id]}
+                    </span>
+                  )}
+                  {selectedChat && selectedChat._id === user._id && (
+                    <ChatComponent
+                      userId={userId}
+                      userType="user"
+                      recipientId={selectedChat._id}
+                      recipientType={selectedChat.type}
+                      senderName={selectedChat.userName}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </Popover>
         </div>
 
-        <div className="enroll-card col-md-8">
-          <button
-            onClick={openPaymentHistoryModal}
-            className="btn btn-primary"
-            style={{
-              margin: "40px",
-              backgroundColor: "#0c62f7",
-              borderRadius: "5%",
-              borderColor: "#000",
-            }}
-          >
-            Payment History
-          </button>
-          <button
-            onClick={handleBooking}
-            className="btn btn-primary"
-            style={{
-              margin: "40px",
-              backgroundColor: "#0c62f7",
-              borderRadius: "5%",
-              borderColor: "#000",
-            }}
-          >
-            Your Bookings
-          </button>
-
-          {/* Chat Component */}
-          {sortedChatList.map((user) => (
-            <li key={user._id}>
-              {user.userName}{" "}
-              {unreadMessages[user._id] > 0 && (
-                <span style={{ color: "red", marginLeft: "5px" }}>
-                  {unreadMessages[user._id]}
-                </span>
-              )}
-              <button onClick={() => handleChatIconClick(user)}>
-                Start Chat
-              </button>
-              {selectedChat && selectedChat._id === user._id && (
-                // Render the selected chat window here
-                <ChatComponent
-                  userId={userId}
-                  userType="user"
-                  recipientId={selectedChat._id}
-                  recipientType={selectedChat.type}
-                  senderName={selectedChat.userName}
-                />
-              )}
-            </li>
-          ))}
-          {/* Right Content */}
-          <div className="row">
-            <div className="enroll-column col-md-12">
-              <EnrolledCourses />
-            </div>
-            <div className="col-md-12">
-              <div className="card rounded shadow-sm">
-                {/* <ProgressCard totalHours={totalHours} videoCallCount={videoCallCount} /> */}
+        {/* Right Side */}
+        <div className="col-md-10">
+          <div className="enroll-card">
+            <div className="row">
+              <div className="enroll-column col-md-12">
+                <EnrolledCourses />
               </div>
             </div>
           </div>
 
+          
           <PaymentHistoryModal
             isOpen={isPaymentHistoryModalOpen}
             onRequestClose={closePaymentHistoryModal}
@@ -331,7 +381,8 @@ function Profile() {
           />
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

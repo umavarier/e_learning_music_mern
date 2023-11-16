@@ -8,10 +8,10 @@ function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('secret123'); // Use the correct token key
+    const token = localStorage.getItem(process.env.JWT_SECRET); 
 
     if (!token) {
-      navigate('/'); // Redirect to the login page if token doesn't exist
+      navigate('/');
     }
   }, []);
 

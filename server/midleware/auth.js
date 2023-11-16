@@ -8,7 +8,7 @@ const auth = (req, res, next) => {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  jwt.verify(token, 'secret123', (err, decodedToken) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
     if (err) {
       console.log(err)
       return res.status(403).json({ message: 'Forbidden' });

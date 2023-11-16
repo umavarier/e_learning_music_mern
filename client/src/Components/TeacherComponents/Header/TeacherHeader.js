@@ -119,7 +119,7 @@ function TeacherHeader() {
               color="white"
               style={{ alignItems: "center" }}
             >
-              TEACHER DASHBOARD
+              
             </Typography>
           </Link>
 

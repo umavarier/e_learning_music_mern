@@ -40,7 +40,7 @@ const teacherLogin = async (req, res) => {
     // Generate an access token
     const accessToken = jwt.sign(
       { id: teacher._id, userName: teacher.userName, role: teacher.role },
-      "secret123",
+      process.env.JWT_SECRET,
       {
         expiresIn: "1d",
       }
@@ -49,7 +49,7 @@ const teacherLogin = async (req, res) => {
     // Generate a refresh token
     const refreshToken = jwt.sign(
       { id: teacher._id, userName: teacher.userName, role: teacher.role },
-      "refreshSecret123",
+      process.env.JWT_REFRESH,
       {
         expiresIn: "7d", // Set the expiration time for refresh tokens
       }

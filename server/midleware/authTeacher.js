@@ -9,7 +9,7 @@ const authenticateTeacher = (req, res, next) => {
   // console.log("auth----"+accessToken)
   
   try {
-    const decoded = jwt.verify(accessToken, 'secret123');
+    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
     req.teacher = decoded;
     next();
   } catch (error) {
@@ -25,10 +25,10 @@ const refreshToken = (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, 'refreshSecret123');
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH);
     const newAccessToken = jwt.sign(
       { id: decoded.id, userName: decoded.userName, role: decoded.role },
-      'secret123',
+      process.env.JWT_SECRET,
       {
         expiresIn: '1d',
       }

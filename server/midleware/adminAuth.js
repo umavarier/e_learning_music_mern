@@ -9,7 +9,7 @@ const authenticateAdmin = (req, res, next) => {
   } 
   
   try {
-    const decoded = jwt.verify(accessToken, 'secret123');
+    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
     // console.log(JSON.stringify(decoded))
     req.admin = decoded;
     next();
@@ -26,10 +26,10 @@ const refreshToken = (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, 'adminrefreshSecret123');
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH);
     const newAccessToken = jwt.sign(
       { id: decoded._id, userName: decoded.username, role: decoded.role },
-      'secret123',
+      process.env.JWT_SECRET,
       {
         expiresIn: '1d',
       }

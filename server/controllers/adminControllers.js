@@ -68,7 +68,7 @@ const adminLoginn = async (req, res) => {
     // Generate an access token
     const accessToken = jwt.sign(
       { id: admin._id, userName: admin.username, email: admin.email },
-      "secret123",
+      process.env.JWT_SECRET,
       {
         expiresIn: "1d",
       }
@@ -77,7 +77,7 @@ const adminLoginn = async (req, res) => {
     // Generate a refresh token
     const refreshToken = jwt.sign(
       { id: admin._id, userName: admin.username },
-      "adminrefreshSecret123",
+      process.env.JWT_REFRESH,
       {
         expiresIn: "7d", // Set the expiration time for refresh tokens
       }
