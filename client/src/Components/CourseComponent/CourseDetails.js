@@ -145,7 +145,7 @@ function CourseDetails() {
 
   // useEffect(() => {
   //   axios
-  //     .get(`http://localhost:4000/courses/:${courseId}`)
+  //     .get(`https://melodymusic.online/courses/:${courseId}`)
   //     .then((response) => {
   //       const courseData = response.data;
   //       console.log("treacherdataincluded?? "+response.course)
@@ -325,7 +325,7 @@ function CourseDetails() {
                   >
                     <Card.Img
                       variant="top"
-                      src={`http://localhost:4000/uploads/${teacher.profilePhoto}`}
+                      src={`https://melodymusic.online/uploads/${teacher.profilePhoto}`}
                       style={{
                         width: "300px",
                         height: "300px",

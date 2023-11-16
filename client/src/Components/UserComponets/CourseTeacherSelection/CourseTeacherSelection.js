@@ -106,7 +106,7 @@ const CourseTeacherSelection = () => {
       });
   };
 
-  const socket = io("http://localhost:4000");
+  const socket = io("https://melodymusic.online");
 
   const handleConfirmBooking = () => {
     const userToken = localStorage.getItem("userdbtoken");
@@ -138,7 +138,7 @@ const CourseTeacherSelection = () => {
           const isTimePassed =
             currentTime >= new Date(selectedTimingData.startTime);
           setIsButtonDisabled(isTimePassed);
-          const socket = io("http://localhost:4000"); // Replace with your server URL
+          const socket = io("https://melodymusic.online"); // Replace with your server URL
           // Send a notification to the selected teacher
           socket.emit("notification", {
             to: selectedTeacher, // Teacher's socket ID

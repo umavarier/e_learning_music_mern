@@ -50,7 +50,7 @@ function TeacherHeader() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
-  const socket = io("http://localhost:4000");
+  const socket = io("https://melodymusic.online");
   useEffect(() => {
     const accessToken = Cookies.get("token");
 
@@ -60,7 +60,7 @@ function TeacherHeader() {
       dispatch(
         setTeacher({ id: decodedToken.id, name: decodedToken.userName })
       );
-      const socket = io("http://localhost:4000"); 
+      const socket = io("https://melodymusic.online"); 
 
       socket.on("notification", (notification) => {
         setNotifications((prevNotifications) => [

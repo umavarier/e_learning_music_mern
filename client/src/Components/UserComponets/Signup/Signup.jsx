@@ -116,10 +116,10 @@ const Signup = () => {
       //       courses: selectedCourses,
       //       teacherCredentials,
       //     };
-      //     await axios.post("http://localhost:4000/signup", data);
+      //     await axios.post("https://melodymusic.online/signup", data);
       //   }
 
-      const response = await axios.post("http://localhost:4000/signup", body, {
+      const response = await axios.post("https://melodymusic.online/signup", body, {
         headers: { "Content-Type": "application/json" },
       });
 
@@ -197,7 +197,7 @@ const Signup = () => {
   //   };
   //   console.log("selectedCourses  "+JSON.stringify(teacherDetails))
   //   axios
-  //     .post("http://localhost:4000/signup", teacherDetails)
+  //     .post("https://melodymusic.online/signup", teacherDetails)
   //     .then((response) => {
   //       if (response.data.status === "ok") {
   //         toast.success("Teacher Details Saved!", {

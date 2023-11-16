@@ -58,7 +58,7 @@ function TeacherProfileForHome() {
               component="img"
               alt="Teacher's Profile"
               height="450"
-              image={`http://localhost:4000/uploads/${teacher.profilePhoto}`}
+              image={`https://melodymusic.online/uploads/${teacher.profilePhoto}`}
             />
             <CardContent>
               <Typography
