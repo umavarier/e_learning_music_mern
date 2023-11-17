@@ -83,8 +83,8 @@ const ChatComponent = ({
   };
 
   useEffect(() => {
-    const newSocket = io("https://melodymusic.online");
-    // const newSocket = io("http://localhost:4000");
+    // const newSocket = io("https://melodymusic.online");
+    const newSocket = io("http://localhost:4000");
 
     newSocket.emit("join", userId);
 

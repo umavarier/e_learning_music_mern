@@ -106,8 +106,8 @@ const CourseTeacherSelection = () => {
       });
   };
 
-  const socket = io("https://melodymusic.online");
-  // const socket = io("http://localhost:4000");
+  // const socket = io("https://melodymusic.online");
+  const socket = io("http://localhost:4000");
 
   const handleConfirmBooking = () => {
     const userToken = localStorage.getItem("userdbtoken");
@@ -139,8 +139,8 @@ const CourseTeacherSelection = () => {
           const isTimePassed =
             currentTime >= new Date(selectedTimingData.startTime);
           setIsButtonDisabled(isTimePassed);
-          const socket = io("https://melodymusic.online");   
-          // const socket = io("http://localhost:4000");
+          // const socket = io("https://melodymusic.online");   
+          const socket = io("http://localhost:4000");
           socket.emit("notification", {
             to: selectedTeacher, // Teacher's socket ID
             message: `Booking confirmed for ${selectedTimingData.date}, ${selectedTimingData.startTime} - ${selectedTimingData.endTime}`,
@@ -246,20 +246,42 @@ const CourseTeacherSelection = () => {
           </select>
 
           <br />
-
           <label>Select a Timing:</label>
-          <select
-            value={selectedTiming}
-            onChange={(e) => setSelectedTiming(e.target.value)}
-          >
-            <option value="">Select a Timing</option>
-            {teacherTimings.map((timing) => (
-              <option key={timing._id} value={timing._id}>
-                {new Date(timing.date).toDateString()} : {timing.startTime} -{" "}
-                {timing.endTime}
-              </option>
-            ))}
-          </select>
+<select
+  value={selectedTiming}
+  onChange={(e) => setSelectedTiming(e.target.value)}
+>
+  <option value="">Select a Timing</option>
+  {teacherTimings.map((timing) => {
+    // Format timing.date as dd/mm/yyyy
+    const formattedDate = new Date(timing.date).toLocaleDateString("en-GB");
+
+    // Format current date as dd/mm/yyyy
+    const currentDate = new Date().toLocaleDateString("en-GB");
+
+    // Format timing.startTime as hh.mm
+    const formattedStartTime = timing.startTime;
+
+    // Format current time as hh.mm
+    const currentTime = new Date().toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    // Check if the timing is in the future
+    if (formattedDate >= currentDate && formattedStartTime >= currentTime) {
+      return (
+        <option key={timing._id} value={timing._id}>
+          {formattedDate} : {timing.startTime} - {timing.endTime}
+        </option>
+      );
+    }
+
+    return null; // Don't render the option if it's in the past
+  })}
+</select>
+
 
           <br />
 

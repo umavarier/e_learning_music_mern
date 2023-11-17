@@ -1,5 +1,5 @@
-export const baseUrl = "https://melodymusic.online/";
-// export const baseUrl = "http://localhost:4000/";
+// export const baseUrl = "https://melodymusic.online/";
+export const baseUrl = "http://localhost:4000/";
 
 //USER SIDE URLS==>
 

@@ -49,8 +49,8 @@ useEffect(() => {
       if (decodedToken) {
         setUserId(decodedToken._id);
         setUserName(decodedToken.userName);
-        const socket = io("https://melodymusic.online");
-        // const socket = io("http://localhost:4000");
+        // const socket = io("https://melodymusic.online");
+        const socket = io("http://localhost:4000");
         socket.on("notification", (notification) => {
           setNotifications((prevNotifications) => [...prevNotifications, notification]);
         });
@@ -274,8 +274,8 @@ useEffect(() => {
             >
               {userProfilePicture ? (
                 <img
-                  src={`https://melodymusic.online/uploads/${profilePhoto}`}
-                  // src={`http://localhost:4000/uploads/${profilePhoto}`}
+                  // src={`https://melodymusic.online/uploads/${profilePhoto}`}
+                  src={`http://localhost:4000/uploads/${profilePhoto}`}
                   alt="User Profile"
                   style={{ width: "50px", height: "50px", borderRadius: "50%" }}
                 />

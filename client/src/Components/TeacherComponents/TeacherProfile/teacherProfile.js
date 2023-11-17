@@ -588,8 +588,8 @@ const TeacherProfile = () => {
                         src={
                           profilePhotoURL
                             ? profilePhotoURL
-                            // : `http://localhost:4000/uploads/${profilePhoto}`
-                            : `https://melodymusic.online/uploads/${profilePhoto}`
+                            : `http://localhost:4000/uploads/${profilePhoto}`
+                            // : `https:// sic.online/uploads/${profilePhoto}`
                         }
                         alt="Profile"
                         className="img-fluid rounded-circle"
@@ -665,7 +665,7 @@ const TeacherProfile = () => {
                         <InputLabel>Choose a Date</InputLabel>
                         <Calendar
                           onChange={handleDateChange}
-                          value={selectedDate} // Restrict dates to be in the future only
+                          value={selectedDate} 
                         />
                       </FormControl>
                       <FormControl fullWidth>

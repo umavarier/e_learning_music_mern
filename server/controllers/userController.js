@@ -887,7 +887,6 @@ const getTeacherProfileForHome = async (req, res) => {
 };
 
 
-
 const getTeachersByCourse = async(req, res) => {
   const { courseId } = req.params;
 

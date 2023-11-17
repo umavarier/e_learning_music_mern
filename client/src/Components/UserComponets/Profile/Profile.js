@@ -249,8 +249,8 @@ function Profile() {
                 <img
                   className="rounded-circle mt-3"
                   width={250}
-                  src={`https://melodymusic.online/uploads/${profilePhoto}`}
-                  // src={`http://localhost:4000/uploads/${profilePhoto}`}
+                  // src={`https://melodymusic.online/uploads/${profilePhoto}`}
+                  src={`http://localhost:4000/uploads/${profilePhoto}`}
                   alt="profile photo"
                 />
                 <h5 className="mt-3 font-weight-bold text-dark"  style={{fontSize:"24px"}}>{userName}</h5>

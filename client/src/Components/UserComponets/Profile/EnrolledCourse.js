@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "../../../utils/axios";
 import jwt_decode from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import StudentChat from "../StudentChat/StudentChat";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { useNavigate } from "react-router-dom";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Button from "@mui/material/Button";
 
 function EnrolledCourses() {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -16,9 +13,9 @@ function EnrolledCourses() {
   const [showDetails, setShowDetails] = useState(false);
   const [noTimingsMessage, setNoTimingsMessage] = useState("");
   const [selectedTeacherId, setSelectedTeacherId] = useState(null);
-  const [isChatWindowOpen, setIsChatWindowOpen] = useState(false);
+  const [isChatWindowOpen, setIsChatWindowOpen] = useState(false)
 
-  const navigate = useNavigate();
+  const navigate =  useNavigate();
 
   const token = localStorage.getItem("userdbtoken");
   const decodedToken = jwt_decode(token);
@@ -31,14 +28,6 @@ function EnrolledCourses() {
     "#FFEDC5",
     "#e98c94",
   ];
-
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-  };
 
   const openChatWindow = (teacherId) => {
     // setSelectedStudentId(studentId);
@@ -78,6 +67,8 @@ function EnrolledCourses() {
     setShowDetails(true);
   };
 
+  
+
   const fetchCourseDetails = (course) => {
     if (!course.day || !course.time) {
       setNoTimingsMessage(
@@ -92,19 +83,18 @@ function EnrolledCourses() {
     setShowDetails(false);
   };
 
-  const handleJoinDemo = (courseId, teacherId) => {
+  const handleJoinDemo = (courseId,teacherId) => {
+    
+    
     navigate(`/videoRoom/${courseId}`);
   };
 
+
   const CourseCard = ({ course, color }) => (
-    <div
-      className="col-4"
-      style={{ width: "400px", margin: "0 auto" }}
-      onClick={() => handleCardClick(course)}
-    >
-      <div className="card shadow-sm" style={{ background: color }}>
+    <div className="col-4" onClick={() => handleCardClick(course)}>
+      <div className="card  shadow-sm" style={{ background: color,margin: "10px" }}>
         <div className="card-body">
-          <p className="ec" style={{ color: "black", fontSize: "30px" }}>
+          <p className="ec" style={{ color: "black", fontSize: "23px" }}>
             {course.course.name}
           </p>
           <p>{course.course.duration} Hrs</p>
@@ -130,97 +120,85 @@ function EnrolledCourses() {
           <table>
             <thead>
               <tr>
-                <th className="text-dark" style={{ fontSize: "24px" }}>
-                  Name
-                </th>
-                <th className="text-dark" style={{ fontSize: "24px" }}>
-                  Level
-                </th>
-                <th className="text-dark" style={{ fontSize: "24px" }}>
-                  Duration
-                </th>
-                <th className="text-dark" style={{ fontSize: "24px" }}>
-                  instructor
-                </th>
-                <th className="text-dark" style={{ fontSize: "24px" }}>
-                  Day
-                </th>
-                <th className="text-dark" style={{ fontSize: "24px" }}>
-                  Time
-                </th>
-                <th className="text-dark" style={{ fontSize: "24px" }}>
-                  Actions
-                </th>
+                <th className="text-dark">Name</th>
+                <th className="text-dark">Level</th>
+                <th className="text-dark">Duration</th>
+                <th className="text-dark">instructor</th>
+                <th className="text-dark">Day</th>
+                <th className="text-dark">Time</th>
+                <th className="text-dark">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="text-dark" style={{ fontSize: "24px" }}>
-                  {selectedCourse.course.name}
-                </td>
-                <td className="text-dark" style={{ fontSize: "24px" }}>
+                <td className="text-dark">{selectedCourse.course.name}</td>
+                <td className="text-dark">
                   {selectedCourse.course.level} Level{" "}
                 </td>
-                <td className="text-dark" style={{ fontSize: "24px" }}>
+                <td className="text-dark">
                   {selectedCourse.course.duration} Hrs
                 </td>
-                <td className="text-dark" style={{ fontSize: "24px" }}>
-                  {selectedCourse.instructorName}
-                </td>
-                <td className="text-dark" style={{ fontSize: "24px" }}>
-                  {selectedCourse.day}
-                </td>
-                <td className="text-dark" style={{ fontSize: "24px" }}>
-                  {selectedCourse.time}
-                </td>
+                <td className="text-dark">{selectedCourse.instructorName}</td>
+                <td className="text-dark">{selectedCourse.day}</td>
+                <td className="text-dark">{selectedCourse.time}</td>
                 <td>
                   <button
                     variant="contained"
                     color="primary"
-                    style={{
-                      margin: "10px",
-                      backgroundColor: "#4CAF50",
-                      color: "white",
-                      border: "none",
-                      padding: "8px 20px",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                      fontSize: "24px",
-                    }}
+                    style={{ margin: "10px" }}
+                    // startIcon={<PlayArrowIcon />}
                     onClick={() => handleJoinDemo(selectedCourse.course._id)}
+                    // disabled={!isJoinButtonEnabled(appointment)}
                   >
                     Join
                   </button>
-                </td>
+                  </td>
+                {/* <td>
+                 
+                    <button
+                      onClick={() => openChatWindow(selectedCourse.instructorId)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "20px",
+                        color: "#007bff", 
+                      }}
+                    >
+                      <MailOutlineIcon />
+                    </button>
+                  
+                </td> */}
               </tr>
             </tbody>
           </table>
+
+          {selectedTeacherId && (
+            <StudentChat
+              userType="user"
+              userId={userid}
+              teacherId={selectedTeacherId} // Pass the selected teacherId
+            />
+          )}
         </div>
-        <Button
+        <button
           className="close-btn-timing"
-          variant="contained"
-          style={{
-            fontSize: "20px",
-            backgroundColor: "#E57373",
-            color: "white", 
-            margin: "10px", 
-            borderRadius: "5px", 
-          }}
+          style={{ size: "20px" }}
           onClick={closeDetails}
         >
           Close
-        </Button>
+        </button>
       </div>
     );
   };
 
   return (
-    <div className="rounded ">
+    <div className="card border-6 rounded shadow-sm">
       <div className="card-body">
         <h4 className="mb-4 text-dark text-center">Enrolled Courses</h4>
-        {enrolledCourses.length > 0 ? (          
+        {enrolledCourses.length > 0 ? (
           <div>
-            <Slider {...sliderSettings}>
+            <div className="row">
               {enrolledCourses.map((course, index) => (
                 <CourseCard
                   key={course.course._id}
@@ -228,8 +206,8 @@ function EnrolledCourses() {
                   color={cardColors[index % cardColors.length]}
                 />
               ))}
-            </Slider>
-            {/* {showDetails && <CourseDetails />} */}
+            </div>
+            {showDetails && <CourseDetails />}
           </div>
         ) : (
           <p>No courses enrolled</p>
