@@ -73,7 +73,7 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
 
     if (
       userName === "" ||
@@ -118,6 +118,8 @@ const Signup = () => {
       //     };
       //     await axios.post("https://melodymusic.online/signup", data);
       //   }
+
+      console.log("signup  "+JSON.stringify(body))
 
       const response = await axios.post("https://melodymusic.online/signup", body, {
         // const response = await axios.post("http://localhost:4000/signup", body, {
@@ -278,7 +280,8 @@ const Signup = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();  
                     handleCloseTeacherModal();
                     Swal.fire({
                       title:
@@ -294,7 +297,7 @@ const Signup = () => {
                       if (result.isConfirmed) {
                         // handleAdminApprovalOK();
                         handleCloseTeacherModal();
-                        handleSubmit();
+                        handleSubmit(e);
                       }
                     });
                   }}

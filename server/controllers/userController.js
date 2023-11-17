@@ -64,7 +64,9 @@ const userSignup = async (req, res) => {
       description,
       credentials,   
     } = req.body;
-    // Check if the user already exists
+    
+
+    // console.log("signup "+JSON.stringify(req.body))
     const userExists = await User.findOne({ email });
     
     if (userExists) {
@@ -73,17 +75,21 @@ const userSignup = async (req, res) => {
       .json({ status: "error", message: "User already exists" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    // Create a new user
     const user = new User({
       userName,
       email,
       password: hashedPassword,
       phoneNumber,
+      role:0,
+      isTeacher,
+      courses,
+      description,       
+      certificate,
+
     });
-    
+    console.log("user  "+user)
     // If the user is a teacher, save additional data to the Teacher model
     if (isTeacher) {
       const teacher = new Teacher({
