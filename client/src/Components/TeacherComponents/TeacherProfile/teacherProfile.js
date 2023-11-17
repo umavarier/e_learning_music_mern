@@ -448,8 +448,7 @@ const TeacherProfile = () => {
     const fetchTeacherCourses = async () => {
       try {
         console.log("course-teach " + teacherId);
-        const response = await axios.get(
-          `/teachers/getTeacherCourses/${teacherId}`,
+        const response = await axios.get(`https://melodymusic.online/teachers/getTeacherCourses/${teacherId}`,
           {
             headers: {
               Authorization: `${Cookies.get("token")}`,
