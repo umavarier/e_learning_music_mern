@@ -69,9 +69,13 @@ const teacherSchema =  new mongoose.Schema({
    
     videos: [
       {
-        url: String, 
+          url: String,
+          course: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: 'Course',
+          },
       },
-    ],
+  ],
     availableTimings: [
         {
           date: {

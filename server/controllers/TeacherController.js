@@ -403,27 +403,39 @@ const fetchProfilePhoto = async (req, res) => {
 
 const saveVideoUrl = async (req, res) => {
   try {
-    const { teacherId } = req.params;
-    const { videoUrl } = req.body;
+      const { teacherId } = req.params;
+      const { videoUrl, courseId } = req.body;
 
-    console.log("vdoe-tid " + teacherId);
-    console.log("vdoUrl " + videoUrl);
+      console.log("vdoe-tid " + teacherId);
+      console.log("vdoUrl " + videoUrl);
 
-    // Find the teacher by ID and update the videos array
-    const teacher = await Teacher.findById(teacherId);
-    if (!teacher) {
-      return res.status(404).json({ message: "Teacher not found" });
-    }
+      // Find the teacher by ID
+      const teacher = await Teacher.findById(teacherId);
+      if (!teacher) {
+          return res.status(404).json({ message: "Teacher not found" });
+      }
 
-    teacher.videos.push({ url: videoUrl });
-    await teacher.save();
+      // Check if the course ID is valid
+      if (!mongoose.Types.ObjectId.isValid(courseId)) {
+          return res.status(400).json({ message: "Invalid course ID" });
+      }
 
-    res.status(200).json({ message: "Video URL saved successfully" });
+      // Check if the teacher is associated with the specified course
+      if (!teacher.courses.includes(courseId)) {
+          return res.status(400).json({ message: "Teacher is not associated with the specified course" });
+      }
+
+      // Update the videos array with the new video
+      teacher.videos.push({ url: videoUrl, course: courseId });
+      await teacher.save();
+
+      res.status(200).json({ message: "Video URL saved successfully" });
   } catch (error) {
-    console.error("Error saving video URL", error);
-    res.status(500).json({ message: "Error saving video URL" });
+      console.error("Error saving video URL", error);
+      res.status(500).json({ message: "Error saving video URL" });
   }
 };
+
 
 const getTeacherVideos = async (req, res) => {
   const teacherId = req.params.teacherId;
@@ -442,6 +454,7 @@ const getTeacherVideos = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 const getTeacherSpec = async (req, res) => {
   const teacherId = req.teacher.id;
@@ -703,6 +716,25 @@ const getEnrolledUsersForChat =  async(req,res)=> {
   }
 }
 
+const getTeacherCourses = async (req, res) => {
+  try {
+    const teacherId  = req.params.teacherId;
+    console.log("entered "+teacherId)
+    const teacher = await Teacher.findById(teacherId).populate('courses', 'name');
+
+    if (!teacher) {
+        return res.status(404).json({ message: 'Teacher not found' });
+    }
+
+    const courses = teacher.courses;
+    console.log("courses   "+courses)
+    res.status(200).json(courses);
+} catch (error) {
+    console.error('Error fetching teacher courses:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+}
+}
+
 module.exports = {
   TeacherGetAllUsers,
   teacherLogin,
@@ -728,4 +760,5 @@ module.exports = {
   getTeacherAvailabilityList,
   cancelTeacherAvailabilities,
   getEnrolledUsersForChat,
+  getTeacherCourses,
 };

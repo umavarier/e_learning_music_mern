@@ -6,7 +6,7 @@ const { uploadSingleFile } = require('../util/multer1');
 const {verifyToken} = require('../midleware/verifyToken')
 const {authenticateTeacher} = require('../midleware/authTeacher')
 // const teacherController = require('../controllers/TeacherController');
-const {teacherLogin, teacherData, teacherUploadProfilePhoto, addAvailability,getAppointments, getNotifications, getSenderEmail,fetchProfilePhoto,saveVideoUrl,getTeacherVideos, getTeacherSpec, getEnrolledStudentsByCourse, fetchTeacherNamesForCourse, addCourseTimingOfStudent, getCourseTimings, checkTeacherProfilePicture, teacherAppointmentsList, getTeacherAppointments, cancelTeacherAppointment, updateSessionTiming, getTeacherAvailabilityList, cancelTeacherAvailabilities, getEnrolledUsersForChat} = require('../controllers/TeacherController')
+const {teacherLogin, teacherData, teacherUploadProfilePhoto, addAvailability,getAppointments, getNotifications, getSenderEmail,fetchProfilePhoto,saveVideoUrl,getTeacherVideos, getTeacherSpec, getEnrolledStudentsByCourse, fetchTeacherNamesForCourse, addCourseTimingOfStudent, getCourseTimings, checkTeacherProfilePicture, teacherAppointmentsList, getTeacherAppointments, cancelTeacherAppointment, updateSessionTiming, getTeacherAvailabilityList, cancelTeacherAvailabilities, getEnrolledUsersForChat,getTeacherCourses} = require('../controllers/TeacherController')
 const {teacherViewCourse} = require('../controllers/TeacherController')
 
 router.post('/teacherLogin', teacherLogin);
@@ -33,5 +33,6 @@ router.put('/updateSessionTiming/:userId/:courseId',authenticateTeacher, updateS
 router.get('/getTeacherAvailabilityList/:teacherId',authenticateTeacher, getTeacherAvailabilityList)
 router.delete('/cancelTeacherAvailabilities/:availabilityId',authenticateTeacher,cancelTeacherAvailabilities)
 router.get('/getEnrolledUsersForChat/:teacherId',authenticateTeacher,getEnrolledUsersForChat);
+router.get('/getTeacherCourses/:teacherId',authenticateTeacher,getTeacherCourses)
 
 module.exports = router;

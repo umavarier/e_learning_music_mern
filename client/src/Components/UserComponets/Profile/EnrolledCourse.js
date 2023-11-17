@@ -218,7 +218,7 @@ function EnrolledCourses() {
     <div className="rounded ">
       <div className="card-body">
         <h4 className="mb-4 text-dark text-center">Enrolled Courses</h4>
-        {enrolledCourses.length > 0 ? (
+        {enrolledCourses.length > 0 ? (          
           <div>
             <Slider {...sliderSettings}>
               {enrolledCourses.map((course, index) => (
@@ -229,7 +229,7 @@ function EnrolledCourses() {
                 />
               ))}
             </Slider>
-            {showDetails && <CourseDetails />}
+            {/* {showDetails && <CourseDetails />} */}
           </div>
         ) : (
           <p>No courses enrolled</p>

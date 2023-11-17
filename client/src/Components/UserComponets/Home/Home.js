@@ -229,6 +229,7 @@ function Home() {
                       <div className="card-img-square">
                         <img
                           src={`https://melodymusic.online/uploads/${teacher.profilePhoto}`}
+                          // src={`http://localhost:4000/uploads/${teacher.profilePhoto}`}
                           className="card-img-top"
                           alt="Teacher's profile"
                         />

@@ -853,6 +853,7 @@ const cancelUserAppointment =  async(req,res) => {
 
 const getTeacherProfileForHome = async (req, res) => {
   const teacherId = req.params.teacherId;
+
   try {
     const teacher = await Teacher.findById(teacherId);
 
@@ -860,25 +861,31 @@ const getTeacherProfileForHome = async (req, res) => {
       return res.status(404).json({ message: "Teacher not found" });
     }
 
-    // Fetch course names using the course IDs
-    const courseNames = await Course.find({ _id: { $in: teacher.courses } })
-      .select('name')
-      .exec();
+    const courseData = await Course.find({ _id: { $in: teacher.courses } }).exec();
+
+    const courseNames = courseData.map((course) => course.name);
+    const coursesWithIds = courseData.map((course) => ({ _id: course._id, name: course.name }));
 
     const response = {
-      userName:teacher.userName,
+      userName: teacher.userName,
       profilePhoto: teacher.profilePhoto,
-      videos: teacher.videos.map((video) => video.url),
+      courses: courseNames,
+      coursesWithIds,
+      videos: teacher.videos.map((video) => ({
+        url: video.url,
+        courseId: video.course,
+      })),
       email: teacher.email,
-      courseNames: courseNames.map((course) => course.name), // Extract course names
     };
 
+    console.log("cn  " + JSON.stringify(response));
     res.status(200).json(response);
   } catch (error) {
     console.error("Error fetching teacher's profile:", error);
     res.status(500).json({ message: "Failed to fetch teacher's profile" });
   }
 };
+
 
 
 const getTeachersByCourse = async(req, res) => {

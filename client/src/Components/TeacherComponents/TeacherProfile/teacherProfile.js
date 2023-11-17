@@ -76,6 +76,8 @@ const TeacherProfile = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isChatModalOpen, setChatModalOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState({});
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [teacherCourses, setTeacherCourses] = useState([]);
 
   const videoInputRef = useRef(null);
 
@@ -328,7 +330,7 @@ const TeacherProfile = () => {
     axios
       .get(`/teachers/teacherGetNotifications/${teacherId}`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
+          Authorization: `${Cookies.get("token")}`,
         },
       })
       .then((response) => {
@@ -342,7 +344,7 @@ const TeacherProfile = () => {
         `/teachers/getSenderEmail/${notificationId}`,
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("token")}`,
+            Authorization: `${Cookies.get("token")}`,
           },
         }
       );
@@ -370,7 +372,7 @@ const TeacherProfile = () => {
     }
   };
   const handleVideoUpload = async () => {
-    if (videoFile) {
+    if (videoFile && selectedCourse) {
       const formData = new FormData();
       formData.append("file", videoFile);
       formData.append("upload_preset", "videos_preset");
@@ -403,7 +405,10 @@ const TeacherProfile = () => {
             console.log("vdeo-tid " + teacherId);
             const saveVideoResponse = await axios.post(
               `/teachers/saveVideoUrl/${teacherId}`,
-              { videoUrl },
+              {
+                videoUrl,
+                courseId: selectedCourse,
+              },
               {
                 headers: {
                   "Content-Type": "application/json",
@@ -431,8 +436,39 @@ const TeacherProfile = () => {
       } finally {
         setUploading(false);
       }
+    } else {
+      toast.warning("Please select a video and a course!");
     }
   };
+
+  useEffect(() => {
+    const accessToken = Cookies.get("token");
+    const decodedToken = jwt_decode(accessToken);
+    const teacherId = decodedToken.id;
+    const fetchTeacherCourses = async () => {
+      try {
+        console.log("course-teach " + teacherId);
+        const response = await axios.get(
+          `/teachers/getTeacherCourses/${teacherId}`,
+          {
+            headers: {
+              Authorization: `${Cookies.get("token")}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          setTeacherCourses(response.data);
+          console.log("t--c " + JSON.stringify(response.data));
+        }
+      } catch (error) {
+        console.error("Error fetching teacher courses", error);
+      }
+    };
+
+    fetchTeacherCourses();
+  }, [teacherId]);
+
   useEffect(() => {
     const fetchTeacherVideos = async () => {
       const accessToken = Cookies.get("token");
@@ -487,7 +523,7 @@ const TeacherProfile = () => {
           return latestMessageB - latestMessageA;
         });
         setSortedChatList(sortedUsers);
-        console.log("chat-t? " + JSON.stringify(response.data));
+        // console.log("chat-t? " + JSON.stringify(response.data));
       } catch (error) {
         console.error("Error fetching enrolled users", error);
       }
@@ -552,6 +588,7 @@ const TeacherProfile = () => {
                         src={
                           profilePhotoURL
                             ? profilePhotoURL
+                            // : `http://localhost:4000/uploads/${profilePhoto}`
                             : `https://melodymusic.online/uploads/${profilePhoto}`
                         }
                         alt="Profile"
@@ -705,6 +742,20 @@ const TeacherProfile = () => {
                 >
                   <div className="btn-group mb-3" role="group">
                     <div className="d-flex">
+                      <FormControl>
+                        <InputLabel>Select Course</InputLabel>
+                        <Select
+                          value={selectedCourse}
+                          onChange={(e) => setSelectedCourse(e.target.value)}
+                          style={{ minWidth: "150px" }}
+                        >
+                          {teacherCourses.map((course) => (
+                            <MenuItem key={course._id} value={course._id}>
+                              {course.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                       <input
                         type="file"
                         accept="video/*"
@@ -715,10 +766,11 @@ const TeacherProfile = () => {
                       <button
                         onClick={() => videoInputRef.current.click()}
                         className="btn btn-primary"
-                        style={{ marginRight: "10px" }}
+                        style={{ marginLeft: "110px", marginRight: "10px" }}
                       >
                         <i className="fas fa-plus"></i> Add Video
                       </button>
+
                       <button onClick={handleVideoUpload} className="btn">
                         Upload Video
                       </button>
@@ -727,22 +779,31 @@ const TeacherProfile = () => {
 
                   <div style={{ width: "100%" }}>
                     <Carousel showArrows={true} style={{ width: "100%" }}>
-                      {teacherVideos.map((video, index) => (
-                        <div key={index} style={{ width: "100%" }}>
-                          <div className="d-flex justify-content-between">
-                            {teacherVideos
-                              .slice(index, index + 3)
-                              .map((video, videoIndex) => (
-                                <div key={videoIndex} className="mr-2">
-                                  <video width="100%" height="100%" controls>
-                                    <source src={video.url} type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                  </video>
-                                </div>
-                              ))}
+                      {teacherVideos
+                        .filter(
+                          (video) =>
+                            !selectedCourse || video.course === selectedCourse
+                        )
+                        .map((video, index) => (
+                          <div key={index} style={{ width: "100%" }}>
+                            <div className="d-flex justify-content-between">
+                              {teacherVideos
+                                .slice(index, index + 3)
+                                .map((video, videoIndex) => (
+                                  <div key={videoIndex} className="mr-2">
+                                    <video width="100%" height="100%" controls>
+                                      <source
+                                        src={video.url}
+                                        type="video/mp4"
+                                      />
+                                      Your browser does not support the video
+                                      tag.
+                                    </video>
+                                  </div>
+                                ))}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
                     </Carousel>
                   </div>
                 </div>

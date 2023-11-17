@@ -5,6 +5,7 @@ module.exports = function(app) {
       '/book-demo', 
       createProxyMiddleware({
         target: 'https://melodymusic.online/', 
+        // target: 'http://localhost:4000',
         changeOrigin: true,
       })
     );

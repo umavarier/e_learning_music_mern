@@ -8,6 +8,10 @@ import {
   CardMedia,
   Container,
   Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Typography,
 } from "@mui/material";
 import Carousel from "react-material-ui-carousel";
@@ -15,6 +19,7 @@ import Carousel from "react-material-ui-carousel";
 function TeacherProfileForHome() {
   const { teacherId } = useParams();
   const [teacher, setTeacher] = useState(null);
+  const [selectedCourse, setSelectedCourse] = useState(null);
   const userToken = localStorage.getItem("userdbtoken");
 
   useEffect(() => {
@@ -58,7 +63,9 @@ function TeacherProfileForHome() {
               component="img"
               alt="Teacher's Profile"
               height="450"
+              // image={`http://localhost:4000/uploads/${teacher.profilePhoto}`}
               image={`https://melodymusic.online/uploads/${teacher.profilePhoto}`}
+
             />
             <CardContent>
               <Typography
@@ -87,9 +94,11 @@ function TeacherProfileForHome() {
           sx={{ marginTop: "30px", marginBotton: "50px", textAlign: "center" }}
         ></Typography>
         <Carousel autoPlay={true}>
-          {teacher.courseNames.map((course, index) => (
+        {teacher.courses &&
+          teacher.courses.length > 0 &&
+          teacher.courses.map((course, index) => (
             <div key={index}>
-              <Card
+               <Card
                 sx={{
                   borderRadius: "10%",
                   width: 300,
@@ -105,40 +114,46 @@ function TeacherProfileForHome() {
                   </Typography>
                 </CardContent>
               </Card>
+
             </div>
           ))}
-        </Carousel>
+      </Carousel>
 
-        <Carousel autoPlay={true}>
-          <div>
-            <Typography
-              variant="h2"
-              component="div"
-              style={{
-                marginTop: "30px",
-                marginBottom: "40px",
-                textAlign: "center",
-              }}
+      <Carousel autoPlay={true}>
+        <div>
+          <FormControl>
+            <InputLabel>Select Course</InputLabel>
+            <Select
+              value={selectedCourse}
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              style={{ minWidth: "150px", marginBottom: "20px" }}
             >
-              Teacher's Videos
-            </Typography>
-            <div
-              style={{
-                display: "flex",
-                overflowX: "auto",
-              }}
-            >
-              {teacher.videos.map((video, index) => (
-                <div key={index} style={{ marginRight: "10px" }}>
-                  <video width="300" height="169" controls>
-                    <source src={video} type="video/mp4" />
-                    Your browser does not support the video
-                  </video>
-                </div>
-              ))}
-            </div>
+              {teacher.coursesWithIds &&
+                teacher.coursesWithIds.length > 0 &&
+                teacher.coursesWithIds.map((course) => (
+                  <MenuItem key={course._id} value={course._id}>
+                    {course.name}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+          
+          <div style={{ display: "flex", overflowX: "auto" }}>
+            {teacher.videos &&
+              teacher.videos.length > 0 &&
+              teacher.videos
+                .filter((video) => !selectedCourse || video.courseId === selectedCourse)
+                .map((video, index) => (
+                  <div key={index} style={{ marginRight: "10px" }}>
+                    <video width="300" height="169" controls>
+                      <source src={video.url} type="video/mp4" />
+                      Your browser does not support the video
+                    </video>
+                  </div>
+                ))}
           </div>
-        </Carousel>
+        </div>
+      </Carousel>
       </Container>
     </>
   );
