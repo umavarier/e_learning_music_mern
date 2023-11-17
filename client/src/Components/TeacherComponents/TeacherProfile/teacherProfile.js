@@ -589,7 +589,7 @@ const TeacherProfile = () => {
                           profilePhotoURL
                             ? profilePhotoURL
                             // : `http://localhost:4000/uploads/${profilePhoto}`
-                            : `https:// sic.online/uploads/${profilePhoto}`
+                            : `https://melodymusic.online/uploads/${profilePhoto}`
                         }
                         alt="Profile"
                         className="img-fluid rounded-circle"
