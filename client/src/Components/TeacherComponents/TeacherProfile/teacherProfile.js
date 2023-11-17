@@ -588,8 +588,8 @@ const TeacherProfile = () => {
                         src={
                           profilePhotoURL
                             ? profilePhotoURL
-                            : `http://localhost:4000/uploads/${profilePhoto}`
-                            // : `https:// sic.online/uploads/${profilePhoto}`
+                            // : `http://localhost:4000/uploads/${profilePhoto}`
+                            : `https:// sic.online/uploads/${profilePhoto}`
                         }
                         alt="Profile"
                         className="img-fluid rounded-circle"
