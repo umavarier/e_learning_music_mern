@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios";
 import TableContainer from "@mui/material/TableContainer";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -14,8 +14,20 @@ import TextField from "@mui/material/TextField";
 import AdminHeader from "../Header/AdminHeader.js";
 import AdminSidebar from "../Header/AdminSidebar.js";
 import Cookies from "js-cookie";
-import jwt_decode from "jwt-decode";
 import AdminPaymentHistory from "../AdminCourses/AdminPaymentHistory.js";
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token) {
+      config.headers.Authorization = `${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 const EnrolledUsersList = () => {
   const [enrolledUsers, setEnrolledUsers] = useState([]);
@@ -24,14 +36,8 @@ const EnrolledUsersList = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const accessToken = Cookies.get("token");
-    const decodedToken = jwt_decode(accessToken);
     axios
-      .get("/getEnrolledUsersList", {
-        headers: {
-          Authorization: `${Cookies.get("token")}`,
-        },
-      })
+      .get("/getEnrolledUsersList")
       .then((response) => {
         setEnrolledUsers(response.data);
       })
@@ -75,7 +81,7 @@ const EnrolledUsersList = () => {
             <Button
               variant="outlined"
               color="primary"
-              style={{ float: "right" }}
+              style={{ float: "right", background:"primary" ,margin : "10px"}}
             >
               Payment History
             </Button>
@@ -114,17 +120,8 @@ const EnrolledUsersList = () => {
                       <TableCell
                         style={{ fontSize: "24px", border: "2px solid" }}
                       >
-                        {/* <ul> */}
                         {user.enrolledCourses.map((course, index) => (
-                          // <li key={index}>
-                          //   Course: {displayValueOrNotAssigned(course.course?.name)}
-                          //   <br />
-                          //   Instructor: {displayValueOrNotAssigned(course.instructorId?.userName)}
-                          //   <br />
-                          //   Day: {displayValueOrNotAssigned(course.day)}
-                          //   <br />
-                          //   Time: {displayValueOrNotAssigned(course.time)}
-                          // </li>
+                        
                           <TableContent
                             key={index}
                             course={course}
@@ -133,7 +130,6 @@ const EnrolledUsersList = () => {
                             }
                           />
                         ))}
-                        {/* </ul> */}
                       </TableCell>
                     </TableRow>
                   ))}

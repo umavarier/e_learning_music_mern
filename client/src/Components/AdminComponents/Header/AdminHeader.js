@@ -1,7 +1,7 @@
 import React, { useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import LOGO from "../../UserComponets/Home/logo-black.png";
+import LOGO from "../../UserComponents/Home/logo-black.png";
 import Cookies from "js-cookie";
 
 const headerStyle = {

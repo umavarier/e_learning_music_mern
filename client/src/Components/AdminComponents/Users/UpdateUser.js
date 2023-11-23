@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import Footer from '../Footer/Footer'
 import AdminHeader from '../Header/AdminHeader';
-import axios from '../../../utils/axios'
+import axios from '../../../Utils/axios'
 import './updateUser.css'
-import { adminEditUser, adminUpdateUser } from '../../../utils/Constants';
+import { adminEditUser, adminUpdateUser } from '../../../Utils/constants';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2'
 

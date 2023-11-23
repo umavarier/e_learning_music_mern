@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios.js";
+import axiosWithBlockCheck from "../../../Utils/axiosWithBlockCheck.js";
 import { MdAdd, MdEdit, MdDelete } from "react-icons/md";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
@@ -13,7 +14,6 @@ import { Carousel } from "react-responsive-carousel";
 import { ToastContainer, toast } from "react-toastify";
 import { setStudentUserId } from "../../../Redux/studentSlice";
 import EditCourseTimingModal from "./EditCourseTimingModal";
-import TeacherChat from "../TeacherChat/TeacherChat.js";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { useNavigate } from "react-router-dom";
 
@@ -32,7 +32,6 @@ function TeacherCourses() {
   const [time, setTime] = useState("");
   const [selectedStudentIdForTiming, setSelectedStudentIdForTiming] =
     useState(null);
-  // const selectedStudentId = useSelector(state => state.student.studentUserId);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editStudentId, setEditStudentId] = useState(null);
   const [teacherMessages, setTeacherMessages] = useState([]);
@@ -47,9 +46,9 @@ function TeacherCourses() {
   useEffect(() => {
     const accessToken = Cookies.get("token");
     const decodedToken = jwt_decode(accessToken);
-    const teacherId = decodedToken._id;
+    const teacherId = decodedToken.id;
 
-    axios
+    axiosWithBlockCheck
       .get(`/teachers/getTeacherSpec/${teacherId}`, {
         headers: {
           Authorization: ` ${Cookies.get("token")}`,
@@ -327,6 +326,8 @@ function TeacherCourses() {
                       <th style={{fontSize : "24px"}}>Email</th>
                       <th style={{fontSize : "24px"}}>Course Timings</th>
                       <th style={{fontSize : "24px"}}>Actions</th>
+                      <th style={{fontSize : "24px"}}></th>
+                      
                     </tr>
                   </thead>
                   <tbody>
@@ -415,20 +416,6 @@ function TeacherCourses() {
                             // disabled={!isJoinButtonEnabled(appointment)}
                           >
                             Join
-                          </button>
-                        </td>
-                        <td>
-                          <button
-                            style={{
-                              background: "none",
-                              border: "none",
-                              cursor: "pointer",
-                              fontSize: "20px",
-                              color: "#007bff",
-                            }}
-                            onClick={() => openChatWindow(student._id)}
-                          >
-                            <MailOutlineIcon />
                           </button>
                         </td>
                       </tr>
@@ -520,22 +507,7 @@ function TeacherCourses() {
             )}
           </main>
 
-          <div>
-            {isChatWindowOpen && (
-              <TeacherChat
-                teacherId={teacherId}
-                studentId={selectedStudentId}
-                messages={teacherMessages}
-                onSendMessage={handleTeacherSendMessage}
-              />
-            )}
-          </div>
-          <div>
-            {/* <TeacherChat
-              messages={teacherMessages}
-              onSendMessage={handleTeacherSendMessage}
-            /> */}
-          </div>
+         
         </div>
       </div>
     </>

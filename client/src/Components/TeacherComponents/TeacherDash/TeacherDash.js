@@ -3,11 +3,10 @@ import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import TeacherHeader from "../Header/TeacherHeader";
 import TeacherSidebar from "../Sidebar/TeacherSidebar";
-import TeacherChat from "../TeacherChat/TeacherChat";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import TeacherProfilePictureUpload from "../Header/TeacherProfilePictureUpload";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios";
 import { selectTeacherProfilePicture } from '../../../Redux/teacherSlice';
 
 function TeacherDash() {
@@ -71,7 +70,7 @@ function TeacherDash() {
                         )} */}
                       </div>
                       <h2 className="mb-4">TEACHER DASHBOARD</h2>
-                      <TeacherChat />
+                      
                     </div>
                   </div>
                 </div>

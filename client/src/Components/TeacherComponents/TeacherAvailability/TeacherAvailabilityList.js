@@ -1,6 +1,7 @@
 // TeacherAvailabilityTable.js
 import React, { useEffect, useState } from "react";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios";
+import axiosWithBlockCheck from "../../../Utils/axiosWithBlockCheck";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -26,14 +27,17 @@ const TeacherAvailabilityList = () => {
 
   useEffect(() => {
     // Fetch teacher availabilities from the backend
-    axios.get(`/teachers/getTeacherAvailabilityList/${teacherId}`, {
+    axiosWithBlockCheck.get(`/teachers/getTeacherAvailabilityList/${teacherId}`, {
         headers: {
           Authorization: ` ${Cookies.get("token")}`,
         },
       }).then((response) => {
         console.log(JSON.stringify(response.data))
       setAvailabilities(response.data);
-    });
+    })
+    .catch((error) => {
+      console.error("Error fetching teacher availabilities", error);
+    })
   }, []);
 
   const handleCancel = (availabilityId) => {

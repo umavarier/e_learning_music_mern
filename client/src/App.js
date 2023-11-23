@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import AdminDash from "./Components/AdminComponents/Dashboard/AdminDash";
 import AdminSignUp from './Components/AdminComponents/AdminSignUp/AdminSignUp';
-import RoleSelection from "./Components/UserComponets/RoleSelection/RoleSelection";
+import RoleSelection from "./Components/UserComponents/RoleSelection/RoleSelection";
 import AdminaddUsers from "./Components/AdminComponents/Users/AdminaddUsers";
 import UpdateUser from "./Components/AdminComponents/Users/UpdateUser";
 import Usermanagement from "./Components/AdminComponents/Users/Usermanagement";
@@ -20,50 +20,48 @@ import TeacherLogin from "./Components/TeacherComponents/TeacherLogin/teacherLog
 import FetchteacherData from "./Components/TeacherComponents/Header/TeacherHeader";
 import TeacherUserManagement from "./Components/TeacherComponents/TeacherStudentManagement/teacherUserManagement";
 import AddCourse from "./Components/TeacherComponents/TeacherCourse/AddCourse";
-import ViewCourses from "./Components/UserComponets/Home/Home";
-import CourseDetails from "./Components/CourseComponent/CourseDetails";
+import ViewCourses from "./Components/UserComponents/Home/Home";
+import CourseDetails from "./Components/CourseComponents/CourseDetails";
 import TeacherDash from "./Components/TeacherComponents/TeacherDash/TeacherDash";
 import TeacherViewCourse from "./Components/TeacherComponents/TeacherCourse/ViewCourse";
 import TeacherProfile from "./Components/TeacherComponents/TeacherProfile/teacherProfile";
 import TeacherUploadProfilePhoto from './Components/TeacherComponents/TeacherProfile/teacherProfile';
 
 
-// import { getCourseById } from './Components/CourseComponent/Course';
-import usergetUserDetails from "./Components/CourseComponent/CourseDetails";
-// import CourseDetails from './Components/CourseComponent/CourseDetails';
+// import { getCourseById } from './Components/CourseComponents/Course';
+import usergetUserDetails from "./Components/CourseComponents/CourseDetails";
+// import CourseDetails from './Components/CourseComponents/CourseDetails';
 import Home from "./Pages/UserPages/HomePage";
 import Login from "./Pages/UserPages/LoginPage";
-// import UserLoginwithOTP from "./Components/UserComponets/Login/Login";
-import Loginwithotp  from "./Components/UserComponets/Login/loginwithotp";
-import Otp from "./Components/UserComponets/Login/otp";
+// import UserLoginwithOTP from "./Components/UserComponents/Login/Login";
+import Loginwithotp  from "./Components/UserComponents/Login/loginwithotp";
+import Otp from "./Components/UserComponents/Login/otp";
 import ProfilePage from "./Pages/UserPages/ProfilePage";
 import TeacherSpec from "./Components/TeacherComponents/TeacherSpec/TeacherSpec"
 
 import Signup from "./Pages/UserPages/SignupPage";
 import TeacherHome from "./Pages/TeacherPages/TeacherHomepage";
-import ScheduleDemo from "./Components/CourseComponent/CourseDetails";
-import Pricing from "./Components/CourseComponent/Pricing";
+import ScheduleDemo from "./Components/CourseComponents/CourseDetails";
+import Pricing from "./Components/CourseComponents/Pricing";
 import VideoRoom from "./Components/TeacherComponents/VideoRoom";
-import Payment from './Components/UserComponets/Payment/Payment'
-import Gallery from './Components/UserComponets/Gallery/Gallery'
+import Payment from './Components/UserComponents/Payment/Payment'
+import Gallery from './Components/UserComponents/Gallery/Gallery'
 import TeacherAvailabilityPage from "./Components/TeacherComponents/TeacherAvailability/TeacherAvailability.js";
-import CourseTeacherSelection from "./Components/UserComponets/CourseTeacherSelection/CourseTeacherSelection";
+import CourseTeacherSelection from "./Components/UserComponents/CourseTeacherSelection/CourseTeacherSelection";
 import AdminCourseManagement from "./Components/AdminComponents/AdminCourses/AdminCourses";
-import Notifications from "./Components/UserComponets/Notification/Notifications";
-import EnrolledCourses from "./Components/UserComponets/Profile/EnrolledCourse";
-import TeacherChat from "./Components/TeacherComponents/TeacherChat/TeacherChat";
-import StudentChat from "./Components/UserComponets/StudentChat/StudentChat";
+import Notifications from "./Components/UserComponents/Notification/Notifications";
+import EnrolledCourses from "./Components/UserComponents/Profile/EnrolledCourse";
 import EnrolledUsersList from "./Components/AdminComponents/AdminEnrolledUsers/AdminEnrolledUsers.js";
 import GetPricingDetails from "./Components/AdminComponents/CoursePricing/AdminViewPricing.js";
 import AdminBookingLists from "./Components/AdminComponents/AdminBookingList/AdminBookingLists.js";
 import TeacherProfilePictureUpload from "./Components/TeacherComponents/Header/TeacherProfilePictureUpload.js";
 import TeacherAppointmentsList from "./Components/TeacherComponents/TeacherAvailability/TeacherAppointments/TeacherAppointments.js";
-import UserDemoBookings from "./Components/UserComponets/Profile/userDemoBookings.js";
+import UserDemoBookings from "./Components/UserComponents/Profile/userDemoBookings.js";
 import EditCourseTimingModal from "./Components/TeacherComponents/TeacherSpec/EditCourseTimingModal.js";
-import TeacherProfileForHome from "./Components/UserComponets/TeachersForUser/TeacherProfileForHome.js";
+import TeacherProfileForHome from "./Components/UserComponents/TeachersForUser/TeacherProfileForHome.js";
 import AdminPaymentHistory from "./Components/AdminComponents/AdminCourses/AdminPaymentHistory.js";
 import TeacherAvailabilityList from "./Components/TeacherComponents/TeacherAvailability/TeacherAvailabilityList.js";
-import ChatComponent from "./Components/UserComponets/ChatComponent.js";
+import ChatComponent from "./Components/UserComponents/ChatComponent.js";
 
 function App() {
   return (
@@ -77,7 +75,6 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/CourseDetails" element={<CourseDetails />} />
         <Route path="/EnrolledCourses" element={<EnrolledCourses/>} />
-        {/* <Route path="/StudentChat" element={<StudentChat/>} /> */}
         <Route path="/UserDemoBookings" element={<UserDemoBookings/>} />
 
         <Route path="/adminLogin" element={<AdminPage1 />} />
@@ -112,11 +109,9 @@ function App() {
         <Route path="/teacherUploadProfilePhoto" element={<TeacherUploadProfilePhoto/>} />
         {/* <Route path="/teacherAvailability" element={<TeacherAvailabilityPage/>} /> */}
         <Route path="/teacherSpec" element={<TeacherSpec/>} />
-        <Route path="/teacherChat" element={<TeacherChat/>} />
         <Route path="/teacherAppointmentsList" element={<TeacherAppointmentsList/>} />
         <Route path="/EditCourseTimingModal" element={<EditCourseTimingModal/>} />
         <Route path="/teacherProfileForHome/:teacherId" element={<TeacherProfileForHome/>} />
-        {/* <Route path="/teacherChat" element={< TeacherChat />}/> */}
         <Route path="/teacherAvailabilityList" element={< TeacherAvailabilityList />}/>
 
 

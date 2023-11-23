@@ -1,10 +1,9 @@
-/* TeacherAvailabilityPage.css */
 .time-container {
-    background-color: #fff; /* Card background color */
-    border-radius: 10px; /* Rounded corners for the card */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for the card */
-    padding: 20px; /* Add padding for content within the card */
-    margin: 20px; /* Add some margin to create space around the card */
+    background-color: #fff; 
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    padding: 20px; 
+    margin: 20px; 
   }
   
   .av-form {
@@ -29,7 +28,7 @@
   }
   
   .av-button[type="submit"] {
-    background-color: #051dfd; /* Text color for the button */
+    background-color: #051dfd; 
     padding: 10px 15px;
     border: none;
     border-radius: 5px;

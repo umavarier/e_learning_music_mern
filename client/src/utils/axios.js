@@ -1,14 +1,8 @@
 import axios from "axios";
-import { baseUrl } from "./Constants";
+import { baseUrl } from "./constants";
 
+const instance = axios.create({
+  baseURL: baseUrl,
+});
 
-const instance= axios.create({
-    baseURL:baseUrl,    
-})
-// export const verifyUserToken = (token) => {
-//     return instance.post('/verifyUserToken', { token });
-//   };
-  
-
-
-export default instance
+export default instance;

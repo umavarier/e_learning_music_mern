@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import Header from '../../Components/UserComponets/Home/Header';
-import Home from '../../Components/UserComponets/Home/Home';
-import axios from '../../utils/axios';
+import Header from '../../Components/UserComponents/Home/Header';
+import Home from '../../Components/UserComponents/Home/Home';
+import axios from '../../Utils/axios';
 import { useNavigate } from 'react-router-dom';
 
 function HomePage() {

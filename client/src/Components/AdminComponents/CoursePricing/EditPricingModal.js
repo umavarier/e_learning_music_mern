@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from "react";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Cookies from "js-cookie";
-import jwt_decode from "jwt-decode";
 import { toast } from "react-toastify";
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token) {
+      config.headers.Authorization = `${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 const AdminEditPricing = ({
   open,
@@ -22,14 +34,8 @@ const AdminEditPricing = ({
   }, [pricingToEdit]);
 
   const handleUpdatePricing = () => {
-    const accessToken = Cookies.get("token");
-    const decodedToken = jwt_decode(accessToken);
     axios
-      .put(`/adminEditPricing/${editedPricing._id}`, editedPricing, {
-        headers: {
-          Authorization: `${Cookies.get("token")}`,
-        },
-      })
+      .put(`/adminEditPricing/${editedPricing._id}`, editedPricing)
       .then((response) => {
         if (response.status === 200) {
           onPricingUpdated(editedPricing);

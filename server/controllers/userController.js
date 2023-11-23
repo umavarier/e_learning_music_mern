@@ -17,8 +17,6 @@ const storage = require("../util/multer1");
 const directoryPath = "public/";
 const { format } = require('date-fns');
 
-//email config
-
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -26,30 +24,6 @@ const transporter = nodemailer.createTransport({
     pass: process.env.PASSWORD,
   },
 });
-
-//   const userSignup= async (req, res) => {
-//         try {
-//                 let userEmail = req.body.email
-//                 const users = await User.findOne({ email: userEmail })
-//                 if (users) {
-//                     res.json({ status: "userRegistered", error: "user already registered" })
-//                 }
-//                 else
-//                 {
-//                     const hashPassword = await bcrypt.hash(req.body.password, 10)
-//                     const user = await User.create({
-//                         userName: req.body.userName,
-//                         email: req.body.email,
-//                         password: hashPassword
-//                     })
-//                     res.json({ status: "ok", _id: user._id, name: user.userName })
-//                 }
-
-//             } catch (err) {
-//                 console.log("err", err)
-//                 res.json({ status: 'error', error: "Duplicate email" })
-//             }
-//         }
 
 const userSignup = async (req, res) => {
   try {
@@ -65,7 +39,6 @@ const userSignup = async (req, res) => {
       credentials,   
     } = req.body;
     
-
     // console.log("signup "+JSON.stringify(req.body))
     const userExists = await User.findOne({ email });
     
@@ -127,79 +100,7 @@ const userSignup = async (req, res) => {
   }
 };
 
-const userLogin = async (req, res) => {
-  try {
-    const { email, password, isTeacher } = req.body;
 
-    if (isTeacher) {
-      // Check in the teacher database
-      const teacher = await Teacher.findOne({ email });
-
-      if (teacher) {
-        const passwordValid = await bcrypt.compare(password, teacher.password);
-
-        if (passwordValid) {
-          const token = jwt.sign(
-            {
-              name: teacher.userName,
-              email: teacher.email,
-              id: teacher._id,
-              role: 1, // Set the role as 'teacher' for teachers
-            },
-            process.env.JWT_SECRET,
-            {
-              expiresIn: "7d",
-            }
-          );
-
-          return res.json({
-            status: "ok",
-            message: "Login Success",
-            user: token,
-            role: 1,
-          });
-        }
-      }
-    } else {
-      // Check in the user database
-      const user1 = await User.findOne({ email });
-
-      if (user1) {
-        const passwordValid = await bcrypt.compare(password, user1.password);
-
-        if (passwordValid) {
-          const token = jwt.sign(
-            {
-              name: user1.userName,
-              email: user1.email,
-              id: user1._id,
-              role: 0,
-            },
-            process.env.JWT_SECRET,
-            {
-              expiresIn: "7d",
-            }
-          );
-
-          const username = user1.userName;
-
-          return res.json({
-            status: "ok",
-            message: "Login Success",
-            user: token,
-            // username:username,
-            role: 0,
-          });
-        }
-      }
-    }
-
-    res.json({ status: "error", error: "Invalid Credentials", user: false });
-  } catch (err) {
-    res.json({ status: "error", error: "Oops, catch error" });
-    console.log(err);
-  }
-};
 
 const userotpsend = async (req, res) => {
   const { email } = req.body;
@@ -262,7 +163,7 @@ const userotpsend = async (req, res) => {
         });
       }
     } else {
-      res.status(400).json({ error: "This User Not Exist In our Db" });
+      res.status(400).json({ error: "This User is not registered" });
     }
   } catch (error) {
     res.status(400).json({ error: "Invalid Details", error });
@@ -271,38 +172,35 @@ const userotpsend = async (req, res) => {
 
 const userLoginwithOtp = async (req, res) => {
   const { email, otp } = req.body;
-  console.log("req.body  " + req.body.email);
-  console.log("req.body  " + req.body.otp);
 
   if (!otp || !email) {
     res.status(400).json({ error: "Please Enter Your OTP and email" });
+    return;
   }
 
   try {
     const otpverification = await userotp.findOne({ email: email });
-    console.log("otp received!!  " + otpverification.otp);
 
-    if (otpverification.otp === otp) {
-      const preuser = await User.findOne({ email: email });
-      // console.log("preuser ", preuser);
-      // token generate
-      const token = await preuser.generateAuthtoken();
-      // console.log("token===  " + token);
-      console.log("userId  " + preuser._id);
-      res.status(200).json({
-        message: "User Login Succesfully Done",
-        userId: preuser._id,
-        userName: preuser.userName,
-        email: preuser.email,
-        userToken: token,
-      });
-    } else {
-      res.status(400).json({ error: "Invalid Otp" });
+    if (!otpverification || otpverification.otp !== otp) {
+      res.status(400).json({ error: "Invalid OTP" });
+      return;
     }
+
+    const preuser = await User.findOne({ email: email });
+    const token = await preuser.generateAuthtoken();
+
+    res.status(200).json({
+      message: "User Login Successfully Done",
+      userId: preuser._id,
+      userName: preuser.userName,
+      email: preuser.email,
+      userToken: token,
+    });
   } catch (error) {
-    res.status(400).json({ error: "Invalid Details", error });
+    res.status(500).json({ error: "Invalid Details", error });
   }
 };
+ 
 
 const verifyUserToken = async (req, res) => {
   try {
@@ -337,35 +235,6 @@ const verifyUserToken = async (req, res) => {
   }
 };
 
-// const verifyToken = async (req, res) => {
-//   try {
-//     const decodedToken = jwt.verify(req.body.Token, process.env.JWT_SECRET);
-//     const user = await User.findOne({ email: decodedToken.email });
-
-//     if (user.image) {
-//       user.image = `http://localhost:4000/${user.image}`;
-//     } else {
-//       user.image = `https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png`;
-//     }
-//     return res.status(200).json({ message: "token valid", token: true });
-//   } catch (err) {
-//     res.json({ status: "error", error: "invalid token", token: false });
-//   }
-// };
-
-// const usergetUserDetails = (req, res) => {
-//   const userId = req.user._id; // Assuming you pass the user object in the request
-//   User.findById(userId, (err, user) => {
-//     if (err) {
-//       return res.status(500).json({ error: 'Internal server error' });
-//     }
-//     if (!user) {
-//       return res.status(404).json({ error: 'User not found' });
-//     }
-//     // Return user data as JSON response
-//     res.json(user);
-//   });
-// };
 
 const usergetUserDetails = async (req, res) => {
   try {
@@ -387,21 +256,19 @@ const usergetUserDetails = async (req, res) => {
 const upload = multer({ storage: multer });
 const userImageUpdate = async (req, res) => {
   try {
-    const token = req.query.token; // Access the token from the query parameter
+    const token = req.query.token;
 
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findOne({ _id: decodedToken._id });
 
     if (user) {
-      // Check if there are uploaded files
       if (!req.file) {
         return res
           .status(400)
           .json({ status: "error", message: "No image uploaded" });
       }
 
-      // Update the user's image field in the database
       const update = await User.updateOne(
         { _id: decodedToken.id },
         {
@@ -447,7 +314,6 @@ const fetchUserProfilePhoto = async (req, res) => {
 
 const viewTeachers = async (req, res) => {
   try {
-    // Query your database to fetch the list of users who are teachers
     const teachers = await Teacher.find({ isTeacher: true });
 
     res.json(teachers);
@@ -906,7 +772,7 @@ const getTeachersByCourse = async(req, res) => {
     const instructorIds = course.instructorIds;
 
     const instructors = await Teacher.find({ _id: { $in: instructorIds } });
-
+    console.log("ccc" + instructors)
     res.json(instructors);
   } catch (error) {
     console.error('Error fetching instructors:', error);
@@ -926,7 +792,6 @@ const getAllTeachersList = async (req, res) => {
 
 module.exports = {
   userSignup,
-  userLogin,
   userLoginwithOtp,
   userotpsend,
   verifyUserToken,

@@ -10,32 +10,31 @@ const Availability = require("../model/availabilityModel");
 const Notification = require("../model/notificationModel");
 const mongoose = require('mongoose');
 
-const secretKey = "your-secret-key";
 
 const teacherLogin = async (req, res) => {
   console.log("teacherlog");
   const { email, password } = req.body;
 
   try {
-    // Check if a teacher with the provided email exists
     const teacher = await Teacher.findOne({ email });
     if (!teacher) {
       return res.status(404).json({ error: "Teacher not found" });
     }
-    
-    if (!teacher.isTeacherApproved) {
-      return res.status(401).json({ error: "Admin approval pending" });
+  
+   else if (teacher.isBlock) {
+    console.log("111")
+      return res.status(400).json({ error: "Teacher blocked" });
     }
-    
-    // Verify the provided password
+  
+   else if (!teacher.isTeacherApproved) {
+      return res.status(400).json({ error: "Admin approval pending" });
+    }
+  
     const isPasswordValid = await bcrypt.compare(password, teacher.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid password" });
+      return res.status(400).json({ error: "Invalid password" });
     }
-
-    if (teacher.isBlock) {
-      return res.status(403).json({ error: "Teacher blocked" });
-    }
+      
   
     // Generate an access token
     const accessToken = jwt.sign(
@@ -51,25 +50,29 @@ const teacherLogin = async (req, res) => {
       { id: teacher._id, userName: teacher.userName, role: teacher.role },
       process.env.JWT_REFRESH,
       {
-        expiresIn: "7d", // Set the expiration time for refresh tokens
+        expiresIn: "7d", 
       }
     );
 
-    // Send the access token and refresh token in the response as cookies
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Set to true in production
+      secure: process.env.NODE_ENV === "production", 
     });
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Set to true in production
+      secure: process.env.NODE_ENV === "production",
     });
 
     res.status(200).json({ token: accessToken, teacher });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+  
+    if (error instanceof SomeSpecificError) {
+      return res.status(401).json({ error: "Some specific error message" });
+    }
+  
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -97,11 +100,9 @@ const checkTeacherProfilePicture =  async(req,res) => {
 const teacherData = async (req, res) => {
   console.log("hello");
   try {
-    // Get the teacher ID from the token
     const teacherId = req.teacher.id;
     console.log("teacher:  " + teacherId);
 
-    // Fetch the teacher data from the database using the teacher ID
     const teacher = await Teacher.findById(teacherId);
     if (!teacherId) {
       return res
@@ -113,7 +114,6 @@ const teacherData = async (req, res) => {
     }
     console.log("test123");
 
-    // Return the teacher data
     res.status(200).json({ teacher });
   } catch (err) {
     console.error(err);
@@ -124,7 +124,6 @@ const teacherData = async (req, res) => {
 const TeacherGetAllUsers = async (req, res) => {
   try {
     let users = await User.find();
-    // console.log(users+'userslist')
     if (users) {
       res.json({ status: "ok", users: users });
     } else {
@@ -136,18 +135,6 @@ const TeacherGetAllUsers = async (req, res) => {
     console.log(err);
   }
 };
-
-// const teacherViewCourse = async (req, res) => {
-
-//     try {
-//       const courses = await Course.find();
-//       console.log("courses   ::"+courses);
-//       res.status(200).json(courses);
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ message: "Internal server error" });
-//     }
-//   };
 
 const teacherViewCourse = async (req, res) => {
   console.log("tvc");
@@ -175,27 +162,9 @@ const teacherViewCourse = async (req, res) => {
   }
 };
 
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, './public/uploads'); // Specify the upload directory
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, Date.now() + '-' + file.originalname); // Generate a unique filename
-//   },
-// });
-
-// const upload = multer({ storage: storage });
-
 const teacherUploadProfilePhoto = async (req, res) => {
   console.log("here", req.body);
   try {
-    // const file = req.file;
-    // if (!file) {
-    //   return res.status(400).json({ error: 'No file uploaded' });
-    // }
-
-    // const filePath = file.path;
-    // Access the uploaded file using req.file
     const uploadedFilePath = req.file.filename;
 
     console.log(uploadedFilePath + "  filename");
@@ -220,43 +189,7 @@ const teacherUploadProfilePhoto = async (req, res) => {
   }
 };
 
-// const addAvailability = async (req, res) => {
-//   try {
-//     const { teacherId, availableTimings } = req.body;
 
-//     if (!Array.isArray(availableTimings) || availableTimings.length === 0) {
-//       return res.status(400).json({ message: 'Invalid availableTimings data' });
-//     }
-
-//     const savedAvailabilities = [];
-//     for (const timing of availableTimings) {
-//       const { dayOfWeek, startTime, endTime } = timing;
-
-//       // Create a new availability
-//       const newAvailability = new Availability({
-//         teacher: teacherId,
-//         dayOfWeek,
-//         startTime,
-//         endTime,
-//       });
-
-//       const savedAvailability = await newAvailability.save();
-//       savedAvailabilities.push(savedAvailability);
-//     }
-
-//     // Update the teacher's availableTimings array
-//     const teacher = await Teacher.findByIdAndUpdate(
-//       teacherId,
-//       { $push: { availableTimings: { $each: availableTimings } } },
-//       { new: true }
-//     );
-
-//     res.status(201).json(savedAvailabilities);
-//   } catch (error) {
-//     console.error('Error adding availability:', error);
-//     res.status(500).json({ message: 'Internal Server Error' });
-//   }
-// };
 
 const addAvailability = async (req, res) => {
   console.log("addavail");
@@ -458,8 +391,8 @@ const getTeacherVideos = async (req, res) => {
 
 const getTeacherSpec = async (req, res) => {
   const teacherId = req.teacher.id;
+  console.log("teach==>" + teacherId);
   try {
-    console.log("teach==>" + teacherId);
     if (!teacherId) {
       return res.status(404).json({ error: 'Teacher not found' });
     }
@@ -657,8 +590,8 @@ const updateSessionTiming =  async(req, res) => {
 }
 
 const getTeacherAvailabilityList = async(req,res) => {
+  console.log("avail-t ")
   const teacherId = req.params.teacherId;
-
   try {
     // Check if the teacher exists
     const teacher = await Teacher.findById(teacherId);
@@ -727,7 +660,7 @@ const getTeacherCourses = async (req, res) => {
     }
 
     const courses = teacher.courses;
-    console.log("courses   "+courses)
+    // console.log("courses   "+courses)
     res.status(200).json(courses);
 } catch (error) {
     console.error('Error fetching teacher courses:', error);

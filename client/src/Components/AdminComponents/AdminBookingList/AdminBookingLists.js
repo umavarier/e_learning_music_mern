@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios";
 import AdminHeader from "../Header/AdminHeader";
 import AdminSidebar from "../Header/AdminSidebar";
 import { toast } from "react-toastify";
@@ -21,6 +21,19 @@ import {
 import { Delete as DeleteIcon } from "@mui/icons-material"; 
 import { format, isBefore, isAfter, isToday } from "date-fns";
 
+axios.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token) {
+      config.headers.Authorization = `${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 const UserAppointmentsTable = () => {
   const [appointments, setAppointments] = useState([]);
   const [page, setPage] = useState(0);
@@ -28,15 +41,10 @@ const UserAppointmentsTable = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const accessToken = Cookies.get("token");
-    const decodedToken = jwt_decode(accessToken);
     const fetchAppointments = async () => {
       try {
-        const response = await axios.get("/adminGetUserAppointments", {
-          headers: {
-            Authorization: `${Cookies.get("token")}`,
-          },
-        });
+        const response = await axios.get("/adminGetUserAppointments");
+
         // console.log("app-res----" + JSON.stringify(response.data));
         const transformedAppointments = response.data.map((appointment) => ({
           appointmentId: appointment.appointmentId,
@@ -80,15 +88,10 @@ const UserAppointmentsTable = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         const accessToken = Cookies.get("token");
-        const decodedToken = jwt_decode(accessToken);
         // console.log("Appid----" + appointmentId);
         try {
-          axios.delete(`/adminCancelAppointment/${appointmentId}`, {
-            headers: {
-              Authorization: `${Cookies.get("token")}`,
-            },
-          });
-
+          axios.delete(`/adminCancelAppointment/${appointmentId}`);
+         
           setAppointments((prevAppointments) =>
             prevAppointments.filter(
               (appointment) => appointment._id !== appointmentId

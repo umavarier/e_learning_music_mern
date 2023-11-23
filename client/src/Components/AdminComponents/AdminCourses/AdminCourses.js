@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios";
+import Cookies from "js-cookie";
 import AdminHeader from "../Header/AdminHeader";
 import AdminSidebar from "../Header/AdminSidebar";
 import { toast } from "react-toastify";
@@ -18,6 +19,19 @@ import {
   Paper,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token) {
+      config.headers.Authorization = `${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 function AdminCourseManagement() {
   const [isAddCourseModalOpen, setAddCourseModalOpen] = useState(false);

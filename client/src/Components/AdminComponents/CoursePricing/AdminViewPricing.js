@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -16,6 +16,19 @@ import AdminSidebar from "../Header/AdminSidebar";
 import Swal from 'sweetalert2';
 import { toast } from "react-toastify";
 
+axios.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token) {
+      config.headers.Authorization = `${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 const PricingDetails = () => {
   const [pricingDetails, setPricingDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,16 +37,8 @@ const PricingDetails = () => {
   const [pricingToEdit, setPricingToEdit] = useState(null);
 
   useEffect(() => {
-    // Fetch pricing details when the component mounts
-    const accessToken = Cookies.get("token");
-    const decodedToken = jwt_decode(accessToken);
-
     axios
-      .get("/adminGetPricingDetails", {
-        headers: {
-          Authorization: `${Cookies.get("token")}`,
-        },
-      })
+      .get("/adminGetPricingDetails")
       .then((response) => {
         setPricingDetails(response.data);
         setIsLoading(false);
@@ -45,12 +50,10 @@ const PricingDetails = () => {
   }, []);
 
   const handleAddPricingClick = () => {
-    // Navigate to the "adminUpdateEnrollmentPricing" page for adding new pricing data
     navigate("/adminUpdateEnrollmentPricing");
   };
 
   const handleEditPricing = (pricing) => {
-    // Set the pricing data to edit and open the edit modal
     setPricingToEdit(pricing);
     setEditModalOpen(true);
   };
@@ -67,12 +70,7 @@ const PricingDetails = () => {
       }).then((result) => {
         if (result.isConfirmed) {
       axios
-        .delete(`/adminDeletePricing/${pricing._id}`
-        , {
-            headers: {
-              Authorization: `${Cookies.get("token")}`,
-            },
-          })
+        .delete(`/adminDeletePricing/${pricing._id}`)
         .then((response) => {
           if (response.status === 200) {
             toast.success("pricing data deleted successfully ")
@@ -89,18 +87,11 @@ const PricingDetails = () => {
 };
 
   const fetchPricingData = () => {
-    const accessToken = Cookies.get("token");
-    const decodedToken = jwt_decode(accessToken);
 
     axios
-      .get("/adminGetPricingDetails",{
-        headers: {
-            Authorization: `${Cookies.get("token")}`,
-          },
-      })
+      .get("/adminGetPricingDetails")
       .then((response) => {
         if (response.status === 200) {
-          // Update the pricing data in the state
           setPricingDetails(response.data);
         } else {
           console.error("Error fetching pricing data:", response.data.message);
@@ -112,17 +103,13 @@ const PricingDetails = () => {
   };
 
   const handlePricingUpdated = (updatedPricing) => {
-    // Handle the updated pricing data (e.g., update state or make an API request).
     console.log("Updated Pricing Data:", updatedPricing);
 
-    // Update the state with the updated pricing data
     const updatedPricingDetails = pricingDetails.map((pricing) =>
       pricing._id === updatedPricing._id ? updatedPricing : pricing
     );
 
     setPricingDetails(updatedPricingDetails);
-
-    // Close the edit modal
     setEditModalOpen(false);
   };
 

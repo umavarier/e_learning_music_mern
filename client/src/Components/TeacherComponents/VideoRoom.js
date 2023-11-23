@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {useParams} from 'react-router-dom';
-import {appId, serversecret} from '../CourseComponent/helper' 
+import {appId, serversecret} from '../CourseComponents/helper' 
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 
 function randomID(len) {

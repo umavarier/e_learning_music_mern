@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Footer from '../Footer/Footer';
 import AdminHeader from '../Header/AdminHeader';
-import { useNavigate } from 'react-router-dom';
-import axios from '../../../utils/axios';
-import { TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputAdornment, IconButton } from '@mui/material';
+import axios from '../../../Utils/axios';
+import { TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, InputAdornment, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
-import { adminDeleteUser, admingetAllusers, adminSearchUser } from '../../../utils/Constants';
+import { adminDeleteUser, admingetAllusers, adminSearchUser } from '../../../Utils/constants.js';
 import Swal from 'sweetalert2';
 import AdminSidebar from '../Header/AdminSidebar';
 import ReactPaginate from 'react-paginate'; 
@@ -16,15 +11,13 @@ import ReactPaginate from 'react-paginate';
 
 function Usermanagement() {
   const [users, setUsers] = useState([]);
-  const [pageNumber, setPageNumber] = useState(0); // State to track the current page number
-  const usersPerPage = 10; // Number of users to display per page
-  const navigate = useNavigate();
+  const [pageNumber, setPageNumber] = useState(0); 
+  const usersPerPage = 10;
 
   useEffect(() => {
     getUserLists();
   }, []);
 
-  // Function to fetch users based on the current page number
   const getUserLists = () => {
     axios.get(admingetAllusers).then((response) => {
       setUsers(response.data.users);
@@ -34,7 +27,7 @@ function Usermanagement() {
   }
 
   const userSearch = (e) => {
-    let userr = e.target.value;
+    const userr = e.target.value;
     console.log(userr);
     if (!userr) {
       getUserLists();
@@ -125,15 +118,7 @@ function Usermanagement() {
               ),
             }}
           />
-          {/* <Button
-            variant="contained"
-            className="addButtonAdmin"
-            startIcon={<AddIcon />}
-            onClick={() => navigate('/adminAddUser')}
-          >
-            Add
-          </Button> */}
-
+         
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
@@ -150,23 +135,13 @@ function Usermanagement() {
                     <TableCell style={{fontSize : "24px"}}>{index + 1}</TableCell>
                     <TableCell style={{fontSize : "24px"}}>{obj.userName}</TableCell>
                     <TableCell style={{fontSize : "24px"}}>{obj.email}</TableCell>
-                    {/* <TableCell>
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                       
-                        onClick={() => blockUser(obj._id)}
-                      >
-                        Block
-                      </Button>
-                    </TableCell> */}
+                   
                   </TableRow>
                 )}
               </TableBody>
             </Table>
           </TableContainer>
 
-          {/* Add pagination component */}
           <ReactPaginate
             previousLabel={"Previous"}
             nextLabel={"Next"}

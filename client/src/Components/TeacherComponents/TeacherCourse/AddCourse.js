@@ -1,7 +1,7 @@
 import React, { useState ,useEffect, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import {selectTeacherId,  selectTeacherName } from '../../../Redux/teacherSlice';
-import axios from '../../../utils/axios';
+import axios from '../../../Utils/axios';
 import TeacherHeader from '../Header/TeacherHeader';
 import TeacherSidebar from '../Sidebar/TeacherSidebar';
 import './AddCourse.css';

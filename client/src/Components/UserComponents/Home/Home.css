@@ -1,0 +1,224 @@
+.home-banner-container {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  justify-content: center;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+.home-banner-image {
+  max-width: 100%;
+  height: auto;
+  padding: 20px;
+}
+
+.home-banner-container .content {
+  padding: 20px;
+}
+
+.home-banner-container h1 {
+  font-size: 36px;
+  margin: 20px;
+  color: #0e157b;
+  text-align: center;
+}
+
+.home-banner-container p {
+  margin: 10px 0;
+  font-size: 24px;
+  color: rgb(49, 4, 246);
+}
+.home-banner-container p span {
+  font-size: 36px;
+  color: rgb(4, 4, 55);
+}
+.home-course-container {
+  /* padding: 20px; */
+  margin-left: 200px;
+  margin-right: 200px;
+}
+.teacher-container {
+  padding: 40px;
+  margin-left: 100px;
+  margin-right: 100px;
+  justify-content: space-between;
+}
+.teacher-card {
+  border: 5px solid #ccc;
+  border-radius: 15px;
+  margin: 20px;
+  box-shadow: 0 2px 4px rgba(18, 2, 89, 0.1);
+  transition: box-shadow 0.3s ease;
+  width: 180px; 
+  height: 280px;
+}
+.teacher-card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for the teacher's profile image */
+.card-img-square {
+  overflow: hidden;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  height: 250px; 
+}
+
+.card-img-square img {
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+}
+
+/* Style for the teacher's name */
+.card-title {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+.card-text {
+  /* margin-top: 5px; */
+  font-size: 14px;
+  color: #555;
+}
+
+.statistics {
+  display: flex;
+}
+
+.statistics p {
+  flex: 1;
+  text-align: center;
+  font-size: 24px;
+}
+
+.card {
+  margin: 10px;
+}
+
+p {
+  font-size: 18px; 
+  line-height: 1.5;
+  color: #333; 
+}
+
+div.statistics p {
+  font-size: 14px;
+  color: #0b0237;
+  margin-bottom: 10px;
+}
+
+
+div.statistics p span {
+  font-weight: bold; 
+  color: #555;
+}
+
+
+.rounded-card-c {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #b0dbf1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  padding: 10px;
+  transition: transform 0.3s ease;
+}
+
+.rounded-card:hover {
+  transform: scale(1.1);
+}
+
+.subscription-section {
+  background-color: #b0dbf1;
+  color: #fff; 
+  padding: 50px 0;
+  text-align: center;
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-bottom: 50px;
+}
+
+
+.subscription-cards {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.subscription-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: calc(20% - 20px); 
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+
+.discounted-price {
+  color: #f00; 
+}
+
+.enroll-button {
+  background-color: #007bff; 
+  color: #fff; 
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  align-items: center;
+}
+
+.enroll-button:hover {
+  background-color: #0056b3; 
+}
+.book-button {
+  width: 30%;
+  padding: 10px;
+  margin-top: 80px;
+  margin-left: 200px;
+  border: none;
+  border-radius: 5px;
+  background-color: #067ef6;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  align-items: center;
+}
+.book-button:hover {
+  background: linear-gradient(to right, #053190, #25049e);
+}
+/* .join-demo-button {
+  width: 20%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #067ef6;
+  font-size: 18px;
+  color: #fff;
+  cursor: pointer;
+  align-items: center;
+}
+.join-demo-button:hover {
+  background: linear-gradient(to right, #053190, #25049e);
+} */
+
+.banner-home-end {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-left: 200px;
+  margin-right: 100px;
+  margin-top: 0px;
+}

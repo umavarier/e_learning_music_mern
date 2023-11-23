@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios";
 import Swal from "sweetalert2";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -35,7 +35,7 @@ function AdminSignup() {
       });
       
       try {
-        let admin = await axios.post('/adminSignUp', body, {
+        const admin = await axios.post('/adminSignUp', body, {
           headers: { "Content-Type": "application/json" },
         });
         if (admin.data.status === 'ok') {

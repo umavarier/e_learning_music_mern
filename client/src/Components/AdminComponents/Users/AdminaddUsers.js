@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Footer from '../Footer/Footer'
 import AdminHeader from '../Header/AdminHeader'
-import axios from '../../../utils/axios';
+import axios from '../../../Utils/axios';
 import Swal from 'sweetalert2';
-import { signUpPost } from '../../../utils/Constants';
+import { signUpPost } from '../../../Utils/constants';
 
 function AdminaddUsers() {
 
@@ -28,7 +27,7 @@ function AdminaddUsers() {
               )
         } else{
             try{
-                let response= await axios.post(signUpPost,body,{ headers: { "Content-Type": "application/json" } })
+            const response= await axios.post(signUpPost,body,{ headers: { "Content-Type": "application/json" } })
                 if(response.data.status=='ok'){
                     Swal.fire(
                         'Good job!',
@@ -94,7 +93,7 @@ function AdminaddUsers() {
 
 
             </form>
-            <Footer />
+           
         </div>
     )
 }

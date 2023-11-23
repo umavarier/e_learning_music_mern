@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminHeader from '../Header/AdminHeader';
 import AdminSidebar from '../Header/AdminSidebar';
-import Footer from '../Footer/Footer';
-import axios from '../../../utils/axios';
+import axios from '../../../Utils/axios';
 import Swal from 'sweetalert2';
 import './AdminAddTeacher.css';
 
@@ -26,7 +25,7 @@ function AdminAddTeacher() {
           password,
         });
 
-        let response = await axios.post('/adminAddTeacher', body, {
+        const response = await axios.post('/adminAddTeacher', body, {
           headers: { 'Content-Type': 'application/json' },
         });
         console.log("response123 "+response.status)
@@ -98,7 +97,6 @@ function AdminAddTeacher() {
         </div>
       </form>
       </div>
-      <Footer />
     </div>
   );
 }

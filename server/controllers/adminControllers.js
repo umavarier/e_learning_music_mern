@@ -5,10 +5,10 @@ const jwt = require("jsonwebtoken");
 const Enrollment = require("../model/enrollmentModel");
 const Course = require("../model/courseModel");
 const Appointment = require("../model/appointmentModel");
-const Payment = require("../model/paymentModel")
+const Payment = require("../model/paymentModel");
 const Admin = require("../model/adminModel");
 const bcrypt = require("bcrypt");
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 const adminSignUp = async (req, res) => {
   const { username, email, password } = req.body;
@@ -254,14 +254,16 @@ const adminBlockTeacher = async (req, res) => {
   const { teacherId } = req.params;
 
   try {
-    // Find the teacher by ID
     const teacher = await Teacher.findById(teacherId);
 
     if (!teacher) {
       return res.status(404).json({ message: "Teacher not found" });
     }
     teacher.isBlock = !teacher.isBlock;
-
+    
+    teacher.blockMessage = teacher.isBlock
+      ? "You have been blocked by the admin."
+      : "";
     await teacher.save();
 
     res.json({
@@ -351,7 +353,7 @@ const adminDeleteCourse = async (req, res) => {
   }
 };
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
     user: process.env.EMAIL,
     pass: process.env.PASSWORD,
@@ -372,21 +374,21 @@ const adminApproveTeacher = async (req, res) => {
 
     await teacher.save();
     const mailOptions = {
-      from: process.env.EMAIL, 
-      to: teacher.email, 
-      subject: 'Teacher Approval Confirmation',
-      text: 'Congratulations! You have been approved as a teacher on our platform.',
+      from: process.env.EMAIL,
+      to: teacher.email,
+      subject: "Teacher Approval Confirmation",
+      text: "Congratulations! You have been approved as a teacher on our platform.",
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.error('Error sending confirmation email:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        console.error("Error sending confirmation email:", error);
+        res.status(500).json({ message: "Internal server error" });
       } else {
-        console.log('Confirmation email sent: ' + info.response);
-        res.status(200).json({ message: 'Teacher approved successfully' });
+        console.log("Confirmation email sent: " + info.response);
+        res.status(200).json({ message: "Teacher approved successfully" });
       }
-    })
+    });
   } catch (error) {
     console.error("Error approving teacher:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -409,21 +411,21 @@ const adminRejectTeacher = async (req, res) => {
     await teacher.remove();
 
     const mailOptions = {
-      from: process.env.EMAIL, 
-      to: teacher.email, 
-      subject: 'Teacher Approval Rejection',
-      text: 'Sorry! You have been rejected as a teacher on our platform!!',
+      from: process.env.EMAIL,
+      to: teacher.email,
+      subject: "Teacher Approval Rejection",
+      text: "Sorry! You have been rejected as a teacher on our platform!!",
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.error('Error sending confirmation email:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        console.error("Error sending confirmation email:", error);
+        res.status(500).json({ message: "Internal server error" });
       } else {
-        console.log('Confirmation email sent: ' + info.response);
-        res.status(200).json({ message: 'Teacher Rejected' });
+        console.log("Confirmation email sent: " + info.response);
+        res.status(200).json({ message: "Teacher Rejected" });
       }
-    })
+    });
 
     res.status(200).json({ message: "Teacher rejected successfully" });
   } catch (error) {
@@ -535,14 +537,16 @@ const adminGetUserAppointments = async (req, res) => {
       .populate("teacherId", "userName email") // Populate teacher details
       .populate("courseId", "name"); // Populate course details
 
-    const transformedAppointments = appointments.map(appointment => ({
+    const transformedAppointments = appointments.map((appointment) => ({
       appointmentId: appointment._id,
-      studentName: appointment.studentId ? appointment.studentId.userName : "N/A",
+      studentName: appointment.studentId
+        ? appointment.studentId.userName
+        : "N/A",
       teacherName: appointment.teacherId.userName,
       courseName: appointment.courseId.name,
       date: appointment.date,
       startTime: appointment.startTime,
-      endTime: appointment.endTime
+      endTime: appointment.endTime,
     }));
 
     res.json(transformedAppointments);
@@ -552,12 +556,13 @@ const adminGetUserAppointments = async (req, res) => {
   }
 };
 
-
-const adminCancelAppointment = async(req,res) => {
+const adminCancelAppointment = async (req, res) => {
   try {
     const appointmentId = req.params.appointmentId;
-    
-    const deletedAppointment = await Appointment.findByIdAndDelete(appointmentId);
+
+    const deletedAppointment = await Appointment.findByIdAndDelete(
+      appointmentId
+    );
 
     if (!deletedAppointment) {
       return res.status(404).json({ message: "Appointment not found" });
@@ -566,52 +571,61 @@ const adminCancelAppointment = async(req,res) => {
     res.status(200).json({ message: "Appointment canceled successfully" });
   } catch (error) {
     console.error("Error canceling appointment:", error);
-    res.status(500).json({ message: "An error occurred while canceling the appointment" });
+    res
+      .status(500)
+      .json({ message: "An error occurred while canceling the appointment" });
   }
+};
 
-}
-
-const getAdminPaymentList = async(req,res) => {
+const getAdminPaymentList = async (req, res) => {
   try {
-    const payments = await Payment.find().populate({
-      path: 'teacherId',
-      select: 'userName', // Select the teacher's name
-    }).populate({
-      path: 'purchasedCourse',
-      model: Course,
-      select: 'name', // Select the course name
-    }).populate({
-      path: 'userId',
-      model : User,
-      select : 'userName',
-    })
+    const payments = await Payment.find()
+      .populate({
+        path: "teacherId",
+        select: "userName", // Select the teacher's name
+      })
+      .populate({
+        path: "purchasedCourse",
+        model: Course,
+        select: "name", // Select the course name
+      })
+      .populate({
+        path: "userId",
+        model: User,
+        select: "userName",
+      });
 
-    console.log("pay  "+payments)
+    console.log("pay  " + payments);
 
     res.json(payments);
   } catch (error) {
-    console.error('Error fetching payment history:', error);
-    res.status(500).json({ message: 'Failed to fetch payment history' });
+    console.error("Error fetching payment history:", error);
+    res.status(500).json({ message: "Failed to fetch payment history" });
   }
-}
+};
 
-const adminBlockUser = async (req, res)=>{
-  const userId =  req.params.id
+const adminBlockUser = async (req, res) => {
+  const userId = req.params.id;
   try {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     user.isBlock = !user.isBlock;
     await user.save();
 
-    res.status(200).json({ user, message: `User ${user.isBlock ? 'blocked' : 'unblocked'} successfully` });
+    res
+      .status(200)
+      .json({
+        user,
+        message: `User ${user.isBlock ? "blocked" : "unblocked"} successfully`,
+      });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 module.exports = {
   adminSignUp,

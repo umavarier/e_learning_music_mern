@@ -1,9 +1,3 @@
-const { json } = require("express");
-const User = require("../model/userModel");
-const jwt = require("jsonwebtoken");
-const Teacher = require("../model/teacherModel");
-const Conversation = require("../model/conversationModel"); // Import the Conversation model
-const mongoose = require('mongoose');
 const Message = require('../model/messageModel')
 
 const fetchMessages = async (req, res) => {

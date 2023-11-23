@@ -9,7 +9,7 @@ import {
   selectTeacherId,
   selectTeacherProfilePicture,
 } from "../../../Redux/teacherSlice";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios.js";
 // import "./teacherProfile.css";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
@@ -32,7 +32,8 @@ import ListItemText from "@mui/material/ListItemText";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import MobileDatePicker from "@mui/lab/MobileDatePicker";
-import ChatComponent from "../../UserComponets/ChatComponent.js";
+import ChatComponent from "../../UserComponents/ChatComponent.js";
+import axiosWithBlockCheck from "../../../Utils/axiosWithBlockCheck.js";
 
 const TeacherProfile = () => {
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -111,7 +112,7 @@ const TeacherProfile = () => {
       formData.append("profilePhoto", profilePhoto);
       formData.append("teacherId", teacherId);
 
-      axios
+      axiosWithBlockCheck
         .post("/teachers/teacherUploadProfilePhoto", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -139,7 +140,7 @@ const TeacherProfile = () => {
     console.log("fetch");
     const decodedToken = jwt_decode(accessToken);
     const teacherId = decodedToken.id;
-    axios
+    axiosWithBlockCheck
       .get(`/teachers/fetchProfilePhoto/${teacherId}`, {
         headers: {
           Authorization: ` ${Cookies.get("token")}`,
@@ -378,10 +379,10 @@ const TeacherProfile = () => {
       formData.append("upload_preset", "videos_preset");
 
       try {
-        let cloudName = process.env.REACT_APP_CLOUDINARY_CLOUDNAME;
+        const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUDNAME;
 
         setUploading(true);
-        const response = await axios.post(
+        const response = await axiosWithBlockCheck.post(
           `https://api.cloudinary.com/v1_1/djvh6plui/video/upload`,
           formData,
           {
@@ -474,7 +475,7 @@ const TeacherProfile = () => {
       const decodedToken = jwt_decode(accessToken);
       const teacherId = decodedToken.id;
       try {
-        const response = await axios.get(
+        const response = await axiosWithBlockCheck.get(
           `/teachers/getTeacherVideos/${teacherId}`,
           {
             headers: {
@@ -554,7 +555,7 @@ const TeacherProfile = () => {
   const handleMessageRead = (userId) => {
     setUnreadMessages((prevUnread) => ({
       ...prevUnread,
-      [userId]: 0, // Reset unread message count
+      [userId]: 0, 
     }));
   };
 
@@ -587,8 +588,8 @@ const TeacherProfile = () => {
                         src={
                           profilePhotoURL
                             ? profilePhotoURL
-                            // : `http://localhost:4000/uploads/${profilePhoto}`
-                            : `https://melodymusic.online/uploads/${profilePhoto}`
+                            : `http://localhost:4000/uploads/${profilePhoto}`
+                            // : `https://melodymusic.online/uploads/${profilePhoto}`
                         }
                         alt="Profile"
                         className="img-fluid rounded-circle"

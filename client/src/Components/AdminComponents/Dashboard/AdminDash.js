@@ -3,26 +3,30 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { Paper, Container, Typography } from '@mui/material';
 import AdminHeader from '../Header/AdminHeader';
 import AdminSidebar from '../Header/AdminSidebar';
-import Footer from '../Footer/Footer';
-import axios from '../../../utils/axios';
+import axios from '../../../Utils/axios';
 import Cookies from 'js-cookie';
-import jwt_decode from 'jwt-decode';
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token) {
+      config.headers.Authorization = `${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 function AdminDash() {
   const [enrolledUsers, setEnrolledUsers] = useState([]);
 
-  const accessToken = Cookies.get('token');
-  const decodedToken = jwt_decode(accessToken);
-
   useEffect(() => {
     const fetchEnrolledUsers = async () => {
       try {
-        const response = await axios.get('/getEnrolledUsersList', {
-          headers: {
-            Authorization: `${Cookies.get('token')}`,
-          },
-        });
-        console.log(JSON.stringify(response.data))
+        const response = await axios.get('/getEnrolledUsersList');
+        // console.log(JSON.stringify(response.data))
         setEnrolledUsers(response.data);
       } catch (error) {
         console.error('Error fetching enrolled users:', error);
@@ -53,10 +57,10 @@ function AdminDash() {
               }}
             >
               <Container>
-                <Typography variant="h2" align="center" mt={4} mb={4}>
+                <Typography variant="h4" align="center" mt={4} mb={4}>
                   DASHBOARD
                 </Typography>
-                <Paper elevation={3} className="mb-4 p-4">
+                <Paper elevation={3} className="mb-4">
                   <Typography variant="h5" align="center" mb={3}>
                     Enrolles users
                   </Typography>
@@ -83,7 +87,7 @@ function AdminDash() {
           </main>
         </div>
       </div>
-      <Footer />
+   
     </Fragment>
   );
 }

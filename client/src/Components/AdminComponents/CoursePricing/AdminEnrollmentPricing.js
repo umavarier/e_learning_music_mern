@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../../utils/axios";
-// import "./AdminEnrollmentPricing.css";
+import axios from "../../../Utils/axios";
 import AdminHeader from "../Header/AdminHeader";
 import AdminSidebar from "../Header/AdminSidebar";
 import {
@@ -22,7 +21,19 @@ import { AddCircle } from "@mui/icons-material";
 import { TablePagination } from "@mui/material";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import jwt_decode from "jwt-decode";
+
+axios.interceptors.request.use(
+  (config) => {
+    const token = Cookies.get("token");
+    if (token) {
+      config.headers.Authorization = `${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 function AdminEnrollmentPricing() {
   const [classPricing, setClassPricing] = useState([]);
@@ -34,6 +45,7 @@ function AdminEnrollmentPricing() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+
 
   const handleAddClassPricing = () => {
     if (numberOfClasses && classPrice && planName && planNumber) {
@@ -70,13 +82,7 @@ function AdminEnrollmentPricing() {
         console.log("Number of Classes: " + item.numberOfClasses);
         console.log("Class Price: " + item.price);
       });
-      const accessToken = Cookies.get("token");
-      const decodedToken = jwt_decode(accessToken);
-      await axios.post("/adminUpdateEnrollmentPricing", {classPricing}, {
-        headers: {
-          Authorization: `${Cookies.get("token")}`,
-        },
-      });
+      await axios.post("/adminUpdateEnrollmentPricing", {classPricing});
       toast.success("Enrollment pricing updated successfully");
       navigate("/adminGetPricingDetails");
     } catch (error) {

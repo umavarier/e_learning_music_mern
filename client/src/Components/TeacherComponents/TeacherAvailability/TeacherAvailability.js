@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./TeacherAvailability.css";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios";
 
 function TeacherAvailabilityPage() {
   const [availabilityData, setAvailabilityData] = useState([]);

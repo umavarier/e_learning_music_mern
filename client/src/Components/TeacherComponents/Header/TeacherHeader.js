@@ -25,7 +25,7 @@ import jwtDecode from "jwt-decode";
 import io from "socket.io-client";
 import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import LOGO from "../../UserComponets/Home/LOGO.png";
+import LOGO from "../../UserComponents/Home/LOGO.png";
 
 const TeacherName = styled(Typography)(({ theme }) => ({
   marginRight: theme.spacing(1),
@@ -50,31 +50,40 @@ function TeacherHeader() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
-  const socket = io("https://melodymusic.online");
-  // const socket = io("http://localhost:4000");
+  // const socket = io("https://melodymusic.online");
+  const socket = io("http://localhost:4000");
   useEffect(() => {
     const accessToken = Cookies.get("token");
 
-    if (accessToken) {
-      const decodedToken = jwtDecode(accessToken);
+    if (!accessToken) {
+      navigate("/teacherLogin");
+    }else {
+      try {
+        console.log("accessToken")
+        const decodedToken = jwtDecode(accessToken);
 
-      dispatch(
-        setTeacher({ id: decodedToken.id, name: decodedToken.userName })
-      );
-      const socket = io("https://melodymusic.online"); 
-      // const socket = io("http://localhost:4000"); 
+        dispatch(
+          setTeacher({ id: decodedToken.id, name: decodedToken.userName })
+        );
+        // const socket = io("https://melodymusic.online");
+        const socket = io("http://localhost:4000");
 
-      socket.on("notification", (notification) => {
-        setNotifications((prevNotifications) => [
-          ...prevNotifications,
-          notification,
-        ]);
-      });
-      return () => {
-        socket.disconnect();
-      };
+        socket.on("notification", (notification) => {
+          setNotifications((prevNotifications) => [
+            ...prevNotifications,
+            notification,
+          ]);
+        });
+        return () => {
+          socket.disconnect();
+        };
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        navigate("/teacherLogin");
+      }
+       
     }
-  }, [dispatch]);
+  }, [dispatch,navigate]);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -120,20 +129,10 @@ function TeacherHeader() {
               variant="h6"
               color="white"
               style={{ alignItems: "center" }}
-            >
-              
-            </Typography>
+            ></Typography>
           </Link>
 
           <AvatarWrapper>
-            {/* {profilePicture ? (
-              <Avatar src={profilePicture} alt="" />
-            ) : (
-              <Avatar>
-                {teacherName ? teacherName.charAt(0).toUpperCase() : ""}
-              </Avatar>
-            )} */}
-
             <TeacherName
               variant="body1"
               color="white"

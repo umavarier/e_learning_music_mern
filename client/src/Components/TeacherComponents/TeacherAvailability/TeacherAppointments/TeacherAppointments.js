@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TeacherHeader from "../../Header/TeacherHeader";
 import TeacherSidebar from "../../Sidebar/TeacherSidebar";
-import axios from "../../../../utils/axios";
+import axios from "../../../../Utils/axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
@@ -20,6 +20,7 @@ import {
   PlayArrow as PlayArrowIcon,
 } from "@mui/icons-material";
 import { format, isBefore, isAfter, isToday } from "date-fns";
+import axiosWithBlockCheck from "../../../../Utils/axiosWithBlockCheck";
 
 const TeacherAppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
@@ -29,17 +30,20 @@ const TeacherAppointmentsList = () => {
   const teacherId = decodedToken.id;
 
   useEffect(() => {
-    axios
+    axiosWithBlockCheck
       .get(`/teachers/getTeacherAppointments/${teacherId}`, {
         headers: {
-          Authorization: ` ${Cookies.get("token")}`,
+          Authorization: ` ${accessToken}`,
         },
       })
 
       .then((response) => {
         console.log("book---" + JSON.stringify(response.data));
         setAppointments(response.data);
-      });
+      })
+      .catch((error) => {
+        console.error("error fetching teacher appointments", error)
+      })
   }, []);
 
   const formatTime = (timeString) => {
@@ -85,7 +89,7 @@ const TeacherAppointmentsList = () => {
     axios
       .delete(`/teachers/cancelTeacherAppointment/${appointmentId}`, {
         headers: {
-          Authorization: ` ${Cookies.get("token")}`,
+          Authorization: ` ${accessToken}`,
         },
       })
       .then((response) => {

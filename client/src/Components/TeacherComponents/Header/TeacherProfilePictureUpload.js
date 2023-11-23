@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import axios from "../../../utils/axios";
+import axios from "../../../Utils/axios";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import { toast } from "react-toastify";

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../utils/axios";
+import axios from "../../Utils/axios";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import Avatar from "@mui/material/Avatar";
@@ -16,7 +16,7 @@ import { CssBaseline } from "@mui/material";
 import Card from "@mui/material/Card"; // Import the Card component
 import CardContent from "@mui/material/CardContent"; // Import the CardContent component
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import LOGO from "../UserComponets/Home/logo-black.png";
+import LOGO from "../UserComponents/Home/logo-black.png";
 
 function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -34,7 +34,7 @@ function AdminLogin() {
       Swal.fire("Please fill in all the fields");
     } else {
       try {
-        let response = await axios.post('/adminLogin', body, {
+        const response = await axios.post('/adminLogin', body, {
           headers: { "Content-Type": "application/json" },
         });
         console.log("response :::" +JSON.stringify(response.data.status))

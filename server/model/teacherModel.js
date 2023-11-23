@@ -53,8 +53,11 @@ const teacherSchema =  new mongoose.Schema({
         type : Boolean,
         default : false,
     },
-   
-    
+    blockMessage: {
+      type: String,
+      default: '',
+    },
+     
     courses: 
     [
         {
