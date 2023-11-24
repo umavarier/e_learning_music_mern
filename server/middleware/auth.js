@@ -14,7 +14,7 @@ const auth = (req, res, next) => {
       return res.status(403).json({ message: 'Forbidden' });
     }
     req.user = decodedToken;    
-    // console.log("dt"+JSON.stringify(decodedToken)) 
+    console.log("dt"+JSON.stringify(decodedToken)) 
     next(); 
   });
 };

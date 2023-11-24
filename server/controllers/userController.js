@@ -103,6 +103,7 @@ const userSignup = async (req, res) => {
 
 
 const userotpsend = async (req, res) => {
+  console.log("otp")
   const { email } = req.body;
   if (!email) {
     res.status(400).json({ error: "Please enter your email" });
@@ -420,7 +421,7 @@ const userGetTeachersTiming = async (req, res) => {
     }
 
     const availableTimings = teacher.availableTimings;
-    console.log("at--"+JSON.stringify(availableTimings))
+    // console.log("at--"+JSON.stringify(availableTimings))
     res.json({ availableTimings });
   } catch (error) {
     console.error("Error fetching teacher timings", error);
@@ -433,8 +434,8 @@ const bookDemo = async (req, res) => {
   try {
     const { course, teacher, token, date, startTime, endTime } = req.body;
     console.log("bookdemo  "+JSON.stringify(req.body))
-    const studentId = req.user._id;
-    console.log("user:" + req.user._id);
+    const studentId = req.params.studentId;
+    console.log("user:" + studentId);
     const newAppointment = new Appointment({
       studentId,
       teacherId: teacher,
@@ -452,12 +453,7 @@ const bookDemo = async (req, res) => {
     const teacherId = teacher;
     const message = `New appointment booked by user: ${studentId}`;
 
-    // const adminNotification = new Notification({
-    //   sender: studentId,
-    //   receiver: adminId,
-    //   message,
-    //   appointment: newAppointment._id,
-    // });
+   
 
     const teacherNotification = new Notification({
       sender: studentId,
@@ -466,14 +462,13 @@ const bookDemo = async (req, res) => {
       appointment: newAppointment._id,
     });
 
-    // await Promise.all([adminNotification.save(), teacherNotification.save()]);
     await Promise.all([teacherNotification.save()]);
     const user = await User.findById(studentId)
     const userEmail = user.email;
    
     const mailOptions = {
-      from: process.env.EMAIL, // replace with your Gmail email
-      to: userEmail, // replace with the user's email
+      from: process.env.EMAIL, 
+      to: userEmail, 
       subject: 'Free Demo Booking Successful',
       html: `
         <p>Your booking for the free demo is successful for ${course.name} </p>
@@ -553,13 +548,11 @@ const checkAppointmentTiming = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    // Parse the appointment time and current time as JavaScript Date objects
     const appointmentTime = new Date(
       `${appointment.dayOfWeek}T${appointment.startTime}`
     );
     const currentTime = new Date();
 
-    // Check if the current time has passed the appointment time
     const isTimePassed = currentTime > appointmentTime;
 
     res.json({ isTimePassed });
@@ -691,7 +684,7 @@ const getPaymentHistory = async (req, res) => {
 
 
 const getUserDemoBookings = async(req, res) => {
-  const userId = req.user._id;
+  const userId = req.params.userId;
 
   try {
     const userDemoBookings = await Appointment.find({ studentId: userId })

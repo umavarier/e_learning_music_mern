@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "../../../Utils/axios";
 import { toast } from "react-toastify";
 import Header from "../Home/Header.js";
+import jwt_decode from 'jwt-decode'
 import {
   Button,
   Table,
@@ -26,15 +27,16 @@ const UserDemoBookings = () => {
 
   useEffect(() => {
     const userToken = localStorage.getItem("userdbtoken");
+      const decodedToken = jwt_decode(userToken);
     axios
-      .get("/getUserDemoBookings", {
+      .get(`/getUserDemoBookings/${decodedToken._id}`, {
         headers: {
           Authorization: `${userToken}`,
         },
       })
       .then((response) => {
         setAppointments(response.data);
-        // console.log("getbook"+JSON.stringify(response.data))
+        console.log("getbook"+JSON.stringify(response.data))
       })
       .catch((error) => {
         console.error("Error fetching free demo bookings:", error);

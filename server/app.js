@@ -16,11 +16,11 @@ const port = process.env.PORT || 4000;
 const app = express();
 
 
-// app.use(cors({
-//   origin: 'https://melodymusic.vercel.app',
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   credentials:true
-// }));
+app.use(cors({
+  origin: 'https://melodymusic.vercel.app',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials:true
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -31,7 +31,7 @@ const teacherRouter = require('./routes/teacherRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const messageRoutes = require('./routes/messageRoute')
 
-app.use(cors());
+// app.use(cors());
 app.use(express.static('public'));
 app.use('/', userRouter);
 app.use('/teachers', teacherRouter);
@@ -49,8 +49,8 @@ async function startApp() {
     // Set up socket.io
     const io = socketIo(server, {
       cors: {
-        // origin: 'https://melodymusic.vercel.app', 
-        origin: 'http://localhost:3000', 
+        origin: 'https://melodymusic.vercel.app', 
+        // origin: 'http://localhost:3000', 
                 methods: ['GET', 'POST'],
       },
     });

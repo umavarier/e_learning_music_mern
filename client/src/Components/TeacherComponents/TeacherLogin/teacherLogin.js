@@ -51,7 +51,7 @@ function TeacherLogin() {
       try {
         const response = await axios.post(
           // "https://melodymusic.online/teachers/teacherLogin",
-          "http://localhost:4000/teachers/teacherLogin",
+          "/teachers/teacherLogin",
           body,
           {
             headers: { "Content-Type": "application/json" },

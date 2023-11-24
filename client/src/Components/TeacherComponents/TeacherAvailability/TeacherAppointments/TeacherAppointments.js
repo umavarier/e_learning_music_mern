@@ -168,7 +168,7 @@ const TeacherAppointmentsList = () => {
                   {appointments.map((appointment) => (
                     <TableRow key={appointment._id}>
                       <TableCell style={{ fontSize: "24px" }}>
-                        {appointment?.studentId.userName}
+                        {appointment?.studentId?.userName}
                       </TableCell>
                       <TableCell style={{ fontSize: "24px" }}>
                         {appointment.courseId?.name}

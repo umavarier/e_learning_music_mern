@@ -61,7 +61,7 @@ router.get('/getTeachersInCourse',getTeachersInCourse)
 router.get('/userGetCourses', userGetCourses)
 router.get('/userGetTeachers/:courseId', userGetTeachers)
 router.get('/userGetTeachersTiming/:teacherId/availableTimings',userGetTeachersTiming)
-router.post('/book-demo',auth, bookDemo)
+router.post('/book-demo/:studentId',auth, bookDemo)
 router.get('/getNotifications/:userId', getNotifications)
 router.post('/sendNotifications',auth, sendNotifications)
 
@@ -73,7 +73,7 @@ router.get('/check-appointment-timing/:appointmentId',checkAppointmentTiming)
 router.get('/userGetAppointmentTime/:userId',userGetAppointmentTime)
 router.get('/enrolled-courses/:id',getEnrolledCourses)
 router.get('/getPaymentHistory/:id',getPaymentHistory);
-router.get('/getUserDemoBookings',auth,getUserDemoBookings);
+router.get('/getUserDemoBookings/:userId',auth,getUserDemoBookings);
 router.delete('/cancelUserAppointment/:appointmentId',auth,cancelUserAppointment)
 router.get('/getTeacherProfileForHome/:teacherId',getTeacherProfileForHome)
 router.get('/getTeachersByCourse/:courseId' , getTeachersByCourse)
