@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Header from '../../Components/UserComponents/Home/Header';
 import Home from '../../Components/UserComponents/Home/Home';
-import axios from '../../Utils/axios';
+
 import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
@@ -14,7 +14,7 @@ function HomePage() {
       navigate('/');
     }
   }, []);
-
+//nil
   return (
     <div>
       <Header />
@@ -22,6 +22,6 @@ function HomePage() {
     </div>
   );
 }
-//error rectified
+
 
 export default HomePage;
