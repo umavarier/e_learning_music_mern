@@ -22,5 +22,6 @@ function HomePage() {
     </div>
   );
 }
+//error rectified
 
 export default HomePage;
